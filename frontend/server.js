@@ -8,7 +8,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SAVVORA – Luxury Storefront & Sign-In</title>
+  <title>SAVVORA – Complete Luxury Product Lineup</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -44,7 +44,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
       font-size: 12px;
       font-weight: 800;
       display: inline-flex;
-      items-center;
+      align-items: center;
       gap: 8px;
       white-space: nowrap;
       transition: all 0.3s ease;
@@ -52,6 +52,21 @@ const HTML_CONTENT = `<!DOCTYPE html>
     .dark .nav-pill { background-color: #1F2937; border-color: #374151; color: #FFFFFF; }
     .nav-pill.active { background-color: #111827; color: #FFFFFF; border-color: #111827; }
     .dark .nav-pill.active { background-color: #2563EB; border-color: #2563EB; }
+    .product-card {
+      background-color: #F8FAFC;
+      border: 1px solid #E5E7EB;
+      border-radius: 20px;
+      padding: 16px;
+      transition: all 0.3s ease;
+    }
+    .dark .product-card {
+      background-color: #1F2937;
+      border-color: #374151;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+    }
   </style>
 </head>
 <body class="min-h-screen pb-16">
@@ -66,7 +81,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
           ◎
         </div>
         <div class="flex flex-col">
-          <span class="font-extrabold text-xl tracking-wider text-savBlack dark:text-white uppercase">SAVVORA</span>
+          <span class="font-extrabold text-xl tracking-wider text-savBlack dark:text-white uppercase font-sans">SAVVORA</span>
           <span class="text-[9px] font-bold text-savMuted uppercase tracking-widest -mt-1">LUXURY STOREFRONT</span>
         </div>
       </div>
@@ -96,15 +111,24 @@ const HTML_CONTENT = `<!DOCTYPE html>
     </div>
   </header>
 
-  <!-- Main Content Container -->
+  <!-- Main Container -->
   <main class="max-w-[1200px] mx-auto px-4 lg:px-8 mt-6">
 
-    <!-- Category Pills -->
-    <div class="flex items-center gap-3 overflow-x-auto pb-2 my-4">
-      <button class="nav-pill active flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-savBlue"></i> New Arrivals</button>
-      <button class="nav-pill flex items-center gap-2"><i data-lucide="flame" class="w-4 h-4 text-savBlue"></i> Best Sellers</button>
-      <button class="nav-pill flex items-center gap-2"><i data-lucide="smartphone" class="w-4 h-4 text-savBlue"></i> Electronics</button>
-      <button class="nav-pill flex items-center gap-2"><i data-lucide="shirt" class="w-4 h-4 text-savBlue"></i> Fashion</button>
+    <!-- Category Pill Navigation Bar (44px Pills) -->
+    <div class="my-4 overflow-x-auto">
+      <div class="flex items-center gap-3 overflow-x-auto pb-2">
+        <button class="nav-pill active flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-savBlue"></i> New Arrivals</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="flame" class="w-4 h-4 text-savBlue"></i> Best Sellers</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="smartphone" class="w-4 h-4 text-savBlue"></i> Electronics</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="shirt" class="w-4 h-4 text-savBlue"></i> Fashion</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="home" class="w-4 h-4 text-savBlue"></i> Home & Kitchen</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4 text-savBlue"></i> Beauty</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="dumbbell" class="w-4 h-4 text-savBlue"></i> Sports</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="book-open" class="w-4 h-4 text-savBlue"></i> Books</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="shopping-bag" class="w-4 h-4 text-savBlue"></i> Grocery</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="tag" class="w-4 h-4 text-savBlue"></i> Deals</button>
+        <button class="nav-pill flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-savBlue"></i> Brands</button>
+      </div>
     </div>
 
     <!-- Hero Banner -->
@@ -124,6 +148,147 @@ const HTML_CONTENT = `<!DOCTYPE html>
       </div>
     </section>
 
+    <!-- Complete Products Lineup Grid (All Preserved) -->
+    <section class="space-y-6 my-10">
+      <div class="flex justify-between items-center">
+        <div>
+          <span class="text-xs font-bold text-savBlue uppercase tracking-wider">SAVVORA Complete Lineup</span>
+          <h2 class="text-3xl font-black text-savBlack dark:text-white tracking-tight">All Storefront Products</h2>
+        </div>
+        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-3 py-1 rounded-full">⚡ Live Stock Available</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">BESTSELLER</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">Wireless Active ANC Noise-Canceling Earbuds</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★☆</span>
+              <span class="text-savMuted">(4.8)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹2,999</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">NEW</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">iPhone 15 Pro Max Titanium</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★★</span>
+              <span class="text-savMuted">(4.9)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹1,34,900</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">BESTSELLER</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">MacBook Pro 16" M3 Max</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★★</span>
+              <span class="text-savMuted">(5.0)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹3,49,900</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">TRENDING</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">AirPods Max Space Gray</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★☆</span>
+              <span class="text-savMuted">(4.8)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹59,900</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">NEW</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">Apple Watch Ultra 2 Titanium</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★★</span>
+              <span class="text-savMuted">(4.9)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹89,900</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="product-card flex flex-col justify-between">
+          <div class="w-full h-56 rounded-[16px] overflow-hidden relative bg-white dark:bg-black border border-savBorder">
+            <img src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80" class="w-full h-full object-cover" />
+            <span class="absolute top-3 left-3 px-3 py-0.5 rounded-full bg-savBlue text-white text-[10px] font-black uppercase">BESTSELLER</span>
+          </div>
+          <div class="mt-4 space-y-2">
+            <h3 class="font-extrabold text-savBlack dark:text-white text-sm">Keychron Q1 Pro Mechanical Keyboard</h3>
+            <div class="flex items-center gap-1 text-xs text-amber-500 font-bold">
+              <span>★★★★★</span>
+              <span class="text-savMuted">(4.9)</span>
+            </div>
+            <div class="pt-2 border-t border-savBorder flex items-center justify-between">
+              <span class="text-lg font-black text-savBlack dark:text-white">₹18,900</span>
+              <button onclick="triggerConfetti()" class="px-5 py-2.5 rounded-full bg-savBlack text-white text-xs font-bold flex items-center gap-1.5">
+                <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-savBlue"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- AUTHENTICATION MODAL -->
@@ -138,7 +303,6 @@ const HTML_CONTENT = `<!DOCTYPE html>
         <h2 class="text-2xl font-black text-savBlack dark:text-white uppercase">SAVVORA</h2>
       </div>
 
-      <!-- Continue with Google -->
       <button onclick="simulateGoogleLogin()" class="w-full py-3.5 px-4 rounded-full bg-white border border-savBorder font-extrabold text-xs text-savBlack hover:bg-gray-50 flex items-center justify-center gap-3 shadow-sm">
         <span>Continue with Google</span>
       </button>
@@ -148,7 +312,6 @@ const HTML_CONTENT = `<!DOCTYPE html>
         <span class="bg-white dark:bg-[#1F2937] px-3 text-[10px] font-black uppercase text-gray-400 absolute">OR</span>
       </div>
 
-      <!-- Phone Number Input -->
       <div class="space-y-3">
         <label class="block text-xs font-bold text-gray-500">Phone Number</label>
         <div class="flex gap-2">
@@ -187,7 +350,6 @@ const HTML_CONTENT = `<!DOCTYPE html>
       toggleAuthModal();
     }
   </script>
-
 </body>
 </html>`;
 

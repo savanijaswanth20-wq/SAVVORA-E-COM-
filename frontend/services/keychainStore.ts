@@ -66,6 +66,7 @@ export interface Order {
   estimatedDelivery: string;
 }
 
+// Complete Full Store Catalog - All Products Preserved
 export const INITIAL_PRODUCTS: KeychainProduct[] = [
   {
     id: 'prod-01',
@@ -107,7 +108,7 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
     id: 'prod-03',
     name: 'AirPods Max Space Gray',
     category: 'Wireless Earbuds',
-    categoryId: 'audio',
+    categoryId: 'electronics',
     price: 59900,
     originalPrice: 69900,
     rating: 4.8,
@@ -116,16 +117,124 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
     sku: 'APL-APM-SG',
     image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
     badge: 'TRENDING',
-    description: 'Apple-designed dynamic driver provides high-fidelity audio with Active Noise Cancellation.',
-    features: ['High-Fidelity Audio', 'Active Noise Cancellation', 'Spatial Audio'],
+    description: 'Apple-designed dynamic driver provides high-fidelity audio with Active Noise Cancellation & Spatial Audio.',
+    features: ['High-Fidelity Audio', 'Active Noise Cancellation', 'Personalized Spatial Audio', '20 Hour Battery'],
     material: 'Anodized Aluminum & Mesh',
     deliveryDays: 'Express Tomorrow'
   },
   {
+    id: 'prod-04',
+    name: 'Wireless Active ANC Noise-Canceling Earbuds',
+    category: 'Wireless Earbuds',
+    categoryId: 'electronics',
+    price: 2999,
+    originalPrice: 4999,
+    rating: 4.8,
+    reviewCount: 3120,
+    stock: 45,
+    sku: 'EAR-ANC-2999',
+    image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop&q=80',
+    badge: 'BESTSELLER',
+    description: 'High performance active noise canceling wireless earbuds with deep bass response & 32 hour playback.',
+    features: ['Active Noise Cancellation', '32 Hour Playback', 'IPX5 Sweatproof', 'USB-C Fast Charge'],
+    material: 'Matte Touch Resin',
+    deliveryDays: 'Express Tomorrow'
+  },
+  {
+    id: 'prod-05',
+    name: 'Apple Watch Ultra 2 Titanium',
+    category: 'Smart Watches',
+    categoryId: 'electronics',
+    price: 89900,
+    originalPrice: 99900,
+    rating: 4.9,
+    reviewCount: 640,
+    stock: 8,
+    sku: 'APL-AWU2-49',
+    image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80',
+    badge: 'NEW',
+    description: 'The ultimate sports watch with S9 SiP, double tap gesture, brightest display ever, and precision GPS.',
+    features: ['49mm Titanium Case', '3000 Nits Brightness', 'Precision Dual GPS', '36-Hour Battery'],
+    material: 'Titanium & Sapphire Crystal',
+    deliveryDays: 'Express Tomorrow'
+  },
+  {
+    id: 'prod-06',
+    name: 'Keychron Q1 Pro Custom Mechanical Keyboard',
+    category: 'Mechanical Keyboards',
+    categoryId: 'electronics',
+    price: 18900,
+    originalPrice: 22900,
+    rating: 4.9,
+    reviewCount: 310,
+    stock: 10,
+    sku: 'KCH-Q1P-RGB',
+    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
+    badge: 'BESTSELLER',
+    description: 'Full aluminum QMK/VIA wireless custom mechanical keyboard with hot-swappable double-gasket design.',
+    features: ['CNC Aluminum Body', 'Bluetooth 5.1 & Type-C', 'Hot-Swappable Switches', 'RGB Backlight'],
+    material: 'Solid Aircraft-Grade Aluminum',
+    deliveryDays: '2 Business Days'
+  },
+  {
+    id: 'prod-07',
+    name: 'Logitech MX Master 3S Ergonomic Mouse',
+    category: 'Electronics',
+    categoryId: 'electronics',
+    price: 9995,
+    originalPrice: 11995,
+    rating: 4.9,
+    reviewCount: 3420,
+    stock: 20,
+    sku: 'LOG-MXM3S-GR',
+    image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&auto=format&fit=crop&q=80',
+    badge: 'TRENDING',
+    description: 'An iconic quiet click ergonomic mouse with 8K DPI track-on-glass sensor and MagSpeed electromagnetic scrolling.',
+    features: ['Quiet Clicks', '8K DPI Track-on-Glass', 'MagSpeed Scrolling', 'Multi-Device Flow'],
+    material: 'Recycled Soft-Touch Matte Resin',
+    deliveryDays: 'Express Tomorrow'
+  },
+  {
+    id: 'prod-08',
+    name: 'Bellroy Classic Leather Backpack 20L',
+    category: 'Fashion',
+    categoryId: 'fashion',
+    price: 16900,
+    originalPrice: 19900,
+    rating: 4.8,
+    reviewCount: 412,
+    stock: 7,
+    sku: 'BEL-BP20L-BLK',
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
+    badge: 'NEW',
+    description: 'Clean minimalist commuter backpack with padded 16" laptop sleeve, lumbar support, and environmentally certified leather.',
+    features: ['16" Padded Laptop Pocket', 'Water-Resistant Weave', 'Premium LWG Leather', 'Key Clip Tether'],
+    material: 'Recycled Fabric & LWG Leather',
+    deliveryDays: '3 Business Days'
+  },
+  {
+    id: 'prod-09',
+    name: 'Bang & Olufsen Beosound Explore Speaker',
+    category: 'Electronics',
+    categoryId: 'electronics',
+    price: 19900,
+    originalPrice: 24900,
+    rating: 4.9,
+    reviewCount: 520,
+    stock: 9,
+    sku: 'BNO-BSE-GRN',
+    image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80',
+    badge: 'LIMITED',
+    description: 'Ultra-durable waterproof outdoor Bluetooth speaker crafted with tough Type II anodized aluminum.',
+    features: ['360-Degree Sound', 'IP67 Dust & Waterproof', '27-Hour Battery', 'Carabiner Clip'],
+    material: 'Type II Anodized Aluminum',
+    deliveryDays: '2 Business Days'
+  },
+  {
     id: 'kc-01',
     name: 'Custom Engraved Name Keychain',
-    category: 'Custom Keychains',
-    categoryId: 'custom-name',
+    category: 'Fashion',
+    categoryId: 'fashion',
     price: 349,
     originalPrice: 499,
     rating: 4.9,
@@ -134,9 +243,45 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
     sku: 'KC-NAME-01',
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
     badge: 'BESTSELLER',
-    description: 'Precision laser-engraved personalized acrylic keychain with gold flake border.',
+    description: 'Precision laser-engraved personalized acrylic keychain with gold flake border and charm accents.',
     features: ['Laser Engraved', 'Scratch Resistant Acrylic', 'Gold Plated Ring'],
     material: 'Premium Pastel Acrylic',
+    deliveryDays: '3 Business Days'
+  },
+  {
+    id: 'kc-02',
+    name: 'Polaroid Memory Photo Keychain',
+    category: 'Fashion',
+    categoryId: 'fashion',
+    price: 399,
+    originalPrice: 599,
+    rating: 5.0,
+    reviewCount: 215,
+    stock: 10,
+    sku: 'KC-PHOTO-02',
+    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
+    badge: 'TRENDING',
+    description: 'Encase your favourite polaroid memory photo inside a crystal clear glassmorphic acrylic frame with soft tassels.',
+    features: ['Double Sided Photo', 'UV Protective Coating', 'Soft Tassel'],
+    material: 'High-Translucency Resin',
+    deliveryDays: '2 Business Days'
+  },
+  {
+    id: 'kc-03',
+    name: 'Matching Magnet Couple Keychains',
+    category: 'Fashion',
+    categoryId: 'fashion',
+    price: 599,
+    originalPrice: 799,
+    rating: 4.9,
+    reviewCount: 412,
+    stock: 14,
+    sku: 'KC-COUPLE-03',
+    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
+    badge: 'BESTSELLER',
+    description: 'Cute matching half-heart magnetic keychains for couples that snap together when brought close.',
+    features: ['Strong Neodymium Magnets', 'Rose Gold Finish', 'Custom Date Engraving'],
+    material: 'Zinc Alloy & Enamel',
     deliveryDays: '3 Business Days'
   }
 ];
@@ -193,7 +338,12 @@ export const KeychainStore = {
       localStorage.setItem(LOCAL_STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
       return INITIAL_PRODUCTS;
     }
-    try { return JSON.parse(stored); } catch { return INITIAL_PRODUCTS; }
+    try {
+      const parsed = JSON.parse(stored);
+      return parsed.length >= INITIAL_PRODUCTS.length ? parsed : INITIAL_PRODUCTS;
+    } catch {
+      return INITIAL_PRODUCTS;
+    }
   },
 
   saveProducts(products: KeychainProduct[]) {
