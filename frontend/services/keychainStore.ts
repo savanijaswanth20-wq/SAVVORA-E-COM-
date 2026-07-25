@@ -1,3 +1,24 @@
+export interface UserAddress {
+  id: string;
+  fullName: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  isDefault?: boolean;
+}
+
+export interface UserProfile {
+  id: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  loginProvider: 'Google' | 'Phone';
+  addresses: UserAddress[];
+}
+
 export interface KeychainProduct {
   id: string;
   name: string;
@@ -16,34 +37,13 @@ export interface KeychainProduct {
   features: string[];
   material: string;
   deliveryDays: string;
-  videoUrl?: string;
   customizable?: boolean;
-}
-
-export interface CustomKeychainConfig {
-  id?: string;
-  text: string;
-  font: string;
-  textColor: string;
-  baseMaterial: 'acrylic' | 'resin' | 'rosegold' | 'silicone' | 'leather';
-  baseColor: string;
-  emojiCharms: string[];
-  photoUrl?: string;
-  calculatedPrice: number;
 }
 
 export interface CartItem {
   id: string;
   product: KeychainProduct;
   quantity: number;
-  customConfig?: CustomKeychainConfig;
-}
-
-export interface Coupon {
-  code: string;
-  discountPercent: number;
-  minAmount: number;
-  description: string;
 }
 
 export interface Order {
@@ -53,7 +53,6 @@ export interface Order {
   totalAmount: number;
   discountApplied: number;
   giftWrapping: boolean;
-  giftMessage?: string;
   paymentMethod: string;
   shippingAddress: {
     fullName: string;
@@ -67,23 +66,6 @@ export interface Order {
   estimatedDelivery: string;
 }
 
-export interface Supplier {
-  id: string;
-  name: string;
-  category: string;
-  contact: string;
-  status: 'Active' | 'Pending';
-}
-
-export interface Employee {
-  id: string;
-  name: string;
-  role: string;
-  email: string;
-  status: 'Active' | 'Offline';
-}
-
-// Apple Luxury Storefront Catalog
 export const INITIAL_PRODUCTS: KeychainProduct[] = [
   {
     id: 'prod-01',
@@ -134,100 +116,10 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
     sku: 'APL-APM-SG',
     image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
     badge: 'TRENDING',
-    description: 'Apple-designed dynamic driver provides high-fidelity audio with Active Noise Cancellation & Spatial Audio.',
-    features: ['High-Fidelity Audio', 'Active Noise Cancellation', 'Personalized Spatial Audio', '20 Hour Battery'],
+    description: 'Apple-designed dynamic driver provides high-fidelity audio with Active Noise Cancellation.',
+    features: ['High-Fidelity Audio', 'Active Noise Cancellation', 'Spatial Audio'],
     material: 'Anodized Aluminum & Mesh',
     deliveryDays: 'Express Tomorrow'
-  },
-  {
-    id: 'prod-04',
-    name: 'Apple Watch Ultra 2 Titanium',
-    category: 'Smart Watches',
-    categoryId: 'electronics',
-    price: 89900,
-    originalPrice: 99900,
-    rating: 4.9,
-    reviewCount: 640,
-    stock: 8,
-    sku: 'APL-AWU2-49',
-    image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop&q=80',
-    badge: 'NEW',
-    description: 'The ultimate sports watch with S9 SiP, double tap gesture, brightest display ever, and precision GPS.',
-    features: ['49mm Titanium Case', '3000 Nits Brightness', 'Precision Dual GPS', '36-Hour Battery'],
-    material: 'Titanium & Sapphire Crystal',
-    deliveryDays: 'Express Tomorrow'
-  },
-  {
-    id: 'prod-05',
-    name: 'Keychron Q1 Pro Mechanical Keyboard',
-    category: 'Mechanical Keyboards',
-    categoryId: 'gaming',
-    price: 18900,
-    originalPrice: 22900,
-    rating: 4.9,
-    reviewCount: 310,
-    stock: 10,
-    sku: 'KCH-Q1P-RGB',
-    image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&auto=format&fit=crop&q=80',
-    badge: 'BESTSELLER',
-    description: 'Full aluminum QMK/VIA wireless custom mechanical keyboard with hot-swappable double-gasket design.',
-    features: ['CNC Aluminum Body', 'Bluetooth 5.1 & Type-C', 'Hot-Swappable Switches', 'RGB Backlight'],
-    material: 'Solid Aircraft-Grade Aluminum',
-    deliveryDays: '2 Business Days'
-  },
-  {
-    id: 'prod-06',
-    name: 'Logitech MX Master 3S Wireless Mouse',
-    category: 'Desk Setup Accessories',
-    categoryId: 'gaming',
-    price: 9995,
-    originalPrice: 11995,
-    rating: 4.9,
-    reviewCount: 3420,
-    stock: 20,
-    sku: 'LOG-MXM3S-GR',
-    image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800&auto=format&fit=crop&q=80',
-    badge: 'TRENDING',
-    description: 'An iconic quiet click ergonomic mouse with 8K DPI track-on-glass sensor and MagSpeed electromagnetic scrolling.',
-    features: ['Quiet Clicks', '8K DPI Track-on-Glass', 'MagSpeed Scrolling', 'Multi-Device Flow'],
-    material: 'Recycled Soft-Touch Matte Resin',
-    deliveryDays: 'Express Tomorrow'
-  },
-  {
-    id: 'prod-07',
-    name: 'Bellroy Classic Leather Backpack 20L',
-    category: 'Premium Backpacks',
-    categoryId: 'accessories',
-    price: 16900,
-    originalPrice: 19900,
-    rating: 4.8,
-    reviewCount: 412,
-    stock: 7,
-    sku: 'BEL-BP20L-BLK',
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80',
-    badge: 'NEW',
-    description: 'Clean minimalist commuter backpack with padded 16" laptop sleeve, lumbar support, and environmentally certified leather.',
-    features: ['16" Padded Laptop Pocket', 'Water-Resistant Weave', 'Premium LWG Leather', 'Key Clip Tether'],
-    material: 'Recycled Fabric & LWG Leather',
-    deliveryDays: '3 Business Days'
-  },
-  {
-    id: 'prod-08',
-    name: 'Bang & Olufsen Beosound Explore',
-    category: 'Bluetooth Speakers',
-    categoryId: 'audio',
-    price: 19900,
-    originalPrice: 24900,
-    rating: 4.9,
-    reviewCount: 520,
-    stock: 9,
-    sku: 'BNO-BSE-GRN',
-    image: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop&q=80',
-    badge: 'LIMITED',
-    description: 'Ultra-durable waterproof outdoor Bluetooth speaker crafted with tough Type II anodized aluminum.',
-    features: ['360-Degree Sound', 'IP67 Dust & Waterproof', '27-Hour Battery', 'Carabiner Clip'],
-    material: 'Type II Anodized Aluminum',
-    deliveryDays: '2 Business Days'
   },
   {
     id: 'kc-01',
@@ -242,70 +134,20 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
     sku: 'KC-NAME-01',
     image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
     badge: 'BESTSELLER',
-    description: 'Precision laser-engraved personalized acrylic keychain with gold flake border and charm accents.',
-    features: ['Laser Engraved', 'Scratch Resistant Acrylic', 'Gold Plated Ring', 'Free Gift Box'],
+    description: 'Precision laser-engraved personalized acrylic keychain with gold flake border.',
+    features: ['Laser Engraved', 'Scratch Resistant Acrylic', 'Gold Plated Ring'],
     material: 'Premium Pastel Acrylic',
-    deliveryDays: '3 Business Days',
-    customizable: true
-  },
-  {
-    id: 'kc-02',
-    name: 'Polaroid Memory Photo Keychain',
-    category: 'Custom Keychains',
-    categoryId: 'photo',
-    price: 399,
-    originalPrice: 599,
-    rating: 5.0,
-    reviewCount: 215,
-    stock: 10,
-    sku: 'KC-PHOTO-02',
-    image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80',
-    badge: 'TRENDING',
-    description: 'Encase your favourite polaroid memory photo inside a crystal clear glassmorphic acrylic frame with soft tassels.',
-    features: ['Double Sided Photo', 'UV Protective Coating', 'Soft Tassel', 'Water Resistant'],
-    material: 'High-Translucency Resin',
-    deliveryDays: '2 Business Days',
-    customizable: true
-  },
-  {
-    id: 'kc-03',
-    name: 'Matching Magnet Couple Keychains',
-    category: 'Custom Keychains',
-    categoryId: 'couple',
-    price: 599,
-    originalPrice: 799,
-    rating: 4.9,
-    reviewCount: 412,
-    stock: 14,
-    sku: 'KC-COUPLE-03',
-    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80',
-    badge: 'BESTSELLER',
-    description: 'Cute matching half-heart magnetic keychains for couples that snap together when brought close.',
-    features: ['Strong Neodymium Magnets', 'Rose Gold Finish', 'Custom Date Engraving', 'Velvet Pouch'],
-    material: 'Zinc Alloy & Enamel',
     deliveryDays: '3 Business Days'
   }
 ];
 
-export const SUPPLIERS_LIST: Supplier[] = [
-  { id: 'sup-1', name: 'Precision Resin Crafts Ltd', category: 'Epoxy & Acrylics', contact: 'supply@resin.com', status: 'Active' },
-  { id: 'sup-2', name: 'Tokyo Kawaii Hardware Inc', category: 'Clasps & Charms', contact: 'tokyo@kawaii.jp', status: 'Active' },
-  { id: 'sup-3', name: 'Apple Authorized Logistics', category: 'Express Shipping', contact: 'dispatch@apple.com', status: 'Active' }
-];
-
-export const EMPLOYEES_LIST: Employee[] = [
-  { id: 'emp-1', name: 'Aarav Sharma', role: 'Head of Crafting & Storefront', email: 'aarav@kawaiicraft.com', status: 'Active' },
-  { id: 'emp-2', name: 'Mia Patel', role: 'Inventory & Warehouse Lead', email: 'mia@kawaiicraft.com', status: 'Active' },
-  { id: 'emp-3', name: 'Rohan Verma', role: 'Customer Success Specialist', email: 'rohan@kawaiicraft.com', status: 'Active' }
-];
-
 const LOCAL_STORAGE_KEYS = {
-  CART: 'apple_store_cart',
-  WISHLIST: 'apple_store_wishlist',
-  ORDERS: 'apple_store_orders',
-  PRODUCTS: 'apple_store_products',
-  POINTS: 'apple_store_points',
-  THEME: 'apple_store_theme',
+  CART: 'savvora_cart',
+  WISHLIST: 'savvora_wishlist',
+  ORDERS: 'savvora_orders',
+  PRODUCTS: 'savvora_products',
+  THEME: 'savvora_theme',
+  USER: 'savvora_user_profile',
 };
 
 type Listener = () => void;
@@ -323,6 +165,27 @@ const notifyListeners = () => {
 };
 
 export const KeychainStore = {
+  getUser(): UserProfile | null {
+    if (typeof window === 'undefined') return null;
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.USER);
+    if (!stored) return null;
+    try { return JSON.parse(stored); } catch { return null; }
+  },
+
+  setUser(user: UserProfile | null) {
+    if (typeof window === 'undefined') return;
+    if (user) {
+      localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
+    }
+    notifyListeners();
+  },
+
+  logoutUser() {
+    this.setUser(null);
+  },
+
   getProducts(): KeychainProduct[] {
     if (typeof window === 'undefined') return INITIAL_PRODUCTS;
     const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.PRODUCTS);
@@ -339,13 +202,6 @@ export const KeychainStore = {
     notifyListeners();
   },
 
-  updateProductStock(productId: string, newStock: number) {
-    const products = this.getProducts().map((p) =>
-      p.id === productId ? { ...p, stock: Math.max(0, newStock) } : p
-    );
-    this.saveProducts(products);
-  },
-
   getCart(): CartItem[] {
     if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.CART);
@@ -358,20 +214,17 @@ export const KeychainStore = {
     notifyListeners();
   },
 
-  addToCart(product: KeychainProduct, customConfig?: CustomKeychainConfig) {
+  addToCart(product: KeychainProduct) {
     const cart = this.getCart();
-    const existingIndex = cart.findIndex(
-      (item) => item.product.id === product.id && JSON.stringify(item.customConfig) === JSON.stringify(customConfig)
-    );
+    const existingIndex = cart.findIndex((item) => item.product.id === product.id);
 
     if (existingIndex > -1) {
       cart[existingIndex].quantity += 1;
     } else {
       cart.push({
-        id: `cart-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
+        id: `cart-${Date.now()}`,
         product,
-        quantity: 1,
-        customConfig
+        quantity: 1
       });
     }
     this.saveCart(cart);
@@ -421,19 +274,15 @@ export const KeychainStore = {
       {
         id: 'ORD-APL-8819',
         date: '2026-07-24',
-        items: [
-          { id: '1', product: INITIAL_PRODUCTS[0], quantity: 1 },
-          { id: '2', product: INITIAL_PRODUCTS[8], quantity: 1 }
-        ],
-        totalAmount: 135249,
-        discountApplied: 500,
+        items: [{ id: '1', product: INITIAL_PRODUCTS[0], quantity: 1 }],
+        totalAmount: 134900,
+        discountApplied: 0,
         giftWrapping: true,
-        giftMessage: 'Congratulations on your new Apple tech!',
         paymentMethod: 'UPI (Google Pay)',
         shippingAddress: {
           fullName: 'Aarav Sharma',
           street: '42 MG Road, Indiranagar',
-          city: 'Bengaluru, KA',
+          city: 'Bengaluru',
           zip: '560038',
           phone: '+91 98765 43210'
         },
@@ -449,44 +298,7 @@ export const KeychainStore = {
     if (typeof window !== 'undefined') {
       localStorage.setItem(LOCAL_STORAGE_KEYS.ORDERS, JSON.stringify(orders));
     }
-    this.addRewardPoints(Math.floor(order.totalAmount / 100));
     notifyListeners();
-  },
-
-  updateOrderStatus(orderId: string, status: Order['status']) {
-    const orders = this.getOrders().map((o) =>
-      o.id === orderId ? { ...o, status } : o
-    );
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.ORDERS, JSON.stringify(orders));
-    }
-    notifyListeners();
-  },
-
-  getRewardPoints(): number {
-    if (typeof window === 'undefined') return 850;
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.POINTS);
-    return stored ? parseInt(stored, 10) : 850;
-  },
-
-  addRewardPoints(pts: number) {
-    const current = this.getRewardPoints();
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.POINTS, (current + pts).toString());
-    }
-    notifyListeners();
-  },
-
-  redeemRewardPoints(pts: number): boolean {
-    const current = this.getRewardPoints();
-    if (current >= pts) {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.POINTS, (current - pts).toString());
-      }
-      notifyListeners();
-      return true;
-    }
-    return false;
   },
 
   getTheme(): 'light' | 'dark' {
