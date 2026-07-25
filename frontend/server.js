@@ -171,6 +171,13 @@ const HTML_CONTENT = `<!DOCTYPE html>
     function toggleAuthModal() {
       document.getElementById('authModal').classList.toggle('hidden');
     }
+    function showView(viewName) {
+      if (viewName === 'account' || viewName === 'cart') {
+        toggleAuthModal();
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
     function simulateGoogleLogin() {
       alert("Signed in successfully via Google (Aarav Sharma)!");
       toggleAuthModal();
@@ -180,6 +187,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
       toggleAuthModal();
     }
   </script>
+
 </body>
 </html>`;
 
