@@ -100,14 +100,28 @@ def refresh_token(payload: RefreshPayload, db: Session = Depends(get_db)):
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Expired or invalid refresh token")
 
+class GoogleAuthPayload(BaseModel):
+    id_token: Optional[str] = None
+    email: Optional[str] = "aarav.sharma@gmail.com"
+    name: Optional[str] = "Aarav Sharma"
+    avatar: Optional[str] = None
+
+class PhoneOtpSendPayload(BaseModel):
+    phone: str
+
+class PhoneOtpVerifyPayload(BaseModel):
+    phone: str
+    otp: str
+
 @router.post("/google")
-def google_login(db: Session = Depends(get_db)):
-    # Simulated OAuth Google Login endpoint
-    email = "google.user@stockflow.com"
+def google_login(payload: Optional[GoogleAuthPayload] = None, db: Session = Depends(get_db)):
+    email = (payload and payload.email) or "aarav.sharma@gmail.com"
+    name = (payload and payload.name) or "Aarav Sharma"
+    
     user = db.query(User).filter(User.email == email).first()
     if not user:
         user = User(
-            name="Google User",
+            name=name,
             email=email,
             hashed_password=hash_pwd("google_oauth_secret"),
             role="customer",
@@ -118,7 +132,47 @@ def google_login(db: Session = Depends(get_db)):
         db.refresh(user)
 
     access_token, refresh_token = create_tokens(user.email, user.role)
-    return {"access_token": access_token, "refresh_token": refresh_token, "user": user}
+    return {
+        "access_token": access_token, 
+        "refresh_token": refresh_token, 
+        "token_type": "bearer",
+        "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role}
+    }
+
+@router.post("/phone/send-otp")
+def send_phone_otp(payload: PhoneOtpSendPayload):
+    return {
+        "status": "success",
+        "message": f"OTP successfully sent to +91 {payload.phone}",
+        "demo_otp": "123456"
+    }
+
+@router.post("/phone/verify-otp")
+def verify_phone_otp(payload: PhoneOtpVerifyPayload, db: Session = Depends(get_db)):
+    if payload.otp != "123456":
+        raise HTTPException(status_code=400, detail="Invalid OTP code")
+    
+    email = f"phone_{payload.phone}@savvora.com"
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        user = User(
+            name=f"Customer +91{payload.phone}",
+            email=email,
+            hashed_password=hash_pwd("phone_otp_secret"),
+            role="customer",
+            is_verified=True
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    access_token, refresh_token = create_tokens(user.email, user.role)
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+        "user": {"id": user.id, "name": user.name, "phone": payload.phone, "role": user.role}
+    }
 
 @router.post("/forgot-password")
 def forgot_password(payload: ForgotPasswordPayload, db: Session = Depends(get_db)):
@@ -130,3 +184,4 @@ def forgot_password(payload: ForgotPasswordPayload, db: Session = Depends(get_db
     user.reset_token = reset_code
     db.commit()
     return {"message": f"Password reset code generated and sent to {user.email}", "reset_code": reset_code}
+
