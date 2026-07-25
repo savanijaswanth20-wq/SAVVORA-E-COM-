@@ -6,37 +6,46 @@ import Link from 'next/link';
 
 export const HeroBanner: React.FC = () => {
   return (
-    <section className="relative rounded-[28px] overflow-hidden my-6 bg-[#F8FAFC] dark:bg-gray-900 border border-[#E5E7EB] dark:border-gray-800 p-8 sm:p-14 shadow-sm flex items-center justify-center text-center">
+    <section className="relative rounded-[28px] overflow-hidden my-6 bg-gradient-to-br from-blue-50/80 via-sky-50/50 to-slate-50 dark:from-slate-900 dark:via-blue-950/40 dark:to-gray-900 border border-blue-100 dark:border-blue-900/30 p-8 sm:p-14 text-center shadow-sm">
       
       {/* Background Soft Glow Orbs */}
-      <div className="absolute -top-10 -right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl -z-10" />
-      <div className="absolute -bottom-10 -left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -z-10" />
+      <div className="absolute -top-12 -right-12 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-12 -left-12 w-80 h-80 bg-sky-300/25 rounded-full blur-3xl pointer-events-none" />
+      
+      {/* Backdrop Dots Pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none" />
 
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="relative max-w-3xl mx-auto space-y-5 z-10">
         
         {/* Subtitle Badge */}
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2563EB]/10 text-[#2563EB] text-xs font-black uppercase tracking-wider">
-          <Sparkles className="w-4 h-4" /> Premium Shopping Experience
+        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-600/10 border border-blue-200/60 dark:border-blue-800/50 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-wider shadow-xs">
+          <Sparkles className="w-4 h-4 text-blue-600" /> Premium Shopping Experience
         </span>
 
         {/* Massive Headline */}
         <h1 className="text-4xl sm:text-6xl font-black text-[#111827] dark:text-white tracking-tight leading-tight">
-          Up to 70% OFF on Electronics
+          Up to <span className="bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 bg-clip-text text-transparent">70% OFF</span> on Electronics
         </h1>
 
         {/* Small Description */}
-        <p className="text-sm sm:text-base text-gray-500 font-medium max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium max-w-xl mx-auto leading-relaxed">
           Explore smartphones, mechanical keyboards, noise-canceling headphones, and luxury handcrafted accessories.
         </p>
 
-        {/* Shop Now Primary Button */}
-        <div className="pt-2">
+        {/* Action Buttons */}
+        <div className="pt-2 flex items-center justify-center gap-4 flex-wrap">
           <Link
             href="#products"
-            className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full bg-[#111827] hover:bg-black text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-black/10 hover:scale-105 transition-all"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#111827] hover:bg-black text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-blue-900/10 hover:scale-[1.02] transition-all"
           >
             <span>Shop Now</span>
             <ArrowRight className="w-4 h-4 text-[#2563EB]" />
+          </Link>
+          <Link
+            href="#categories"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-white text-[#111827] dark:text-white border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs uppercase tracking-wider shadow-xs transition-all"
+          >
+            Explore Collection
           </Link>
         </div>
 
