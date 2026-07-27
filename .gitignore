@@ -27,6 +27,8 @@ venv/
 ENV/
 *.db
 *.sqlite3
+uploads/
+backend/uploads/
 
 # IDE / OS
 .DS_Store
