@@ -40,10 +40,22 @@ export interface KeychainProduct {
   customizable?: boolean;
 }
 
+export interface CustomKeychainConfig {
+  text: string;
+  font: string;
+  textColor: string;
+  baseMaterial: string;
+  baseColor: string;
+  emojiCharms: string[];
+  photoUrl?: string;
+  calculatedPrice: number;
+}
+
 export interface CartItem {
   id: string;
   product: KeychainProduct;
   quantity: number;
+  customConfig?: CustomKeychainConfig;
 }
 
 export interface Order {
@@ -53,6 +65,7 @@ export interface Order {
   totalAmount: number;
   discountApplied: number;
   giftWrapping: boolean;
+  giftMessage?: string;
   paymentMethod: string;
   shippingAddress: {
     fullName: string;
@@ -352,6 +365,14 @@ export const KeychainStore = {
     notifyListeners();
   },
 
+  updateProductStock(productId: string, newStock: number) {
+    const products = this.getProducts().map((p) =>
+      p.id === productId ? { ...p, stock: Math.max(0, newStock) } : p
+    );
+    this.saveProducts(products);
+  },
+
+
   getCart(): CartItem[] {
     if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.CART);
@@ -364,9 +385,11 @@ export const KeychainStore = {
     notifyListeners();
   },
 
-  addToCart(product: KeychainProduct) {
+  addToCart(product: KeychainProduct, customConfig?: CustomKeychainConfig) {
     const cart = this.getCart();
-    const existingIndex = cart.findIndex((item) => item.product.id === product.id);
+    const existingIndex = cart.findIndex(
+      (item) => item.product.id === product.id && JSON.stringify(item.customConfig) === JSON.stringify(customConfig)
+    );
 
     if (existingIndex > -1) {
       cart[existingIndex].quantity += 1;
@@ -374,7 +397,8 @@ export const KeychainStore = {
       cart.push({
         id: `cart-${Date.now()}`,
         product,
-        quantity: 1
+        quantity: 1,
+        customConfig
       });
     }
     this.saveCart(cart);
@@ -471,3 +495,49 @@ export const KeychainStore = {
     return next;
   }
 };
+
+export const SUPPLIERS_LIST = [
+  {
+    id: 'sup-1',
+    name: 'Apple India Logistics & Supply',
+    category: 'Electronics & Mobiles',
+    contact: 'supply-india@apple.com',
+    status: 'Verified'
+  },
+  {
+    id: 'sup-2',
+    name: 'Sony Precision Tech Ltd',
+    category: 'Audio & Wearables',
+    contact: 'partner@sony-audio.co.in',
+    status: 'Verified'
+  },
+  {
+    id: 'sup-3',
+    name: 'Keychron Mechanical Keyboards Inc',
+    category: 'Computer Peripherals',
+    contact: 'b2b@keychron.in',
+    status: 'Active'
+  }
+];
+
+export const EMPLOYEES_LIST = [
+  {
+    id: 'emp-1',
+    name: 'Savan Jaswanth',
+    role: 'Store Owner & Admin',
+    email: 'admin@savvora.com'
+  },
+  {
+    id: 'emp-2',
+    name: 'Priya Sharma',
+    role: 'Inventory Manager',
+    email: 'priya.inventory@savvora.com'
+  },
+  {
+    id: 'emp-3',
+    name: 'Rahul Verma',
+    role: 'Customer Success & Support Lead',
+    email: 'rahul.support@savvora.com'
+  }
+];
+

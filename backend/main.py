@@ -1,7 +1,10 @@
+import os
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.db import engine, Base
 from app.auth import auth_router
+from app.users import user_router
 from app.products import product_router
 from app.inventory import inventory_router
 from app.cart import cart_router
@@ -43,6 +46,7 @@ app.add_middleware(
 
 # Register modular routers
 app.include_router(auth_router.router)
+app.include_router(user_router.router)
 app.include_router(product_router.router)
 app.include_router(inventory_router.router)
 app.include_router(cart_router.router)
@@ -54,6 +58,14 @@ app.include_router(analytics_router.router)
 app.include_router(notification_router.router)
 app.include_router(admin_router.router)
 app.include_router(ai_router.router)
+
+# Save OpenAPI Schema to docs/
+try:
+    os.makedirs("docs", exist_ok=True)
+    with open("docs/openapi.json", "w", encoding="utf-8") as f:
+        json.dump(app.openapi(), f, indent=2)
+except Exception as e:
+    pass
 
 @app.get("/")
 def root():
