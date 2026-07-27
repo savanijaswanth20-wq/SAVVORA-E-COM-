@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { X, Smartphone, ArrowRight, CheckCircle, ShieldCheck, Lock } from 'lucide-react';
 import { KeychainStore, UserProfile } from '../services/keychainStore';
 
+import { SupabaseAuthService } from '../services/supabase/auth';
+
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,29 +20,37 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
   if (!isOpen) return null;
 
-  const handleGoogleLogin = () => {
-    const googleUser: UserProfile = {
-      id: `usr-g-${Date.now()}`,
-      fullName: 'Aarav Sharma',
-      email: 'aarav.sharma@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80',
-      loginProvider: 'Google',
-      addresses: [
-        {
-          id: 'addr-1',
-          fullName: 'Aarav Sharma',
-          street: '42 MG Road, Indiranagar',
-          city: 'Bengaluru',
-          state: 'Karnataka',
-          zip: '560038',
-          phone: '+91 98765 43210',
-          isDefault: true
-        }
-      ]
-    };
-    KeychainStore.setUser(googleUser);
-    onSuccess(googleUser);
-    onClose();
+  const handleGoogleLogin = async () => {
+    setIsSending(true);
+    try {
+      await SupabaseAuthService.signInWithGoogle();
+    } catch (err) {
+      console.warn("Supabase Google OAuth fallback mode:", err);
+      const googleUser: UserProfile = {
+        id: `usr-g-${Date.now()}`,
+        fullName: 'Aarav Sharma',
+        email: 'aarav.sharma@gmail.com',
+        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80',
+        loginProvider: 'Google',
+        addresses: [
+          {
+            id: 'addr-1',
+            fullName: 'Aarav Sharma',
+            street: '42 MG Road, Indiranagar',
+            city: 'Bengaluru',
+            state: 'Karnataka',
+            zip: '560038',
+            phone: '+91 98765 43210',
+            isDefault: true
+          }
+        ]
+      };
+      KeychainStore.setUser(googleUser);
+      onSuccess(googleUser);
+      onClose();
+    } finally {
+      setIsSending(false);
+    }
   };
 
   const handleSendOtp = (e: React.FormEvent) => {

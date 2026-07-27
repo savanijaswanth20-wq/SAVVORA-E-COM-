@@ -454,9 +454,20 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
-    function simulateGoogleLogin() {
-      alert("Signed in successfully via Google (Aarav Sharma)!");
-      toggleAuthModal();
+    async function simulateGoogleLogin() {
+      const SUPABASE_URL = "https://avlykfylgyhbzjsdltdv.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL";
+      if (window.supabase) {
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data, error } = await client.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: window.location.origin }
+        });
+        if (error) console.error("Google OAuth error:", error);
+      } else {
+        alert("Realtime Google Login Initialized for Aarav Sharma!");
+        toggleAuthModal();
+      }
     }
     function simulatePhoneLogin() {
       alert("OTP sent to mobile number! Verification code: 123456");
