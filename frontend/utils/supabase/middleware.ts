@@ -14,7 +14,11 @@ export async function updateSession(request: NextRequest) {
     process.env.SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const supabase = createServerClient(supabaseUrl!, supabaseKey!, {
+  if (!supabaseUrl || !supabaseKey) {
+    return supabaseResponse;
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -31,13 +35,65 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  // Protect Admin Dashboard (/admin)
+  if (pathname.startsWith('/admin')) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('authError', 'login_required');
+      return NextResponse.redirect(url);
+    }
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('authError', 'unauthorized_role');
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Protect Staff Dashboard (/staff)
+  if (pathname.startsWith('/staff')) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('authError', 'login_required');
+      return NextResponse.redirect(url);
+    }
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'staff' && profile?.role !== 'admin') {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('authError', 'unauthorized_role');
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Protect Account Dashboard (/account)
+  if (pathname.startsWith('/account')) {
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/';
+      url.searchParams.set('authError', 'login_required');
+      return NextResponse.redirect(url);
+    }
+  }
 
   return supabaseResponse;
 }
 
 export const createClient = (request: NextRequest) => updateSession(request);
-

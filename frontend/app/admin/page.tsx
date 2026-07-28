@@ -17,9 +17,11 @@ import {
   Users2,
   FileBarChart,
   Boxes,
-  Edit3
+  Edit3,
+  UserCheck,
+  Key
 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { KeychainStore, KeychainProduct, Order, SUPPLIERS_LIST, EMPLOYEES_LIST, subscribeToStore } from '../../services/keychainStore';
 
 const SALES_GRAPH_DATA = [
@@ -33,10 +35,19 @@ const SALES_GRAPH_DATA = [
 ];
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'analytics' | 'inventory' | 'orders' | 'suppliers' | 'employees' | 'reports'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'inventory' | 'orders' | 'suppliers' | 'employees' | 'users' | 'reports'>('analytics');
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  // User RBAC Management state
+  const [usersList, setUsersList] = useState([
+    { id: 'usr-1', name: 'Aarav Sharma', email: 'aarav.sharma@gmail.com', role: 'customer', status: 'Active' },
+    { id: 'usr-2', name: 'Vikram Malhotra', email: 'vikram.admin@savvora.com', role: 'admin', status: 'Active' },
+    { id: 'usr-[#3]', name: 'Neha Gupta', email: 'neha.staff@savvora.com', role: 'staff', status: 'Active' },
+    { id: 'usr-4', name: 'Priya Patel', email: 'priya.patel@gmail.com', role: 'customer', status: 'Active' },
+    { id: 'usr-5', name: 'Rajesh Kumar', email: 'rajesh.staff@savvora.com', role: 'staff', status: 'Active' },
+  ]);
 
   const [newProd, setNewProd] = useState({
     name: '',
@@ -61,6 +72,10 @@ export default function AdminPage() {
 
   const handleUpdateStock = (productId: string, currentStock: number, delta: number) => {
     KeychainStore.updateProductStock(productId, currentStock + delta);
+  };
+
+  const handleRoleChange = (userId: string, newRole: string) => {
+    setUsersList(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
   };
 
   const handleAddProduct = (e: React.FormEvent) => {
@@ -98,9 +113,9 @@ export default function AdminPage() {
           </Link>
           <div>
             <h1 className="text-lg font-extrabold text-apple-dark dark:text-white flex items-center gap-2">
-              Apple + Linear Admin Console <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-apple-blue text-white">Enterprise</span>
+              SAVVORA Enterprise Admin Portal <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-apple-blue text-white">Super Admin</span>
             </h1>
-            <p className="text-xs text-apple-gray font-medium">Sales analytics, inventory control, warehouse suppliers & employee permissions.</p>
+            <p className="text-xs text-apple-gray font-medium">Manage products, orders, inventory, user roles (RBAC) & sales metrics.</p>
           </div>
         </div>
 
@@ -121,9 +136,9 @@ export default function AdminPage() {
             { id: 'analytics', label: 'Analytics & Revenue' },
             { id: 'inventory', label: `Inventory Stock (${products.length})` },
             { id: 'orders', label: `Orders (${orders.length})` },
+            { id: 'users', label: `User Roles (RBAC)` },
             { id: 'suppliers', label: 'Warehouse & Suppliers' },
-            { id: 'employees', label: 'Employees & Roles' },
-            { id: 'reports', label: 'Reports & Coupons' },
+            { id: 'employees', label: 'Employees' },
           ].map((t) => (
             <button
               key={t.id}
@@ -254,6 +269,59 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* TAB 3: User Roles (RBAC) */}
+        {activeTab === 'users' && (
+          <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
+            <h2 className="text-base font-extrabold text-apple-dark dark:text-white flex items-center gap-2">
+              <UserCheck className="w-5 h-5 text-apple-blue" /> User Management & RBAC Permissions
+            </h2>
+            <p className="text-xs text-apple-gray font-medium">Assign user roles between Admin, Staff, and Customer to control application access levels.</p>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="uppercase text-apple-gray border-b border-apple-border dark:border-apple-border-dark bg-apple-surface dark:bg-black">
+                  <tr>
+                    <th className="py-3 px-4">User Name</th>
+                    <th className="py-3 px-4">Email</th>
+                    <th className="py-3 px-4">Current Role</th>
+                    <th className="py-3 px-4">Account Status</th>
+                    <th className="py-3 px-4 text-right">Assign Role</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-apple-border dark:divide-apple-border-dark font-bold">
+                  {usersList.map((usr) => (
+                    <tr key={usr.id} className="hover:bg-apple-surface dark:hover:bg-black transition-colors">
+                      <td className="py-3 px-4 text-apple-dark dark:text-white">{usr.name}</td>
+                      <td className="py-3 px-4 font-mono text-apple-gray">{usr.email}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                          usr.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-400' :
+                          usr.role === 'staff' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400' :
+                          'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
+                        }`}>
+                          {usr.role}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-emerald-600">{usr.status}</td>
+                      <td className="py-3 px-4 text-right">
+                        <select
+                          value={usr.role}
+                          onChange={(e) => handleRoleChange(usr.id, e.target.value)}
+                          className="px-3 py-1.5 rounded-xl bg-white dark:bg-black border border-apple-border dark:border-apple-border-dark font-bold text-xs focus:border-apple-blue"
+                        >
+                          <option value="customer">Customer</option>
+                          <option value="staff">Staff</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* TAB 4: Warehouse & Suppliers */}
         {activeTab === 'suppliers' && (
           <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
@@ -273,10 +341,10 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 5: Employees & Roles */}
+        {/* TAB 5: Employees */}
         {activeTab === 'employees' && (
           <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
-            <h2 className="text-base font-extrabold text-apple-dark dark:text-white">Employee Roles & Access Management</h2>
+            <h2 className="text-base font-extrabold text-apple-dark dark:text-white">Employee Roster</h2>
             <div className="space-y-2">
               {EMPLOYEES_LIST.map((emp) => (
                 <div key={emp.id} className="p-3.5 rounded-2xl bg-white dark:bg-black border border-apple-border dark:border-apple-border-dark flex items-center justify-between text-xs">
@@ -284,7 +352,7 @@ export default function AdminPage() {
                     <span className="font-bold text-apple-dark dark:text-white block">{emp.name} ({emp.role})</span>
                     <span className="text-apple-gray font-mono">{emp.email}</span>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-apple-blue/10 text-apple-blue font-bold text-[10px]">Role Verified</span>
+                  <span className="px-3 py-1 rounded-full bg-apple-blue/10 text-apple-blue font-bold text-[10px]">Verified</span>
                 </div>
               ))}
             </div>
