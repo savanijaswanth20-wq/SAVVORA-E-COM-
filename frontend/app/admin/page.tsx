@@ -35,7 +35,7 @@ const SALES_GRAPH_DATA = [
 ];
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<'analytics' | 'inventory' | 'orders' | 'suppliers' | 'employees' | 'users' | 'reports'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'inventory' | 'orders' | 'suppliers' | 'employees' | 'users'>('analytics');
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function AdminPage() {
   const [usersList, setUsersList] = useState([
     { id: 'usr-1', name: 'Aarav Sharma', email: 'aarav.sharma@gmail.com', role: 'customer', status: 'Active' },
     { id: 'usr-2', name: 'Vikram Malhotra', email: 'vikram.admin@savvora.com', role: 'admin', status: 'Active' },
-    { id: 'usr-[#3]', name: 'Neha Gupta', email: 'neha.staff@savvora.com', role: 'staff', status: 'Active' },
+    { id: 'usr-3', name: 'Neha Gupta', email: 'neha.staff@savvora.com', role: 'staff', status: 'Active' },
     { id: 'usr-4', name: 'Priya Patel', email: 'priya.patel@gmail.com', role: 'customer', status: 'Active' },
     { id: 'usr-5', name: 'Rajesh Kumar', email: 'rajesh.staff@savvora.com', role: 'staff', status: 'Active' },
   ]);
@@ -72,6 +72,11 @@ export default function AdminPage() {
 
   const handleUpdateStock = (productId: string, currentStock: number, delta: number) => {
     KeychainStore.updateProductStock(productId, currentStock + delta);
+  };
+
+  const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
+    const updatedOrders = orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o);
+    KeychainStore.saveOrders(updatedOrders);
   };
 
   const handleRoleChange = (userId: string, newRole: string) => {
@@ -269,7 +274,68 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 3: User Roles (RBAC) */}
+        {/* TAB 3: Orders */}
+        {activeTab === 'orders' && (
+          <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
+            <h2 className="text-base font-extrabold text-apple-dark dark:text-white flex items-center gap-2">
+              <Truck className="w-5 h-5 text-apple-blue" /> Customer Orders Management
+            </h2>
+            
+            {orders.length === 0 ? (
+              <p className="text-xs text-apple-gray py-6 text-center">No active customer orders recorded yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="uppercase text-apple-gray border-b border-apple-border dark:border-apple-border-dark bg-apple-surface dark:bg-black">
+                    <tr>
+                      <th className="py-3 px-4">Order ID</th>
+                      <th className="py-3 px-4">Customer</th>
+                      <th className="py-3 px-4">Total Amount</th>
+                      <th className="py-3 px-4">Date</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4 text-right">Update Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-apple-border dark:divide-apple-border-dark font-bold">
+                    {orders.map((ord) => (
+                      <tr key={ord.id} className="hover:bg-apple-surface dark:hover:bg-black transition-colors">
+                        <td className="py-3 px-4 font-mono text-apple-blue">{ord.id}</td>
+                        <td className="py-3 px-4 text-apple-dark dark:text-white">{ord.shippingAddress?.fullName || 'Customer'}</td>
+                        <td className="py-3 px-4 text-apple-dark dark:text-white">₹{ord.totalAmount.toLocaleString('en-IN')}</td>
+                        <td className="py-3 px-4 text-apple-gray">{new Date(ord.date).toLocaleDateString()}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                            ord.status === 'Delivered' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400' :
+                            ord.status === 'Shipped' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400' :
+                            ord.status === 'Processing' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400' :
+                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400'
+                          }`}>
+                            {ord.status}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <select
+                            value={ord.status}
+                            onChange={(e) => handleUpdateOrderStatus(ord.id, e.target.value as Order['status'])}
+                            className="px-3 py-1 rounded-xl bg-white dark:bg-black border border-apple-border dark:border-apple-border-dark font-bold text-xs focus:border-apple-blue"
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 4: User Roles (RBAC) */}
         {activeTab === 'users' && (
           <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
             <h2 className="text-base font-extrabold text-apple-dark dark:text-white flex items-center gap-2">
@@ -322,7 +388,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 4: Warehouse & Suppliers */}
+        {/* TAB 5: Warehouse & Suppliers */}
         {activeTab === 'suppliers' && (
           <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
             <h2 className="text-base font-extrabold text-apple-dark dark:text-white">Warehouse & Supply Chain Partners</h2>
@@ -341,7 +407,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 5: Employees */}
+        {/* TAB 6: Employees */}
         {activeTab === 'employees' && (
           <div className="glass-apple dark:bg-apple-surface-dark rounded-apple p-6 border border-apple-border dark:border-apple-border-dark space-y-4">
             <h2 className="text-base font-extrabold text-apple-dark dark:text-white">Employee Roster</h2>
