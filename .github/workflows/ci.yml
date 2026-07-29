@@ -26,11 +26,10 @@ jobs:
       - name: Build Next.js Application
         run: |
           cd frontend
-          export NEXT_PUBLIC_SUPABASE_URL="https://avlykfylgyhbzjsdltdv.supabase.co"
-          export NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL"
-          export NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL"
+          export NEXT_PUBLIC_SUPABASE_URL="https://ufryyhjpmlyrltvmrqur.supabase.co"
+          export NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="sb_publishable_l_x_SJ9iX26k8BcMFG3ZPQ_YZ3h9SP5"
+          export NEXT_PUBLIC_SUPABASE_ANON_KEY="sb_publishable_l_x_SJ9iX26k8BcMFG3ZPQ_YZ3h9SP5"
           npm run build
-
 
   backend-test:
     runs-on: ubuntu-latest
@@ -54,4 +53,3 @@ jobs:
           python tests/test_concurrency.py
         env:
           PYTHONPATH: .
-
