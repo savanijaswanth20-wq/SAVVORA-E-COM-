@@ -6,8 +6,8 @@ description: Comprehensive agent skills and best practices for Supabase database
 # Supabase Agent Skills
 
 ## Project Reference
-- **Project Ref**: `avlykfylgyhbzjsdltdv`
-- **MCP URL**: `https://mcp.supabase.com/mcp?project_ref=avlykfylgyhbzjsdltdv&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching`
+- **Project Ref**: `ufryyhjpmlyrltvmrqur`
+- **MCP URL**: `https://mcp.supabase.com/mcp?project_ref=ufryyhjpmlyrltvmrqur&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching`
 
 ## Features Covered
 - **Docs & Account**: Inspection of Supabase schemas, settings, and documentation.
