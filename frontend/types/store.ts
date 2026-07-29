@@ -15,7 +15,8 @@ export interface UserProfile {
   email?: string;
   phone?: string;
   avatar?: string;
-  loginProvider: 'Google' | 'Phone';
+  loginProvider: 'Google' | 'Phone' | 'Email';
+  role?: 'admin' | 'staff' | 'customer';
   addresses: UserAddress[];
 }
 
@@ -74,12 +75,11 @@ export interface Order {
     zip: string;
     phone: string;
   };
-  status: 'Processing' | 'Preparing' | 'Shipped' | 'Delivered';
+  status: 'Pending' | 'Processing' | 'Preparing' | 'Shipped' | 'Delivered' | 'Cancelled';
   trackingNumber: string;
   estimatedDelivery: string;
 }
 
-// Complete Full Store Catalog - All Products Preserved
 export const INITIAL_PRODUCTS: KeychainProduct[] = [
   {
     id: 'prod-01',
@@ -299,6 +299,52 @@ export const INITIAL_PRODUCTS: KeychainProduct[] = [
   }
 ];
 
+export const SUPPLIERS_LIST = [
+  {
+    id: 'sup-1',
+    name: 'Apple India Logistics & Supply',
+    category: 'Electronics & Mobiles',
+    contact: 'supply-india@apple.com',
+    status: 'Verified'
+  },
+  {
+    id: 'sup-2',
+    name: 'Sony Precision Tech Ltd',
+    category: 'Audio & Wearables',
+    contact: 'partner@sony-audio.co.in',
+    status: 'Verified'
+  },
+  {
+    id: 'sup-3',
+    name: 'Keychron Mechanical Keyboards Inc',
+    category: 'Computer Peripherals',
+    contact: 'b2b@keychron.in',
+    status: 'Active'
+  }
+];
+
+export const EMPLOYEES_LIST = [
+  {
+    id: 'emp-1',
+    name: 'Savan Jaswanth',
+    role: 'Store Owner & Admin',
+    email: 'admin@savvora.com'
+  },
+  {
+    id: 'emp-2',
+    name: 'Priya Sharma',
+    role: 'Inventory Manager',
+    email: 'priya.inventory@savvora.com'
+  },
+  {
+    id: 'emp-3',
+    name: 'Rahul Verma',
+    role: 'Customer Success & Support Lead',
+    email: 'rahul.support@savvora.com'
+  }
+];
+
+// Helper functions replacing KeychainStore local storage functions for components
 const LOCAL_STORAGE_KEYS = {
   CART: 'savvora_cart',
   WISHLIST: 'savvora_wishlist',
@@ -371,7 +417,6 @@ export const KeychainStore = {
     );
     this.saveProducts(products);
   },
-
 
   getCart(): CartItem[] {
     if (typeof window === 'undefined') return [];
@@ -467,12 +512,15 @@ export const KeychainStore = {
     ];
   },
 
+  saveOrders(orders: Order[]) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(LOCAL_STORAGE_KEYS.ORDERS, JSON.stringify(orders));
+    notifyListeners();
+  },
+
   addOrder(order: Order) {
     const orders = [order, ...this.getOrders()];
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.ORDERS, JSON.stringify(orders));
-    }
-    notifyListeners();
+    this.saveOrders(orders);
   },
 
   getTheme(): 'light' | 'dark' {
@@ -495,49 +543,3 @@ export const KeychainStore = {
     return next;
   }
 };
-
-export const SUPPLIERS_LIST = [
-  {
-    id: 'sup-1',
-    name: 'Apple India Logistics & Supply',
-    category: 'Electronics & Mobiles',
-    contact: 'supply-india@apple.com',
-    status: 'Verified'
-  },
-  {
-    id: 'sup-2',
-    name: 'Sony Precision Tech Ltd',
-    category: 'Audio & Wearables',
-    contact: 'partner@sony-audio.co.in',
-    status: 'Verified'
-  },
-  {
-    id: 'sup-3',
-    name: 'Keychron Mechanical Keyboards Inc',
-    category: 'Computer Peripherals',
-    contact: 'b2b@keychron.in',
-    status: 'Active'
-  }
-];
-
-export const EMPLOYEES_LIST = [
-  {
-    id: 'emp-1',
-    name: 'Savan Jaswanth',
-    role: 'Store Owner & Admin',
-    email: 'admin@savvora.com'
-  },
-  {
-    id: 'emp-2',
-    name: 'Priya Sharma',
-    role: 'Inventory Manager',
-    email: 'priya.inventory@savvora.com'
-  },
-  {
-    id: 'emp-3',
-    name: 'Rahul Verma',
-    role: 'Customer Success & Support Lead',
-    email: 'rahul.support@savvora.com'
-  }
-];
-

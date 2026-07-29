@@ -19,10 +19,12 @@ import {
   Boxes,
   Edit3,
   UserCheck,
-  Key
+  Key,
+  Search,
+  Trash2
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { KeychainStore, KeychainProduct, Order, SUPPLIERS_LIST, EMPLOYEES_LIST, subscribeToStore } from '../../services/keychainStore';
+import { KeychainStore, KeychainProduct, Order, SUPPLIERS_LIST, EMPLOYEES_LIST, subscribeToStore } from '../../types/store';
 
 const SALES_GRAPH_DATA = [
   { time: '09:00', sales: 12400 },
@@ -39,6 +41,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // User RBAC Management state
   const [usersList, setUsersList] = useState([
@@ -71,7 +74,14 @@ export default function AdminPage() {
   }, []);
 
   const handleUpdateStock = (productId: string, currentStock: number, delta: number) => {
-    KeychainStore.updateProductStock(productId, currentStock + delta);
+    KeychainStore.updateProductStock(productId, Math.max(0, currentStock + delta));
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    if (confirm('Are you sure you want to delete this product from the storefront?')) {
+      const updated = products.filter(p => p.id !== productId);
+      KeychainStore.saveProducts(updated);
+    }
   };
 
   const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
@@ -104,14 +114,41 @@ export default function AdminPage() {
     };
 
     KeychainStore.saveProducts([created, ...KeychainStore.getProducts()]);
+    setNewProd({
+      name: '',
+      category: 'Electronics',
+      categoryId: 'electronics',
+      price: '',
+      stock: 25,
+      image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=800&auto=format&fit=crop&q=80',
+      description: 'Luxury Apple ecosystem product.'
+    });
     setIsAddModalOpen(false);
   };
+
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.sku?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredOrders = orders.filter(o =>
+    o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    o.shippingAddress?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    o.status.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredUsers = usersList.filter(u =>
+    u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background dark:bg-background-dark text-apple-dark dark:text-white font-sans flex flex-col pb-16 transition-colors duration-300">
       
       {/* Header */}
-      <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/70 dark:bg-black/70 border-b border-apple-border dark:border-apple-border-dark py-4 px-6 lg:px-10 flex items-center justify-between">
+      <header className="sticky top-0 z-30 backdrop-blur-xl bg-white/70 dark:bg-black/70 border-b border-apple-border dark:border-apple-border-dark py-4 px-6 lg:px-10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link href="/" className="p-2 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark">
             <ArrowLeft className="w-4 h-4" />
@@ -124,12 +161,26 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="px-4 py-2 rounded-full bg-apple-blue hover:bg-apple-blue-hover text-white font-extrabold text-xs shadow-md flex items-center gap-1.5"
-        >
-          <Plus className="w-4 h-4" /> Add Product
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-apple-gray absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Filter products, orders, users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8 pr-3 py-1.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors w-52 sm:w-64"
+            />
+          </div>
+
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-4 py-2 rounded-full bg-apple-blue hover:bg-apple-blue-hover text-white font-extrabold text-xs shadow-md flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" /> Add Product
+          </button>
+        </div>
       </header>
 
       {/* Main Admin Area */}
@@ -139,9 +190,9 @@ export default function AdminPage() {
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           {[
             { id: 'analytics', label: 'Analytics & Revenue' },
-            { id: 'inventory', label: `Inventory Stock (${products.length})` },
-            { id: 'orders', label: `Orders (${orders.length})` },
-            { id: 'users', label: `User Roles (RBAC)` },
+            { id: 'inventory', label: `Inventory Stock (${filteredProducts.length})` },
+            { id: 'orders', label: `Orders (${filteredOrders.length})` },
+            { id: 'users', label: `User Roles (${filteredUsers.length})` },
             { id: 'suppliers', label: 'Warehouse & Suppliers' },
             { id: 'employees', label: 'Employees' },
           ].map((t) => (
@@ -251,7 +302,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-apple-border dark:divide-apple-border-dark">
-                  {products.map((p) => (
+                  {filteredProducts.map((p) => (
                     <tr key={p.id} className="hover:bg-apple-surface dark:hover:bg-black transition-colors">
                       <td className="py-3 px-4 font-bold text-apple-dark dark:text-white flex items-center gap-3">
                         <img src={p.image} alt={p.name} className="w-8 h-8 rounded-lg object-cover" />
@@ -265,6 +316,9 @@ export default function AdminPage() {
                       <td className="py-3 px-4 text-right space-x-2">
                         <button onClick={() => handleUpdateStock(p.id, p.stock, -1)} className="px-2.5 py-1 rounded bg-apple-surface dark:bg-black text-xs font-bold border border-apple-border">-1</button>
                         <button onClick={() => handleUpdateStock(p.id, p.stock, +5)} className="px-2.5 py-1 rounded bg-apple-blue text-white text-xs font-bold">+5 Restock</button>
+                        <button onClick={() => handleDeleteProduct(p.id)} className="p-1 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 border border-rose-200 dark:border-rose-800 hover:scale-105 transition-transform" title="Delete Product">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -281,8 +335,8 @@ export default function AdminPage() {
               <Truck className="w-5 h-5 text-apple-blue" /> Customer Orders Management
             </h2>
             
-            {orders.length === 0 ? (
-              <p className="text-xs text-apple-gray py-6 text-center">No active customer orders recorded yet.</p>
+            {filteredOrders.length === 0 ? (
+              <p className="text-xs text-apple-gray py-6 text-center">No active customer orders matching search.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
@@ -297,7 +351,7 @@ export default function AdminPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-apple-border dark:divide-apple-border-dark font-bold">
-                    {orders.map((ord) => (
+                    {filteredOrders.map((ord) => (
                       <tr key={ord.id} className="hover:bg-apple-surface dark:hover:bg-black transition-colors">
                         <td className="py-3 px-4 font-mono text-apple-blue">{ord.id}</td>
                         <td className="py-3 px-4 text-apple-dark dark:text-white">{ord.shippingAddress?.fullName || 'Customer'}</td>
@@ -355,7 +409,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-apple-border dark:divide-apple-border-dark font-bold">
-                  {usersList.map((usr) => (
+                  {filteredUsers.map((usr) => (
                     <tr key={usr.id} className="hover:bg-apple-surface dark:hover:bg-black transition-colors">
                       <td className="py-3 px-4 text-apple-dark dark:text-white">{usr.name}</td>
                       <td className="py-3 px-4 font-mono text-apple-gray">{usr.email}</td>

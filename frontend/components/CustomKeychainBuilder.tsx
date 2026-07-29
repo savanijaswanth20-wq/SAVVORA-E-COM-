@@ -14,7 +14,7 @@ import {
   Wand2,
   RefreshCw
 } from 'lucide-react';
-import { KeychainStore, CustomKeychainConfig } from '../services/keychainStore';
+import { KeychainStore, CustomKeychainConfig } from '../types/store';
 import { ConfettiEffect } from './ConfettiEffect';
 
 const FONTS = [

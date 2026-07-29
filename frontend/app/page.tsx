@@ -8,7 +8,7 @@ import { ProductCard } from '../components/ProductCard';
 import { QuickViewModal } from '../components/QuickViewModal';
 import { CartDrawer } from '../components/CartDrawer';
 import { AIRecommendationModal } from '../components/AIRecommendationModal';
-import { KeychainStore, KeychainProduct, subscribeToStore } from '../services/keychainStore';
+import { KeychainStore, KeychainProduct, subscribeToStore } from '../types/store';
 import { Sparkles, ArrowRight, ShieldCheck, Truck, RefreshCw, Bot } from 'lucide-react';
 
 export default function HomePage() {

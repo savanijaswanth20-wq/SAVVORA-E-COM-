@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Heart, ShoppingBag, Eye, Star, Check } from 'lucide-react';
-import { KeychainProduct, KeychainStore, subscribeToStore } from '../services/keychainStore';
+import { KeychainProduct, KeychainStore, subscribeToStore } from '../types/store';
 
 interface ProductCardProps {
   product: KeychainProduct;

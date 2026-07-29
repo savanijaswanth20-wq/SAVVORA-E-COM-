@@ -19,7 +19,7 @@ import {
   ChevronRight,
   Heart
 } from 'lucide-react';
-import { KeychainStore, CartItem, Order, subscribeToStore } from '../../services/keychainStore';
+import { KeychainStore, CartItem, Order, subscribeToStore } from '../../types/store';
 import { ConfettiEffect } from '../../components/ConfettiEffect';
 
 export default function CartPage() {

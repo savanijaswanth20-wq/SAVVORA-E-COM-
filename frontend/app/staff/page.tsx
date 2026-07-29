@@ -17,7 +17,7 @@ import {
   LogOut,
   Edit3
 } from 'lucide-react';
-import { KeychainStore, KeychainProduct, Order, subscribeToStore, UserProfile } from '../../services/keychainStore';
+import { KeychainStore, KeychainProduct, Order, subscribeToStore, UserProfile } from '../../types/store';
 import { AuthModal } from '../../components/AuthModal';
 
 export default function StaffPage() {

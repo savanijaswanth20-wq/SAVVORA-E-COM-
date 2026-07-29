@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   Smartphone
 } from 'lucide-react';
-import { KeychainStore, UserProfile, Order, KeychainProduct, subscribeToStore } from '../../services/keychainStore';
+import { KeychainStore, UserProfile, Order, KeychainProduct, subscribeToStore } from '../../types/store';
 import { AuthModal } from '../../components/AuthModal';
 
 export default function AccountDashboardPage() {

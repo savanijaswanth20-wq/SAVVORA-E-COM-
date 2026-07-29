@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle, Truck, CreditCard, Smartphone, ShieldCheck, Sparkles } from 'lucide-react';
-import { KeychainStore, Order } from '../../services/keychainStore';
+import { KeychainStore, Order } from '../../types/store';
 
 export default function CheckoutPage() {
   const [step, setStep] = useState<1 | 2 | 3>(1);

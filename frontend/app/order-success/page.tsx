@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CheckCircle, Truck, FileText, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
-import { KeychainStore, Order } from '../../services/keychainStore';
+import { KeychainStore, Order } from '../../types/store';
 import { ConfettiEffect } from '../../components/ConfettiEffect';
 
 export default function OrderSuccessPage() {

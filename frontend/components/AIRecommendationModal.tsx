@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Bot, X, Send, Sparkles, ShoppingBag, Heart, ArrowRight } from 'lucide-react';
-import { KeychainProduct, KeychainStore } from '../services/keychainStore';
+import { KeychainProduct, KeychainStore } from '../types/store';
 
 interface AIRecommendationModalProps {
   isOpen: boolean;

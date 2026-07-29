@@ -14,7 +14,7 @@ import {
   ChevronDown,
   Sparkles
 } from 'lucide-react';
-import { KeychainStore, subscribeToStore, KeychainProduct } from '../services/keychainStore';
+import { KeychainStore, subscribeToStore, KeychainProduct } from '../types/store';
 
 interface NavbarProps {
   onOpenCartDrawer?: () => void;

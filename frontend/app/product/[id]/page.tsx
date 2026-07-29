@@ -6,7 +6,7 @@ import { Navbar } from '../../../components/Navbar';
 import { ProductCard } from '../../../components/ProductCard';
 import { CartDrawer } from '../../../components/CartDrawer';
 import { QuickViewModal } from '../../../components/QuickViewModal';
-import { KeychainStore, KeychainProduct, subscribeToStore } from '../../../services/keychainStore';
+import { KeychainStore, KeychainProduct, subscribeToStore } from '../../../types/store';
 import { Star, Truck, ShieldCheck, Heart, ShoppingBag, ArrowLeft, Check, Sparkles, Share2 } from 'lucide-react';
 
 export default function ProductDetailPage({ params }: { params?: { id?: string } }) {

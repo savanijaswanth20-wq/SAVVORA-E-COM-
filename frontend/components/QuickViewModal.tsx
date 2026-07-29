@@ -13,7 +13,7 @@ import {
   Sparkles,
   PlayCircle
 } from 'lucide-react';
-import { KeychainProduct, KeychainStore } from '../services/keychainStore';
+import { KeychainProduct, KeychainStore } from '../types/store';
 import Link from 'next/link';
 
 interface QuickViewModalProps {

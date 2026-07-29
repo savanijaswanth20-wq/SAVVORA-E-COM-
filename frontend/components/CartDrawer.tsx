@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, Tag } from 'lucide-react';
-import { KeychainStore, CartItem, subscribeToStore } from '../services/keychainStore';
+import { KeychainStore, CartItem, subscribeToStore } from '../types/store';
 import Link from 'next/link';
 
 interface CartDrawerProps {

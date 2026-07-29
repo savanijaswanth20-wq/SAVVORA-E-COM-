@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, CheckCircle, Truck, CreditCard, Smartphone, ShieldCheck, Sparkles, ArrowRight, ArrowLeft } from 'lucide-react';
-import { KeychainStore, CartItem, Order } from '../services/keychainStore';
+import { KeychainStore, CartItem, Order } from '../types/store';
 import { ConfettiEffect } from './ConfettiEffect';
 
 interface MultiStepCheckoutProps {

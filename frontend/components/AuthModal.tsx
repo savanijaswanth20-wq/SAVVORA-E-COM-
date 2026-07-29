@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, ArrowRight, ShieldCheck, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
-import { KeychainStore, UserProfile } from '../services/keychainStore';
+import { KeychainStore, UserProfile } from '../types/store';
 import { SupabaseAuthService } from '../services/supabase/auth';
 
 interface AuthModalProps {

@@ -6,7 +6,7 @@ import { Navbar } from '../../components/Navbar';
 import { ProductCard } from '../../components/ProductCard';
 import { QuickViewModal } from '../../components/QuickViewModal';
 import { CartDrawer } from '../../components/CartDrawer';
-import { KeychainStore, KeychainProduct, subscribeToStore } from '../../services/keychainStore';
+import { KeychainStore, KeychainProduct, subscribeToStore } from '../../types/store';
 import { Search, SlidersHorizontal, ArrowLeft, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function ProductsPage() {
