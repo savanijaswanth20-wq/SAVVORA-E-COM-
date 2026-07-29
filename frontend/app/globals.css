@@ -10,6 +10,7 @@
   --color-text: #1D1D1F;
   --color-border: #D2D2D7;
   --color-primary: #0071E3;
+  --color-accent-pink: #FCE4EC;
 }
 
 .dark {
@@ -18,6 +19,7 @@
   --color-text: #FFFFFF;
   --color-border: rgba(255, 255, 255, 0.12);
   --color-primary: #0071E3;
+  --color-accent-pink: #880E4F;
 }
 
 body {
