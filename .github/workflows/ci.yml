@@ -26,11 +26,14 @@ jobs:
       - name: Build Next.js Application
         run: |
           cd frontend
+          export NEXT_PUBLIC_SUPABASE_URL="${NEXT_PUBLIC_SUPABASE_URL:-https://avlykfylgyhbzjsdltdv.supabase.co}"
+          export NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:-sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL}"
+          export NEXT_PUBLIC_SUPABASE_ANON_KEY="${NEXT_PUBLIC_SUPABASE_ANON_KEY:-sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL}"
           npm run build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ coalesce(secrets.NEXT_PUBLIC_SUPABASE_URL, 'https://avlykfylgyhbzjsdltdv.supabase.co') }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ coalesce(secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, 'sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL') }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ coalesce(secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY, 'sb_publishable_pHMXGbEgZmQMpVtqCQWriA_8MYu7rVL') }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
   backend-test:
     runs-on: ubuntu-latest
