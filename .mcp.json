@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/specification/main/schema/mcp.json",
   "mcpServers": {
     "supabase": {
       "type": "sse",
@@ -7,3 +6,4 @@
     }
   }
 }
+
