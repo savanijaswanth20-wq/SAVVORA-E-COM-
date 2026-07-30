@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { 
   User, 
   Package, 
@@ -12,21 +13,38 @@ import {
   Settings, 
   LogOut, 
   ArrowLeft,
-  Truck,
-  CheckCircle,
   Plus,
-  ShieldCheck,
-  Smartphone
+  Camera,
+  Upload,
+  CheckCircle,
+  AlertCircle,
+  ShieldCheck
 } from 'lucide-react';
 import { KeychainStore, UserProfile, Order, KeychainProduct, subscribeToStore } from '../../types/store';
+import { SupabaseAuthService } from '../../services/supabase/auth';
 import { AuthModal } from '../../components/AuthModal';
 
-export default function AccountDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist' | 'addresses' | 'payments' | 'notifications' | 'settings'>('profile');
+function AccountContent() {
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get('tab') as any) || 'profile';
+  
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist' | 'addresses' | 'payments' | 'notifications' | 'settings'>(initialTab);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [wishlistProducts, setWishlistProducts] = useState<KeychainProduct[]>([]);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  // Avatar Upload state
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [avatarMessage, setAvatarMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam as any);
+    }
+  }, [searchParams]);
 
   const loadData = () => {
     const u = KeychainStore.getUser();
@@ -44,9 +62,37 @@ export default function AccountDashboardPage() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await SupabaseAuthService.signOut();
+    } catch (err) {
+      console.warn("Sign out error:", err);
+    }
     KeychainStore.logoutUser();
     setUser(null);
+  };
+
+  const handleAvatarFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAvatar(true);
+    setAvatarMessage(null);
+
+    try {
+      const publicUrl = await SupabaseAuthService.uploadAvatar(file);
+      if (user) {
+        const updatedUser = { ...user, avatar: publicUrl };
+        KeychainStore.setUser(updatedUser);
+        setUser(updatedUser);
+      }
+      setAvatarMessage({ type: 'success', text: 'Avatar updated successfully!' });
+    } catch (err: any) {
+      console.error("Avatar upload failed:", err);
+      setAvatarMessage({ type: 'error', text: err.message || 'Failed to upload avatar to Supabase storage.' });
+    } finally {
+      setIsUploadingAvatar(false);
+    }
   };
 
   return (
@@ -76,7 +122,7 @@ export default function AccountDashboardPage() {
         ) : (
           <button
             onClick={() => setIsAuthOpen(true)}
-            className="px-5 py-2.5 rounded-full bg-[#2563EB] text-white font-extrabold text-xs shadow-md"
+            className="px-5 py-2.5 rounded-full bg-[#2563EB] text-white font-extrabold text-xs shadow-md hover:bg-blue-600 transition-colors"
           >
             Sign In / Register
           </button>
@@ -106,7 +152,7 @@ export default function AccountDashboardPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`w-full px-4 py-3 rounded-2xl text-xs font-extrabold flex items-center gap-3 transition-all ${
                   isActive
-                    ? 'bg-[#111827] text-white shadow-md'
+                    ? 'bg-[#111827] dark:bg-white text-white dark:text-[#111827] shadow-md'
                     : 'bg-[#F8FAFC] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-900 border border-[#E5E7EB] dark:border-gray-700'
                 }`}
               >
@@ -136,27 +182,99 @@ export default function AccountDashboardPage() {
               <h2 className="text-xl font-black text-[#111827] dark:text-white">👤 My Profile</h2>
               
               {user ? (
-                <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB]">
-                  {user.avatar ? (
-                    <img src={user.avatar} alt={user.fullName} className="w-16 h-16 rounded-full object-cover border-2 border-[#2563EB]" />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-[#2563EB] text-white text-2xl font-black flex items-center justify-center">
-                      {user.fullName.charAt(0)}
+                <div className="space-y-6">
+                  {/* Profile Card & Avatar Uploader */}
+                  <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800">
+                    <div className="relative group">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.fullName} className="w-20 h-20 rounded-full object-cover border-4 border-[#2563EB]" />
+                      ) : (
+                        <div className="w-20 h-20 rounded-full bg-[#2563EB] text-white text-3xl font-black flex items-center justify-center border-4 border-blue-400">
+                          {user.fullName.charAt(0)}
+                        </div>
+                      )}
+                      
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploadingAvatar}
+                        className="absolute bottom-0 right-0 p-2 rounded-full bg-[#2563EB] text-white shadow-lg hover:bg-blue-600 transition-all hover:scale-110"
+                        title="Upload Avatar to Supabase Storage"
+                      >
+                        {isUploadingAvatar ? (
+                          <Upload className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Camera className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleAvatarFileChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 text-center sm:text-left">
+                      <h3 className="font-extrabold text-lg text-[#111827] dark:text-white flex items-center gap-2 justify-center sm:justify-start">
+                        <span>{user.fullName}</span>
+                        <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
+                      </h3>
+                      <p className="text-xs text-gray-500 font-mono">{user.email || user.phone || 'No email registered'}</p>
+                      
+                      <div className="flex flex-wrap gap-2 pt-1 justify-center sm:justify-start">
+                        <span className="px-3 py-0.5 rounded-full bg-[#2563EB]/10 text-[#2563EB] text-[10px] font-black uppercase">
+                          Verified via {user.loginProvider}
+                        </span>
+                        <span className="px-3 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase">
+                          Role: {user.role || 'Customer'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Avatar Upload Alert Notification */}
+                  {avatarMessage && (
+                    <div className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-2 ${
+                      avatarMessage.type === 'success'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 border border-emerald-200'
+                        : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 border border-rose-200'
+                    }`}>
+                      {avatarMessage.type === 'success' ? (
+                        <CheckCircle className="w-4 h-4 shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                      )}
+                      <span>{avatarMessage.text}</span>
                     </div>
                   )}
-                  <div>
-                    <h3 className="font-extrabold text-base text-[#111827] dark:text-white">{user.fullName}</h3>
-                    <p className="text-xs text-gray-500 font-mono">{user.email || user.phone}</p>
-                    <span className="inline-block mt-1 px-3 py-0.5 rounded-full bg-[#2563EB]/10 text-[#2563EB] text-[10px] font-black uppercase">
-                      Verified via {user.loginProvider}
-                    </span>
+
+                  {/* Account Metadata Details */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 space-y-1">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Full Name</span>
+                      <p className="text-xs font-extrabold text-[#111827] dark:text-white">{user.fullName}</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 space-y-1">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Email Address</span>
+                      <p className="text-xs font-extrabold text-[#111827] dark:text-white">{user.email || 'Not provided'}</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 space-y-1">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Phone Number</span>
+                      <p className="text-xs font-extrabold text-[#111827] dark:text-white">{user.phone || 'Not provided'}</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 space-y-1">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">User ID</span>
+                      <p className="text-xs font-extrabold font-mono text-[#111827] dark:text-white truncate">{user.id}</p>
+                    </div>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-10 space-y-3">
                   <p className="text-xs text-gray-500 font-bold">You are not signed in. Sign in for express checkout & order tracking.</p>
-                  <button onClick={() => setIsAuthOpen(true)} className="px-6 py-3 rounded-full bg-[#2563EB] text-white font-extrabold text-xs shadow-md">
-                    Sign In with Google / OTP
+                  <button onClick={() => setIsAuthOpen(true)} className="px-6 py-3 rounded-full bg-[#2563EB] text-white font-extrabold text-xs shadow-md hover:bg-blue-600 transition-colors">
+                    Sign In with Email / Google / OTP
                   </button>
                 </div>
               )}
@@ -167,19 +285,23 @@ export default function AccountDashboardPage() {
           {activeTab === 'orders' && (
             <div className="bg-[#F8FAFC] dark:bg-[#1F2937] rounded-[28px] p-6 sm:p-8 border border-[#E5E7EB] dark:border-gray-700 space-y-4">
               <h2 className="text-xl font-black text-[#111827] dark:text-white">📦 My Orders</h2>
-              {orders.map((ord) => (
-                <div key={ord.id} className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] space-y-2 text-xs">
-                  <div className="flex justify-between font-bold">
-                    <span>Order ID: {ord.id}</span>
-                    <span className="text-[#2563EB] font-mono">{ord.status}</span>
+              {orders.length === 0 ? (
+                <p className="text-xs text-gray-500 font-medium">No order history available.</p>
+              ) : (
+                orders.map((ord) => (
+                  <div key={ord.id} className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 space-y-2 text-xs">
+                    <div className="flex justify-between font-bold">
+                      <span>Order ID: {ord.id}</span>
+                      <span className="text-[#2563EB] font-mono">{ord.status}</span>
+                    </div>
+                    <p className="text-gray-500">Tracking: {ord.trackingNumber} ({ord.estimatedDelivery})</p>
+                    <div className="pt-2 border-t border-[#E5E7EB] dark:border-gray-800 flex justify-between font-black">
+                      <span>Total Amount:</span>
+                      <span className="text-[#2563EB]">₹{ord.totalAmount.toLocaleString("en-IN")}</span>
+                    </div>
                   </div>
-                  <p className="text-gray-500">Tracking: {ord.trackingNumber} ({ord.estimatedDelivery})</p>
-                  <div className="pt-2 border-t border-[#E5E7EB] flex justify-between font-black">
-                    <span>Total Amount:</span>
-                    <span className="text-[#2563EB]">₹{ord.totalAmount.toLocaleString("en-IN")}</span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
 
@@ -192,7 +314,7 @@ export default function AccountDashboardPage() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {wishlistProducts.map((p) => (
-                    <div key={p.id} className="p-3 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] flex items-center justify-between gap-3 text-xs">
+                    <div key={p.id} className="p-3 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-2">
                         <img src={p.image} alt={p.name} className="w-12 h-12 rounded-xl object-cover" />
                         <div>
@@ -213,14 +335,25 @@ export default function AccountDashboardPage() {
             <div className="bg-[#F8FAFC] dark:bg-[#1F2937] rounded-[28px] p-6 sm:p-8 border border-[#E5E7EB] dark:border-gray-700 space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-black text-[#111827] dark:text-white">📍 Saved Delivery Addresses</h2>
-                <button className="px-3 py-1.5 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center gap-1">
+                <button className="px-3 py-1.5 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center gap-1 hover:bg-blue-600">
                   <Plus className="w-3.5 h-3.5" /> Add Address
                 </button>
               </div>
               <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#2563EB] text-xs space-y-1">
-                <span className="font-extrabold text-[#111827] dark:text-white block">Aarav Sharma (Home)</span>
+                <span className="font-extrabold text-[#111827] dark:text-white block">{user?.fullName || 'Aarav Sharma'} (Home)</span>
                 <p className="text-gray-500">42 MG Road, Indiranagar, Bengaluru, Karnataka - 560038</p>
-                <p className="text-gray-500">Phone: +91 98765 43210</p>
+                <p className="text-gray-500">Phone: {user?.phone || '+91 98765 43210'}</p>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 5: NOTIFICATIONS */}
+          {activeTab === 'notifications' && (
+            <div className="bg-[#F8FAFC] dark:bg-[#1F2937] rounded-[28px] p-6 sm:p-8 border border-[#E5E7EB] dark:border-gray-700 space-y-4">
+              <h2 className="text-xl font-black text-[#111827] dark:text-white">🔔 Account Notifications</h2>
+              <div className="p-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-800 text-xs space-y-1">
+                <span className="font-extrabold text-[#111827] dark:text-white block">Order Shipped!</span>
+                <p className="text-gray-500">Your order #SAV-20260727-8912 has been packed and handed over to BlueDart courier.</p>
               </div>
             </div>
           )}
@@ -236,5 +369,17 @@ export default function AccountDashboardPage() {
       />
 
     </div>
+  );
+}
+
+export default function AccountDashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white dark:bg-[#111827] flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-4 border-[#2563EB] border-t-transparent animate-spin" />
+      </div>
+    }>
+      <AccountContent />
+    </Suspense>
   );
 }

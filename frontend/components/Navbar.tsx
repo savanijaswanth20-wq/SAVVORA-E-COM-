@@ -12,9 +12,15 @@ import {
   X,
   Menu,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  MapPin,
+  Bell,
+  LogOut,
+  LogIn
 } from 'lucide-react';
-import { KeychainStore, subscribeToStore, KeychainProduct } from '../types/store';
+import { KeychainStore, subscribeToStore, KeychainProduct, UserProfile } from '../types/store';
+import { SupabaseAuthService } from '../services/supabase/auth';
+import { AuthModal } from './AuthModal';
 
 interface NavbarProps {
   onOpenCartDrawer?: () => void;
@@ -22,6 +28,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange }) => {
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -29,8 +36,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const updateState = () => {
+    setUser(KeychainStore.getUser());
     const cart = KeychainStore.getCart();
     setCartCount(cart.reduce((sum, i) => sum + i.quantity, 0));
 
@@ -46,6 +55,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
     const unsubscribe = subscribeToStore(updateState);
     return () => unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await SupabaseAuthService.signOut();
+    } catch (err) {
+      console.warn("Sign out error:", err);
+    }
+    KeychainStore.logoutUser();
+    setUser(null);
+  };
 
   const handleToggleTheme = () => {
     const next = KeychainStore.toggleTheme();
@@ -132,27 +151,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
               className="p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-2"
               title="My Account"
             >
-              <User className="w-4 h-4 text-[#2563EB]" />
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.fullName} className="w-4 h-4 rounded-full object-cover" />
+              ) : (
+                <User className="w-4 h-4 text-[#2563EB]" />
+              )}
+              <span className="text-xs font-bold hidden sm:inline max-w-[90px] truncate">
+                {user ? user.fullName.split(' ')[0] : 'Account'}
+              </span>
               <ChevronDown className="w-3 h-3 text-gray-400 group-hover:rotate-180 transition-transform" />
             </Link>
 
             {/* Flipkart-Style Account Dropdown Menu */}
             <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-[#1F2937] rounded-2xl p-2 shadow-2xl border border-gray-100 dark:border-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 z-50">
-              <div className="p-3 border-b border-gray-100 dark:border-gray-700 mb-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Welcome to SAVVORA</span>
-                <span className="text-xs font-black text-[#111827] dark:text-white truncate block">
-                  {KeychainStore.getUser()?.fullName || 'Customer Account'}
-                </span>
+              <div className="p-3 border-b border-gray-100 dark:border-gray-700 mb-1 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+                    {user ? 'Welcome back,' : 'Welcome to SAVVORA'}
+                  </span>
+                  <span className="text-xs font-black text-[#111827] dark:text-white truncate block max-w-[170px]">
+                    {user ? user.fullName : 'Customer Account'}
+                  </span>
+                </div>
+                {!user && (
+                  <button
+                    onClick={() => setIsAuthOpen(true)}
+                    className="px-3 py-1 rounded-full bg-[#2563EB] text-white text-[10px] font-extrabold shadow-sm hover:bg-blue-600 transition-colors"
+                  >
+                    Login
+                  </button>
+                )}
               </div>
+
               <div className="space-y-0.5 font-bold text-xs">
+                {/* 1. My Profile */}
                 <Link href="/account?tab=profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
                   <User className="w-4 h-4 text-[#2563EB]" />
                   <span>My Profile</span>
                 </Link>
+
+                {/* 2. My Orders */}
                 <Link href="/account?tab=orders" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
                   <ShoppingBag className="w-4 h-4 text-emerald-500" />
                   <span>My Orders</span>
                 </Link>
+
+                {/* 3. Wishlist */}
                 <Link href="/account?tab=wishlist" className="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
                   <div className="flex items-center gap-2.5">
                     <Heart className="w-4 h-4 text-rose-500" />
@@ -162,22 +206,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
                     <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500 text-white">{wishlistCount}</span>
                   )}
                 </Link>
+
+                {/* 4. Addresses */}
                 <Link href="/account?tab=addresses" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span>Saved Addresses</span>
+                  <MapPin className="w-4 h-4 text-amber-500" />
+                  <span>Addresses</span>
                 </Link>
+
+                {/* 5. Notifications */}
                 <Link href="/account?tab=notifications" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  <Bell className="w-4 h-4 text-purple-500" />
                   <span>Notifications</span>
                 </Link>
-                <Link href="/account?tab=payments" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
-                  <Sparkles className="w-4 h-4 text-cyan-500" />
-                  <span>Payment Methods</span>
-                </Link>
-                <Link href="/account?tab=settings" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
-                  <Sparkles className="w-4 h-4 text-gray-400" />
-                  <span>Help Center</span>
-                </Link>
+
+                {/* 6. Logout */}
+                {user ? (
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/50 text-rose-600 dark:text-rose-400 transition-colors mt-1 border-t border-gray-100 dark:border-gray-700"
+                  >
+                    <LogOut className="w-4 h-4 text-rose-500" />
+                    <span>Logout</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsAuthOpen(true)}
+                    className="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-[#2563EB] transition-colors mt-1 border-t border-gray-100 dark:border-gray-700"
+                  >
+                    <LogIn className="w-4 h-4 text-[#2563EB]" />
+                    <span>Sign In / Register</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -248,6 +307,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           </Link>
         </div>
       </div>
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(u) => setUser(u)}
+      />
 
     </header>
   );

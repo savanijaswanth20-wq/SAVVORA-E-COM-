@@ -305,7 +305,7 @@ BEGIN
     WHERE id = auth.uid() AND role = 'admin'
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- Function to check if caller is staff or admin
 CREATE OR REPLACE FUNCTION public.is_staff()
@@ -316,23 +316,30 @@ BEGIN
     WHERE id = auth.uid() AND role IN ('staff', 'admin')
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- Trigger: Automatically sync auth.users to public.profiles
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, email, avatar_url, role)
+  INSERT INTO public.profiles (id, full_name, email, phone, avatar_url, role)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', ''),
     NEW.email,
+    COALESCE(NEW.phone, NEW.raw_user_meta_data->>'phone'),
     NEW.raw_user_meta_data->>'avatar_url',
     'customer'
-  );
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    full_name = CASE WHEN EXCLUDED.full_name != '' THEN EXCLUDED.full_name ELSE public.profiles.full_name END,
+    email = COALESCE(EXCLUDED.email, public.profiles.email),
+    phone = COALESCE(EXCLUDED.phone, public.profiles.phone),
+    avatar_url = COALESCE(EXCLUDED.avatar_url, public.profiles.avatar_url),
+    updated_at = timezone('utc'::text, now());
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
@@ -346,13 +353,24 @@ BEGIN
   NEW.updated_at = timezone('utc'::text, now());
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SET search_path = public, pg_temp;
 
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_categories_updated_at ON public.categories;
 CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON public.categories FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_products_updated_at ON public.products;
 CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON public.products FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_inventory_updated_at ON public.inventory;
 CREATE TRIGGER update_inventory_updated_at BEFORE UPDATE ON public.inventory FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_cart_items_updated_at ON public.cart_items;
 CREATE TRIGGER update_cart_items_updated_at BEFORE UPDATE ON public.cart_items FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_orders_updated_at ON public.orders;
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- Trigger: Recalculate Product Ratings on Review Changes
@@ -380,8 +398,9 @@ BEGIN
 
   RETURN NULL;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
+DROP TRIGGER IF EXISTS on_review_change ON public.reviews;
 CREATE TRIGGER on_review_change
   AFTER INSERT OR UPDATE OR DELETE ON public.reviews
   FOR EACH ROW EXECUTE FUNCTION public.recalculate_product_rating();
@@ -484,6 +503,7 @@ BEGIN
   FOR v_item IN SELECT * FROM jsonb_to_recordset(p_items) AS x(product_id UUID, quantity INT, custom_config JSONB)
   LOOP
     SELECT * INTO v_product FROM public.products WHERE id = v_item.product_id;
+    SELECT stock_quantity INTO v_current_stock FROM public.inventory WHERE product_id = v_item.product_id;
     v_item_price := v_product.price;
     v_item_total := v_item_price * v_item.quantity;
 
@@ -522,7 +542,7 @@ BEGIN
     'total_amount', v_total
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- RPC: Admin Dashboard Aggregated Metrics
 CREATE OR REPLACE FUNCTION public.get_admin_dashboard_stats()
@@ -558,7 +578,7 @@ BEGIN
     'recent_orders', COALESCE(v_recent_orders, '[]'::jsonb)
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- ==============================================================================
 -- 6. ROW LEVEL SECURITY (RLS) POLICIES
@@ -585,49 +605,87 @@ ALTER TABLE public.banners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- PROFILES RLS
+DROP POLICY IF EXISTS "Public profiles are viewable by owner or staff" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by owner or staff" ON public.profiles FOR SELECT USING (auth.uid() = id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- PRODUCTS & CATEGORIES & BRANDS & BANNERS (Public Read, Staff Write)
+DROP POLICY IF EXISTS "Categories are public" ON public.categories;
 CREATE POLICY "Categories are public" ON public.categories FOR SELECT USING (is_active = true OR public.is_staff());
+
+DROP POLICY IF EXISTS "Staff manage categories" ON public.categories;
 CREATE POLICY "Staff manage categories" ON public.categories FOR ALL USING (public.is_staff());
 
+DROP POLICY IF EXISTS "Brands are public" ON public.brands;
 CREATE POLICY "Brands are public" ON public.brands FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Staff manage brands" ON public.brands;
 CREATE POLICY "Staff manage brands" ON public.brands FOR ALL USING (public.is_staff());
 
+DROP POLICY IF EXISTS "Products are public" ON public.products;
 CREATE POLICY "Products are public" ON public.products FOR SELECT USING (is_active = true OR public.is_staff());
+
+DROP POLICY IF EXISTS "Staff manage products" ON public.products;
 CREATE POLICY "Staff manage products" ON public.products FOR ALL USING (public.is_staff());
 
+DROP POLICY IF EXISTS "Product images are public" ON public.product_images;
 CREATE POLICY "Product images are public" ON public.product_images FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Staff manage product images" ON public.product_images;
 CREATE POLICY "Staff manage product images" ON public.product_images FOR ALL USING (public.is_staff());
 
+DROP POLICY IF EXISTS "Banners are public" ON public.banners;
 CREATE POLICY "Banners are public" ON public.banners FOR SELECT USING (is_active = true OR public.is_staff());
+
+DROP POLICY IF EXISTS "Staff manage banners" ON public.banners;
 CREATE POLICY "Staff manage banners" ON public.banners FOR ALL USING (public.is_staff());
 
 -- INVENTORY (Staff Only)
+DROP POLICY IF EXISTS "Staff manage inventory" ON public.inventory;
 CREATE POLICY "Staff manage inventory" ON public.inventory FOR ALL USING (public.is_staff());
+
+DROP POLICY IF EXISTS "Staff manage inventory history" ON public.inventory_history;
 CREATE POLICY "Staff manage inventory history" ON public.inventory_history FOR ALL USING (public.is_staff());
 
 -- CART & WISHLIST & ADDRESSES (Customer Owner Only)
+DROP POLICY IF EXISTS "Users manage own cart" ON public.cart_items;
 CREATE POLICY "Users manage own cart" ON public.cart_items FOR ALL USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users manage own wishlist" ON public.wishlist_items;
 CREATE POLICY "Users manage own wishlist" ON public.wishlist_items FOR ALL USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users manage own addresses" ON public.addresses;
 CREATE POLICY "Users manage own addresses" ON public.addresses FOR ALL USING (auth.uid() = user_id);
 
 -- ORDERS & ORDER ITEMS (Customer Owner + Staff Read/Update)
+DROP POLICY IF EXISTS "Users view own orders" ON public.orders;
 CREATE POLICY "Users view own orders" ON public.orders FOR SELECT USING (auth.uid() = user_id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users create orders" ON public.orders;
 CREATE POLICY "Users create orders" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Staff update orders" ON public.orders;
 CREATE POLICY "Staff update orders" ON public.orders FOR UPDATE USING (public.is_staff());
 
+DROP POLICY IF EXISTS "Users view own order items" ON public.order_items;
 CREATE POLICY "Users view own order items" ON public.order_items FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.orders WHERE id = order_id AND (user_id = auth.uid() OR public.is_staff()))
 );
 
 -- REVIEWS (Public Read Approved, Users Insert Own)
+DROP POLICY IF EXISTS "Reviews are public" ON public.reviews;
 CREATE POLICY "Reviews are public" ON public.reviews FOR SELECT USING (is_approved = true OR auth.uid() = user_id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users insert own reviews" ON public.reviews;
 CREATE POLICY "Users insert own reviews" ON public.reviews FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users update own reviews" ON public.reviews;
 CREATE POLICY "Users update own reviews" ON public.reviews FOR UPDATE USING (auth.uid() = user_id);
 
 -- NOTIFICATIONS (User Owner)
+DROP POLICY IF EXISTS "Users view own notifications" ON public.notifications;
 CREATE POLICY "Users view own notifications" ON public.notifications FOR SELECT USING (auth.uid() = user_id);
 
 -- ==============================================================================
@@ -640,6 +698,17 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('user-avatars', 'user-ava
 INSERT INTO storage.buckets (id, name, public) VALUES ('banner-images', 'banner-images', true) ON CONFLICT (id) DO NOTHING;
 
 -- Storage RLS Policies
+DROP POLICY IF EXISTS "Public read storage images" ON storage.objects;
 CREATE POLICY "Public read storage images" ON storage.objects FOR SELECT USING (bucket_id IN ('product-images', 'category-images', 'user-avatars', 'banner-images'));
+
+DROP POLICY IF EXISTS "Staff upload product images" ON storage.objects;
 CREATE POLICY "Staff upload product images" ON storage.objects FOR INSERT WITH CHECK (bucket_id IN ('product-images', 'category-images', 'banner-images') AND public.is_staff());
-CREATE POLICY "Users upload avatars" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'user-avatars' AND auth.uid()::text = (storage.foldername(name))[1]);
+
+DROP POLICY IF EXISTS "Users upload avatars" ON storage.objects;
+CREATE POLICY "Users upload avatars" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'user-avatars' AND (auth.uid()::text = (storage.foldername(name))[1] OR auth.role() = 'authenticated'));
+
+DROP POLICY IF EXISTS "Users update own avatars" ON storage.objects;
+CREATE POLICY "Users update own avatars" ON storage.objects FOR UPDATE USING (bucket_id = 'user-avatars' AND (auth.uid()::text = (storage.foldername(name))[1] OR auth.role() = 'authenticated'));
+
+DROP POLICY IF EXISTS "Users delete own avatars" ON storage.objects;
+CREATE POLICY "Users delete own avatars" ON storage.objects FOR DELETE USING (bucket_id = 'user-avatars' AND (auth.uid()::text = (storage.foldername(name))[1] OR auth.role() = 'authenticated'));

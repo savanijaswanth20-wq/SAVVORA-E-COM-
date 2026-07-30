@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, ArrowRight, ShieldCheck, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
+import { X, ArrowRight, ShieldCheck, Mail, Lock, User, AlertCircle, CheckCircle, Smartphone, KeyRound } from 'lucide-react';
 import { KeychainStore, UserProfile } from '../types/store';
 import { SupabaseAuthService } from '../services/supabase/auth';
 
@@ -12,10 +12,15 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
-  const [tab, setTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
+  const [tab, setTab] = useState<'signin' | 'signup' | 'phone' | 'forgot'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  
+  // Phone OTP state
+  const [phone, setPhone] = useState('');
+  const [otpToken, setOtpToken] = useState('');
+  const [otpStep, setOtpStep] = useState<'send' | 'verify'>('send');
   
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,30 +34,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     try {
       await SupabaseAuthService.signInWithGoogle();
     } catch (err: any) {
-      console.warn("Supabase Google OAuth fallback mode:", err);
-      const googleUser: UserProfile = {
-        id: `usr-g-${Date.now()}`,
-        fullName: 'Aarav Sharma',
-        email: 'aarav.sharma@gmail.com',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80',
-        loginProvider: 'Google',
-        role: 'customer',
-        addresses: [
-          {
-            id: 'addr-1',
-            fullName: 'Aarav Sharma',
-            street: '42 MG Road, Indiranagar',
-            city: 'Bengaluru',
-            state: 'Karnataka',
-            zip: '560038',
-            phone: '+91 98765 43210',
-            isDefault: true
-          }
-        ]
-      };
-      KeychainStore.setUser(googleUser);
-      onSuccess(googleUser);
-      onClose();
+      console.warn("Supabase Google OAuth error:", err);
+      setErrorMessage(err.message || 'Failed to initiate Google Sign-In.');
     } finally {
       setIsLoading(false);
     }
@@ -72,6 +55,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         id: profile?.id || `usr-${Date.now()}`,
         fullName: profile?.full_name || email.split('@')[0],
         email: profile?.email || email,
+        phone: profile?.phone || undefined,
+        avatar: profile?.avatar_url || undefined,
         loginProvider: 'Email',
         role: profile?.role || 'customer',
         addresses: []
@@ -81,19 +66,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       onSuccess(userProfile);
       onClose();
     } catch (err: any) {
-      console.warn("Supabase Sign In fallback mode:", err);
-      // Fallback sign in for dev testing
-      const userProfile: UserProfile = {
-        id: `usr-${Date.now()}`,
-        fullName: email.split('@')[0],
-        email: email,
-        loginProvider: 'Email',
-        role: email.includes('admin') ? 'admin' : email.includes('staff') ? 'staff' : 'customer',
-        addresses: []
-      };
-      KeychainStore.setUser(userProfile);
-      onSuccess(userProfile);
-      onClose();
+      console.warn("Supabase Sign In error:", err);
+      setErrorMessage(err.message || 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
@@ -107,11 +81,60 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
     try {
       await SupabaseAuthService.signUp(email, password, fullName);
-      setSuccessMessage('Registration successful! Please check your email for confirmation link.');
+      setSuccessMessage('Registration successful! Please check your email inbox for the verification link.');
     } catch (err: any) {
-      console.warn("Supabase Sign Up fallback mode:", err);
-      setSuccessMessage('Account created successfully! You can now log in.');
-      setTab('signin');
+      console.warn("Supabase Sign Up error:", err);
+      setErrorMessage(err.message || 'Could not register account. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      await SupabaseAuthService.signInWithOtp(phone);
+      setOtpStep('verify');
+      setSuccessMessage(`OTP sent successfully to ${phone}. Enter 6-digit verification code.`);
+    } catch (err: any) {
+      console.warn("Supabase Send OTP error:", err);
+      setErrorMessage(err.message || 'Failed to send OTP to phone number.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      await SupabaseAuthService.verifyOtp(phone, otpToken);
+      const profile = await SupabaseAuthService.getProfile();
+
+      const userProfile: UserProfile = {
+        id: profile?.id || `usr-${Date.now()}`,
+        fullName: profile?.full_name || `User ${phone.slice(-4)}`,
+        email: profile?.email || undefined,
+        phone: phone,
+        avatar: profile?.avatar_url || undefined,
+        loginProvider: 'Phone',
+        role: profile?.role || 'customer',
+        addresses: []
+      };
+
+      KeychainStore.setUser(userProfile);
+      onSuccess(userProfile);
+      onClose();
+    } catch (err: any) {
+      console.warn("Supabase Verify OTP error:", err);
+      setErrorMessage(err.message || 'Invalid OTP code. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -125,10 +148,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
     try {
       await SupabaseAuthService.resetPasswordForEmail(email);
-      setSuccessMessage(`Password reset link sent to ${email}. Check your inbox.`);
+      setSuccessMessage(`Password reset link dispatched to ${email}. Please check your inbox.`);
     } catch (err: any) {
-      console.warn("Supabase Password Reset fallback mode:", err);
-      setSuccessMessage(`Password reset link dispatched to ${email}.`);
+      console.warn("Supabase Password Reset error:", err);
+      setErrorMessage(err.message || 'Failed to send password reset email.');
     } finally {
       setIsLoading(false);
     }
@@ -159,26 +182,36 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
         {/* Auth Mode Tabs */}
         {tab !== 'forgot' && (
-          <div className="flex bg-[#F8FAFC] dark:bg-gray-800 p-1 rounded-2xl border border-[#E5E7EB] dark:border-gray-700">
+          <div className="flex bg-[#F8FAFC] dark:bg-gray-800 p-1 rounded-2xl border border-[#E5E7EB] dark:border-gray-700 text-xs font-black">
             <button
               onClick={() => { setTab('signin'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${
+              className={`flex-1 py-2 text-center rounded-xl transition-all ${
                 tab === 'signin'
                   ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600'
+                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
               }`}
             >
               Sign In
             </button>
             <button
               onClick={() => { setTab('signup'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all ${
+              className={`flex-1 py-2 text-center rounded-xl transition-all ${
                 tab === 'signup'
                   ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600'
+                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
               }`}
             >
-              Create Account
+              Register
+            </button>
+            <button
+              onClick={() => { setTab('phone'); setOtpStep('send'); setErrorMessage(''); setSuccessMessage(''); }}
+              className={`flex-1 py-2 text-center rounded-xl transition-all ${
+                tab === 'phone'
+                  ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
+              }`}
+            >
+              Phone OTP
             </button>
           </div>
         )}
@@ -327,9 +360,78 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>{isLoading ? 'Creating Account...' : 'Register Account'}</span>
+              <span>{isLoading ? 'Registering...' : 'Register Account'}</span>
             </button>
           </form>
+        )}
+
+        {/* Phone OTP Form */}
+        {tab === 'phone' && (
+          <div className="space-y-4">
+            {otpStep === 'send' ? (
+              <form onSubmit={handleSendOtp} className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">Mobile Phone Number</label>
+                  <div className="relative">
+                    <Smartphone className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
+                    <input
+                      type="tel"
+                      required
+                      placeholder="+91 98765 43210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
+                    />
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-1">We will send a 6-digit verification code via SMS.</p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
+                >
+                  <Smartphone className="w-4 h-4" />
+                  <span>{isLoading ? 'Sending Code...' : 'Send Verification OTP'}</span>
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 mb-1">6-Digit Verification Code</label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
+                    <input
+                      type="text"
+                      required
+                      maxLength={6}
+                      placeholder="123456"
+                      value={otpToken}
+                      onChange={(e) => setOtpToken(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB] tracking-widest text-center"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  <span>{isLoading ? 'Verifying...' : 'Verify OTP & Log In'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setOtpStep('send')}
+                  className="w-full text-center text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white"
+                >
+                  Change Phone Number
+                </button>
+              </form>
+            )}
+          </div>
         )}
 
         {/* Forgot Password Form */}
@@ -337,7 +439,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           <form onSubmit={handleForgotPassword} className="space-y-4">
             <div className="text-center space-y-1">
               <h3 className="text-sm font-black text-[#111827] dark:text-white">Recover Password</h3>
-              <p className="text-xs text-gray-400">Enter your email and we'll send you a password reset link.</p>
+              <p className="text-xs text-gray-400">Enter your email address to receive a secure reset link.</p>
             </div>
 
             <div>

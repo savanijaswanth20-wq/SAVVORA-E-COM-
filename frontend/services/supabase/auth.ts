@@ -12,10 +12,12 @@ export interface UserProfileData {
 export const SupabaseAuthService = {
   async signUp(email: string, password: string, fullName: string) {
     const supabase = createClient();
+    const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined;
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName
         }
@@ -61,7 +63,7 @@ export const SupabaseAuthService = {
     if (!user) throw new Error('Not authenticated');
 
     const fileExt = file.name.split('.').pop();
-    const filePath = `avatars/${user.id}-${Date.now()}.${fileExt}`;
+    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('user-avatars')
@@ -73,7 +75,14 @@ export const SupabaseAuthService = {
       .from('user-avatars')
       .getPublicUrl(filePath);
 
-    return data.publicUrl;
+    const publicUrl = data.publicUrl;
+
+    await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrl })
+      .eq('id', user.id);
+
+    return publicUrl;
   },
 
   async signInWithGoogle() {
