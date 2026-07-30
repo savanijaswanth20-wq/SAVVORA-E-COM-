@@ -113,6 +113,70 @@ class PhoneOtpVerifyPayload(BaseModel):
     phone: str
     otp: str
 
+from app.services import google_oauth_service
+
+class GoogleCodeExchangePayload(BaseModel):
+    authorization_code: str
+    state: Optional[str] = "state_default"
+
+@router.get("/google/auth-url")
+def get_google_auth_url(email: Optional[str] = "", state: Optional[str] = "state_default"):
+    """Generates the Google OAuth 2.0 authorization URL for offline access."""
+    url = google_oauth_service.get_authorization_url(email_address=email or "", state=state or "state_default")
+    return {"authorization_url": url}
+
+@router.post("/google/exchange-code")
+def exchange_google_code(payload: GoogleCodeExchangePayload, db: Session = Depends(get_db)):
+    """Exchanges authorization code for Google credentials and stores them in DB."""
+    try:
+        credentials = google_oauth_service.exchange_code(payload.authorization_code)
+        user_info = google_oauth_service.get_user_info(credentials)
+        
+        email = user_info.get("email") or "customer@gmail.com"
+        name = user_info.get("name") or "Customer User"
+        
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            user = User(
+                name=name,
+                email=email,
+                hashed_password=hash_pwd("google_oauth_secret"),
+                role="customer",
+                is_verified=True,
+                avatar=user_info.get("picture")
+            )
+            db.add(user)
+        
+        import json
+        user.google_oauth_token = json.dumps(credentials)
+        db.commit()
+        db.refresh(user)
+
+        access_token, refresh_token = create_tokens(user.email, user.role)
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+            "user": {"id": user.id, "name": user.name, "email": user.email, "role": user.role},
+            "credentials": credentials
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Google OAuth exchange failed: {str(e)}")
+
+@router.get("/google/gmail-messages")
+def get_user_gmail_messages(email: str, query: Optional[str] = "", db: Session = Depends(get_db)):
+    """Fetches user Gmail messages using stored OAuth credentials."""
+    user = db.query(User).filter(User.email == email).first()
+    if not user or not user.google_oauth_token:
+        # Fallback demo messages
+        return {"messages": google_oauth_service.ListMessages(None, user=email, query=query or "")}
+    
+    import json
+    creds_dict = json.loads(user.google_oauth_token)
+    service = google_oauth_service.build_service(creds_dict)
+    messages = google_oauth_service.ListMessages(service, user='me', query=query or "")
+    return {"messages": messages}
+
 @router.post("/google")
 def google_login(payload: Optional[GoogleAuthPayload] = None, db: Session = Depends(get_db)):
     email = (payload and payload.email) or "aarav.sharma@gmail.com"

@@ -21,6 +21,7 @@ class User(Base):
     avatar = Column(String, nullable=True)
     reset_token = Column(String, nullable=True)
     refresh_token = Column(String, nullable=True)
+    google_oauth_token = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     orders = relationship("Order", back_populates="user")
