@@ -1,11 +1,13 @@
 import { createBrowserClient } from "@supabase/ssr";
 
 export const createClient = () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL ||
+    "https://ufryyhjpmlyrltvmrqur.supabase.co";
   const supabaseKey =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    "";
+    "sb_publishable_l_x_SJ9iX26k8BcMFG3ZPQ_YZ3h9SP5";
 
   return createBrowserClient(supabaseUrl, supabaseKey);
 };
