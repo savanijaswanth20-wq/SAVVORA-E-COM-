@@ -11,6 +11,8 @@ import { AIRecommendationModal } from '../components/AIRecommendationModal';
 import { KeychainStore, KeychainProduct, subscribeToStore } from '../types/store';
 import { Sparkles, ArrowRight, ShieldCheck, Truck, RefreshCw, Bot } from 'lucide-react';
 
+import { MegaMenu } from '../components/MegaMenu';
+
 export default function HomePage() {
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('new');
@@ -45,6 +47,16 @@ export default function HomePage() {
       <Navbar
         onOpenCartDrawer={() => setIsCartOpen(true)}
         onSearchChange={(q) => setSearchQuery(q)}
+      />
+
+      {/* Multi-Column Mega Menu Navigation Bar */}
+      <MegaMenu
+        onSelectCategory={(catId, subCat) => {
+          setSelectedCategory(catId);
+          if (subCat) {
+            setSearchQuery(subCat);
+          }
+        }}
       />
 
       <main className="max-w-[1200px] mx-auto px-4 lg:px-8">
