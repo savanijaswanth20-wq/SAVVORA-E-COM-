@@ -38,6 +38,11 @@ npx supabase db seed
 All service modules are located in `frontend/services/supabase/`:
 
 - **Authentication**: `SupabaseAuthService` in [`frontend/services/supabase/auth.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/auth.ts)
+  - **Supported Providers**:
+    - **Email & Password**: Standard registration & password reset flows.
+    - **Google OAuth**: `signInWithGoogle()` redirect flow.
+    - **Facebook OAuth**: `signInWithFacebook()` redirect flow.
+    - **Phone OTP**: `signInWithOtp()` & `verifyOtp()` SMS authentication.
 - **Product Catalog**: `SupabaseProductService` in [`frontend/services/supabase/products.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/products.ts)
 - **Cart**: `SupabaseCartService` in [`frontend/services/supabase/cart.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/cart.ts)
 - **Wishlist**: `SupabaseWishlistService` in [`frontend/services/supabase/wishlist.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/wishlist.ts)
@@ -45,3 +50,4 @@ All service modules are located in `frontend/services/supabase/`:
 - **Reviews**: `SupabaseReviewService` in [`frontend/services/supabase/reviews.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/reviews.ts)
 - **Admin**: `SupabaseAdminService` in [`frontend/services/supabase/admin.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/admin.ts)
 - **Storage**: `SupabaseStorageService` in [`frontend/services/supabase/storage.ts`](file:///c:/Users/savan/OneDrive/Samart%20Stock%20Managemet/frontend/services/supabase/storage.ts)
+

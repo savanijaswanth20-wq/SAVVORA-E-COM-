@@ -97,6 +97,18 @@ export const SupabaseAuthService = {
     return data;
   },
 
+  async signInWithFacebook() {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+    if (error) throw error;
+    return data;
+  },
+
   async signOut() {
     const supabase = createClient();
     const { error } = await supabase.auth.signOut();
