@@ -15,7 +15,7 @@ export interface UserProfile {
   email?: string;
   phone?: string;
   avatar?: string;
-  loginProvider: 'Google' | 'Phone' | 'Email';
+  loginProvider: 'Facebook' | 'Google' | 'Phone' | 'Email';
   role?: 'admin' | 'staff' | 'customer';
   addresses: UserAddress[];
 }

@@ -64,17 +64,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setSuccessMessage('');
 
     try {
-      await SupabaseAuthService.signIn(email, password);
-      const profile = await SupabaseAuthService.getProfile();
+      const data = await SupabaseAuthService.signIn(email, password);
+      const user = data.user;
       
       const userProfile: UserProfile = {
-        id: profile?.id || `usr-${Date.now()}`,
-        fullName: profile?.full_name || email.split('@')[0],
-        email: profile?.email || email,
-        phone: profile?.phone || undefined,
-        avatar: profile?.avatar_url || undefined,
+        id: user?.id || `usr-${Date.now()}`,
+        fullName: user?.user_metadata?.full_name || user?.user_metadata?.name || email.split('@')[0],
+        email: user?.email || email,
+        phone: user?.phone || undefined,
+        avatar: user?.user_metadata?.avatar_url || undefined,
         loginProvider: 'Email',
-        role: profile?.role || 'customer',
+        role: 'customer',
         addresses: []
       };
 
@@ -131,17 +131,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setSuccessMessage('');
 
     try {
-      await SupabaseAuthService.verifyOtp(phone, otpToken);
-      const profile = await SupabaseAuthService.getProfile();
+      const data = await SupabaseAuthService.verifyOtp(phone, otpToken);
+      const user = data.user;
 
       const userProfile: UserProfile = {
-        id: profile?.id || `usr-${Date.now()}`,
-        fullName: profile?.full_name || `User ${phone.slice(-4)}`,
-        email: profile?.email || undefined,
+        id: user?.id || `usr-${Date.now()}`,
+        fullName: user?.user_metadata?.full_name || `User ${phone.slice(-4)}`,
+        email: user?.email || undefined,
         phone: phone,
-        avatar: profile?.avatar_url || undefined,
+        avatar: user?.user_metadata?.avatar_url || undefined,
         loginProvider: 'Phone',
-        role: profile?.role || 'customer',
+        role: 'customer',
         addresses: []
       };
 

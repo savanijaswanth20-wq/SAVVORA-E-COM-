@@ -15,32 +15,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      // Step 1: Instantly populate user profile from session metadata (0ms delay)
+      const instantProfile: UserProfile = {
+        id: user.id,
+        fullName: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Customer',
+        email: user.email || undefined,
+        phone: user.phone || undefined,
+        avatar: user.user_metadata?.avatar_url || undefined,
+        loginProvider: user.app_metadata?.provider === 'facebook' ? 'Facebook' : user.app_metadata?.provider === 'google' ? 'Google' : user.phone ? 'Phone' : 'Email',
+        role: 'customer',
+        addresses: []
+      };
+      KeychainStore.setUser(instantProfile);
+
+      // Step 2: Asynchronously update profile in background without blocking UI
       try {
         const profile = await SupabaseAuthService.getProfile();
-        const userProfile: UserProfile = {
-          id: user.id,
-          fullName: profile?.full_name || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Customer',
-          email: user.email || profile?.email || undefined,
-          phone: user.phone || profile?.phone || undefined,
-          avatar: profile?.avatar_url || user.user_metadata?.avatar_url || undefined,
-          loginProvider: user.app_metadata?.provider === 'google' ? 'Google' : user.phone ? 'Phone' : 'Email',
-          role: profile?.role || 'customer',
-          addresses: []
-        };
-        KeychainStore.setUser(userProfile);
+        if (profile) {
+          KeychainStore.setUser({
+            ...instantProfile,
+            fullName: profile.full_name || instantProfile.fullName,
+            email: profile.email || instantProfile.email,
+            phone: profile.phone || instantProfile.phone,
+            avatar: profile.avatar_url || instantProfile.avatar,
+            role: profile.role || instantProfile.role
+          });
+        }
       } catch (err) {
-        console.warn("Could not fetch user profile from DB, using auth session fallback:", err);
-        const userProfile: UserProfile = {
-          id: user.id,
-          fullName: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Customer',
-          email: user.email || undefined,
-          phone: user.phone || undefined,
-          avatar: user.user_metadata?.avatar_url || undefined,
-          loginProvider: user.app_metadata?.provider === 'google' ? 'Google' : user.phone ? 'Phone' : 'Email',
-          role: 'customer',
-          addresses: []
-        };
-        KeychainStore.setUser(userProfile);
+        // Non-critical background fetch failure
       }
     };
 
