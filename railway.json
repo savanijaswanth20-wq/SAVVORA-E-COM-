@@ -2,7 +2,6 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "builder": "NIXPACKS",
-    "buildEnvironment": "V3",
     "nixpacksConfigPath": "/nixpacks.toml"
   },
   "deploy": {
@@ -11,7 +10,6 @@
     "startCommand": "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT",
     "healthcheckPath": "/",
     "sleepApplication": false,
-    "useLegacyStacker": false,
     "ipv6EgressEnabled": false,
     "multiRegionConfig": {
       "sfo": {
