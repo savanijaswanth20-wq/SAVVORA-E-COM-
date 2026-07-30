@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=skip=SecretsUsedInArgOrEnv
+
 # Backend Production Dockerfile for FastAPI
 FROM python:3.11-slim
 

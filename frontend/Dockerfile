@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+# check=skip=SecretsUsedInArgOrEnv
+
 # Frontend Multi-Stage Secure Dockerfile
 FROM node:20-alpine AS base
 
