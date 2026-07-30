@@ -125,14 +125,62 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         {/* Right Actions: 👤 ❤️ 🛒 Menu */}
         <div className="flex items-center gap-3">
           
-          {/* User Profile 👤 */}
-          <Link
-            href="/account"
-            className="p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all"
-            title="User Profile"
-          >
-            <User className="w-4 h-4" />
-          </Link>
+          {/* Flipkart-Style User Profile & Account Dropdown 👤 */}
+          <div className="relative group">
+            <Link
+              href="/account"
+              className="p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-2"
+              title="My Account"
+            >
+              <User className="w-4 h-4 text-[#2563EB]" />
+              <ChevronDown className="w-3 h-3 text-gray-400 group-hover:rotate-180 transition-transform" />
+            </Link>
+
+            {/* Flipkart-Style Account Dropdown Menu */}
+            <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-[#1F2937] rounded-2xl p-2 shadow-2xl border border-gray-100 dark:border-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 z-50">
+              <div className="p-3 border-b border-gray-100 dark:border-gray-700 mb-1">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Welcome to SAVVORA</span>
+                <span className="text-xs font-black text-[#111827] dark:text-white truncate block">
+                  {KeychainStore.getUser()?.fullName || 'Customer Account'}
+                </span>
+              </div>
+              <div className="space-y-0.5 font-bold text-xs">
+                <Link href="/account?tab=profile" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <User className="w-4 h-4 text-[#2563EB]" />
+                  <span>My Profile</span>
+                </Link>
+                <Link href="/account?tab=orders" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <ShoppingBag className="w-4 h-4 text-emerald-500" />
+                  <span>My Orders</span>
+                </Link>
+                <Link href="/account?tab=wishlist" className="flex items-center justify-between px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <Heart className="w-4 h-4 text-rose-500" />
+                    <span>Wishlist</span>
+                  </div>
+                  {wishlistCount > 0 && (
+                    <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500 text-white">{wishlistCount}</span>
+                  )}
+                </Link>
+                <Link href="/account?tab=addresses" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Saved Addresses</span>
+                </Link>
+                <Link href="/account?tab=notifications" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  <span>Notifications</span>
+                </Link>
+                <Link href="/account?tab=payments" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <Sparkles className="w-4 h-4 text-cyan-500" />
+                  <span>Payment Methods</span>
+                </Link>
+                <Link href="/account?tab=settings" className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-blue-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 transition-colors">
+                  <Sparkles className="w-4 h-4 text-gray-400" />
+                  <span>Help Center</span>
+                </Link>
+              </div>
+            </div>
+          </div>
 
           {/* Wishlist ❤️ */}
           <Link
