@@ -1,12 +1,12 @@
 {
   "name": "savvora-e-com",
   "private": true,
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "dev": "npm run dev --prefix frontend",
-    "build": "npm run build --prefix frontend",
+    "build": "cd frontend && npm install && npm run build",
     "start": "npm run start --prefix frontend"
-  },
-  "devDependencies": {
-    "next": "^14.1.0"
   }
 }
