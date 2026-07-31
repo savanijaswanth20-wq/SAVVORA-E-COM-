@@ -230,7 +230,80 @@ export const MEGA_MENU_DATA: MegaCategorySection[] = [
   {
     id: 'baby-kids',
     label: 'Baby & Kids',
-    hasDropdown: false
+    hasDropdown: true,
+    columns: [
+      {
+        heading: "Kids & Baby Clothing",
+        items: [
+          { label: "Boys' T-Shirts & Shirts" },
+          { label: "Boys' Ethnic Wear & Shorts" },
+          { label: "Girls' Dresses & Skirts" },
+          { label: "Girls' Ethnic & Tops" },
+          { label: 'Baby Boys Combos & Sets' },
+          { label: 'Baby Girls Dresses & Gowns' },
+          { label: 'Kids & Baby Innerwear' }
+        ]
+      },
+      {
+        heading: "Footwear & Winter Wear",
+        items: [
+          { label: "Boys' Sandals & Sport Shoes" },
+          { label: "Girls' Flats & Bellies" },
+          { label: 'Infant & Character Shoes' },
+          { label: 'Kids Watches & Sunglasses' },
+          { label: "Boys' Sweatshirts & Jackets" },
+          { label: "Girls' Sweatshirts & Jackets" },
+          { label: 'Infant Winter Wear & Thermals' }
+        ]
+      },
+      {
+        heading: "Toys & School Supplies",
+        items: [
+          { label: 'Remote Control & STEM Toys', tag: 'HOT' },
+          { label: 'Educational & Soft Toys' },
+          { label: 'Cars, Die-cast & Drones' },
+          { label: 'Action Figures & Toy Guns' },
+          { label: 'Board Games & Puzzles' },
+          { label: 'Musical Toys & Doll Houses' },
+          { label: 'School Bags & Combo Sets' },
+          { label: 'Lunch Box & Party Supplies' }
+        ]
+      },
+      {
+        heading: "Baby Care",
+        items: [
+          { label: 'Diapers & Wipes', tag: 'ESSENTIAL' },
+          { label: 'Diapering & Potty Training' },
+          { label: 'Baby Bath, Hair & Skin Care' },
+          { label: 'Baby Grooming & Accessories' },
+          { label: 'Baby Gift Sets & Combo' },
+          { label: 'Nursing & Breast Feeding' },
+          { label: 'Baby Food & Feeding Bottle' },
+          { label: 'Baby Bedding & Gear' },
+          { label: 'Baby Medical & Safety' },
+          { label: 'Cleaners & Detergents' }
+        ]
+      },
+      {
+        heading: "Featured Brands",
+        items: [
+          { label: 'Miss & Chief', tag: 'POPULAR' },
+          { label: 'Barbie' },
+          { label: 'Disney' },
+          { label: 'United Colors of Benetton' },
+          { label: "The Children's Place" },
+          { label: 'US Polo' },
+          { label: 'Flying Machine' },
+          { label: 'Crocs' },
+          { label: 'Puma' },
+          { label: 'Funskool' },
+          { label: 'Lego' },
+          { label: 'Luvlap' },
+          { label: 'Mamy Poko' },
+          { label: 'Mee Mee' }
+        ]
+      }
+    ]
   },
   {
     id: 'home-furniture',
