@@ -219,56 +219,62 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           position: relative;
           background: linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
           border: 1px solid var(--line);
-          border-radius: 28px;
-          padding: 38px 30px 30px;
+          border-radius: 24px;
+          padding: 24px 22px 20px;
           box-shadow:
             0 1px 0 rgba(255,255,255,0.06) inset,
-            0 40px 80px -30px rgba(0,0,0,0.75),
-            0 20px 40px -20px rgba(61,91,255,0.20);
+            0 30px 60px -20px rgba(0,0,0,0.75),
+            0 15px 30px -15px rgba(61,91,255,0.20);
           transform-style: preserve-3d;
           transition: transform 0.15s ease-out, box-shadow 0.3s ease;
           will-change: transform;
           color: var(--text-hi);
           font-family: 'Inter', sans-serif;
+          max-height: 90vh;
+          overflow-y: auto;
+        }
+
+        .sv-card::-webkit-scrollbar {
+          display: none;
         }
 
         .sv-close {
-          position: absolute; top: 20px; right: 22px;
-          width: 28px; height: 28px; border-radius: 50%;
+          position: absolute; top: 16px; right: 18px;
+          width: 26px; height: 26px; border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
           color: var(--text-low); cursor: pointer;
           background: rgba(255,255,255,0.03);
           border: 1px solid var(--line-soft);
-          font-size: 14px;
+          font-size: 13px;
           transition: color .2s ease, background .2s ease;
         }
         .sv-close:hover { color: var(--text-hi); background: rgba(255,255,255,0.07); }
 
         .sv-logo-wrap {
           display: flex; flex-direction: column; align-items: center;
-          margin-bottom: 22px;
+          margin-bottom: 12px;
           transform: translateZ(40px);
         }
         .sv-sphere {
-          width: 72px; height: 72px; border-radius: 50%;
+          width: 52px; height: 52px; border-radius: 50%;
           background: radial-gradient(circle at 32% 28%, #9db0ff 0%, var(--blue-2) 22%, var(--blue-1) 55%, #1c2e9e 100%);
           box-shadow:
-            inset -6px -10px 18px rgba(0,0,0,0.35),
-            inset 4px 6px 10px rgba(255,255,255,0.35),
-            0 18px 30px -8px var(--blue-glow);
+            inset -4px -8px 14px rgba(0,0,0,0.35),
+            inset 3px 4px 8px rgba(255,255,255,0.35),
+            0 14px 22px -6px var(--blue-glow);
           display: flex; align-items: center; justify-content: center;
           animation: svFloat 5s ease-in-out infinite;
         }
-        .sv-sphere svg { width: 28px; height: 28px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
+        .sv-sphere svg { width: 22px; height: 22px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
         .sv-sphere-shadow {
-          width: 52px; height: 12px; margin-top: 10px; border-radius: 50%;
+          width: 40px; height: 8px; margin-top: 6px; border-radius: 50%;
           background: radial-gradient(closest-side, rgba(61,91,255,0.35), transparent 75%);
           filter: blur(2px);
           animation: svShadowPulse 5s ease-in-out infinite;
         }
         @keyframes svFloat {
           0%,100%{ transform: translateY(0px); }
-          50%{ transform: translateY(-8px); }
+          50%{ transform: translateY(-6px); }
         }
         @keyframes svShadowPulse {
           0%,100%{ opacity:1; transform: scaleX(1); }
@@ -276,29 +282,29 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         }
 
         .sv-eyebrow {
-          text-align: center; font-size: 11px; letter-spacing: 0.18em;
-          color: var(--text-mid); font-weight: 600; margin-bottom: 6px;
+          text-align: center; font-size: 10px; letter-spacing: 0.18em;
+          color: var(--text-mid); font-weight: 600; margin-bottom: 2px;
         }
         .sv-brand {
           text-align: center; font-family: 'Space Grotesk', sans-serif;
-          font-size: 26px; font-weight: 700; letter-spacing: 0.01em;
+          font-size: 20px; font-weight: 700; letter-spacing: 0.01em;
           background: linear-gradient(180deg, #ffffff, #b9c3ea);
           -webkit-background-clip: text; background-clip: text; color: transparent;
-          margin-bottom: 26px;
+          margin-bottom: 16px;
         }
 
         .sv-tabs {
-          display: flex; gap: 6px; padding: 5px;
+          display: flex; gap: 4px; padding: 4px;
           background: var(--bg-1);
           border: 1px solid var(--line);
-          border-radius: 16px;
+          border-radius: 14px;
           box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
-          margin-bottom: 24px;
+          margin-bottom: 16px;
         }
         .sv-tab {
-          flex: 1; text-align: center; padding: 9px 6px;
-          font-size: 12.5px; font-weight: 600; letter-spacing: 0.01em;
-          color: var(--text-mid); border-radius: 11px; cursor: pointer;
+          flex: 1; text-align: center; padding: 7px 4px;
+          font-size: 11.5px; font-weight: 600; letter-spacing: 0.01em;
+          color: var(--text-mid); border-radius: 10px; cursor: pointer;
           transition: all .2s ease;
           border: 1px solid transparent;
         }
@@ -312,21 +318,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         }
         .sv-tab:not(.active):hover { color: var(--text-hi); }
 
-        .sv-field { margin-bottom: 18px; }
+        .sv-field { margin-bottom: 12px; }
         .sv-field-row {
           display: flex; justify-content: space-between; align-items: baseline;
-          margin-bottom: 8px;
+          margin-bottom: 5px;
         }
-        .sv-label { font-size: 12px; font-weight: 600; color: var(--text-mid); }
-        .sv-link-sm { font-size: 11.5px; color: var(--blue-2); text-decoration: none; cursor: pointer; background: none; border: none; }
+        .sv-label { font-size: 11.5px; font-weight: 600; color: var(--text-mid); }
+        .sv-link-sm { font-size: 11px; color: var(--blue-2); text-decoration: none; cursor: pointer; background: none; border: none; }
         .sv-link-sm:hover { color: #a9b9ff; }
 
         .sv-input-shell {
-          display: flex; align-items: center; gap: 10px;
+          display: flex; align-items: center; gap: 8px;
           background: var(--bg-1);
           border: 1px solid var(--line);
-          border-radius: 14px;
-          padding: 13px 15px;
+          border-radius: 12px;
+          padding: 9.5px 12px;
           box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
           transition: border-color .2s ease, box-shadow .2s ease;
         }
@@ -334,55 +340,55 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
           border-color: rgba(111,139,255,0.55);
           box-shadow: inset 0 2px 5px rgba(0,0,0,0.45), 0 0 0 3px rgba(61,91,255,0.15);
         }
-        .sv-input-shell svg { width: 16px; height: 16px; color: var(--text-low); flex-shrink: 0; }
+        .sv-input-shell svg { width: 15px; height: 15px; color: var(--text-low); flex-shrink: 0; }
         .sv-input-shell input {
           background: none; border: none; outline: none; width: 100%;
-          color: var(--text-hi); font-size: 13.5px; font-family: 'Inter', sans-serif;
+          color: var(--text-hi); font-size: 12.5px; font-family: 'Inter', sans-serif;
         }
         .sv-input-shell input::placeholder { color: var(--text-low); }
 
         .sv-btn-primary {
-          width: 100%; margin-top: 6px; padding: 14px;
-          border: none; border-radius: 15px; cursor: pointer;
+          width: 100%; margin-top: 4px; padding: 10.5px;
+          border: none; border-radius: 13px; cursor: pointer;
           display: flex; align-items: center; justify-center; gap: 8px;
-          font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff;
+          font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: #fff;
           background: linear-gradient(180deg, var(--blue-2) 0%, var(--blue-1) 100%);
           box-shadow:
             0 1px 0 rgba(255,255,255,0.35) inset,
-            0 14px 26px -10px var(--blue-glow);
+            0 10px 20px -8px var(--blue-glow);
           transition: transform .15s ease, box-shadow .15s ease;
         }
-        .sv-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 18px 30px -8px var(--blue-glow); }
+        .sv-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 14px 24px -6px var(--blue-glow); }
         .sv-btn-primary:active { transform: translateY(0px) scale(0.99); }
         .sv-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .sv-btn-primary svg { width: 15px; height: 15px; }
+        .sv-btn-primary svg { width: 14px; height: 14px; }
 
         .sv-divider {
-          display: flex; align-items: center; gap: 12px;
-          margin: 22px 0 16px; color: var(--text-low);
-          font-size: 10.5px; letter-spacing: 0.12em; font-weight: 600;
+          display: flex; align-items: center; gap: 10px;
+          margin: 14px 0 10px; color: var(--text-low);
+          font-size: 9.5px; letter-spacing: 0.12em; font-weight: 600;
         }
         .sv-divider::before, .sv-divider::after {
           content: ""; flex: 1; height: 1px; background: var(--line);
         }
 
         .sv-btn-social {
-          width: 100%; padding: 12.5px; margin-bottom: 11px;
-          border-radius: 14px; cursor: pointer;
-          display: flex; align-items: center; justify-center; gap: 10px;
-          font-size: 13px; font-weight: 600; color: var(--text-hi);
+          width: 100%; padding: 9px 12px; margin-bottom: 8px;
+          border-radius: 12px; cursor: pointer;
+          display: flex; align-items: center; justify-center; gap: 8px;
+          font-size: 12px; font-weight: 600; color: var(--text-hi);
           background: linear-gradient(180deg, #1b2338, #131a2b);
           border: 1px solid var(--line);
-          box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 18px -10px rgba(0,0,0,0.6);
+          box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 6px 14px -8px rgba(0,0,0,0.6);
           transition: transform .15s ease, border-color .2s ease;
         }
         .sv-btn-social:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.16); }
         .sv-btn-social:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .sv-btn-social svg { width: 16px; height: 16px; }
+        .sv-btn-social svg { width: 15px; height: 15px; }
 
         .sv-footer-note {
-          text-align: center; font-size: 11px; color: var(--text-low);
-          margin-top: 20px; line-height: 1.5;
+          text-align: center; font-size: 10px; color: var(--text-low);
+          margin-top: 12px; line-height: 1.4;
         }
         .sv-footer-note a { color: var(--text-mid); text-decoration: underline; }
       `}</style>
