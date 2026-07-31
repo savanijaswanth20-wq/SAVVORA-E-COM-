@@ -47,12 +47,13 @@ export default function HomePage() {
     : products.slice(0, 3);
 
   const filteredProducts = products.filter((p) => {
-    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    if (selectedCategory === 'new') return matchesSearch;
+    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
+    // Generic category filter — matches categoryId or partial text search from MegaMenu
+    if (selectedCategory && selectedCategory !== 'new' && selectedCategory !== 'bestseller') {
+      return matchesSearch && p.categoryId === selectedCategory;
+    }
     if (selectedCategory === 'bestseller') return matchesSearch && (p.badge === 'BESTSELLER' || p.rating >= 4.9);
-    if (selectedCategory === 'electronics') return matchesSearch && p.categoryId === 'electronics';
-    if (selectedCategory === 'fashion') return matchesSearch && (p.categoryId === 'custom-name' || p.categoryId === 'accessories');
-    if (selectedCategory === 'home') return matchesSearch && p.categoryId === 'accessories';
+    // 'new' or no filter — show all
     return matchesSearch;
   });
 
