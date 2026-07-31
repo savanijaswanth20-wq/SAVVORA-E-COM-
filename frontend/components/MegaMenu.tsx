@@ -476,9 +476,12 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ onSelectCategory }) => {
               >
                 <button
                   onClick={() => {
+                    if (cat.hasDropdown) {
+                      setActiveCategory(activeCategory === cat.id ? null : cat.id);
+                    }
                     if (onSelectCategory) onSelectCategory(cat.id);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black tracking-tight whitespace-nowrap transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-xs font-black tracking-tight whitespace-nowrap transition-all min-h-[44px] ${
                     isHovered
                       ? 'text-[#2563EB] bg-blue-50 dark:bg-blue-950/40'
                       : 'text-gray-700 dark:text-gray-200 hover:text-[#2563EB] dark:hover:text-blue-400'

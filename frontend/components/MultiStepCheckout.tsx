@@ -54,7 +54,7 @@ export const MultiStepCheckout: React.FC<MultiStepCheckoutProps> = ({ isOpen, on
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
       <ConfettiEffect trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
 
-      <div className="w-full max-w-2xl glass-apple dark:bg-apple-surface-dark rounded-4xl p-6 sm:p-8 border border-apple-border dark:border-apple-border-dark shadow-2xl relative">
+      <div className="w-full max-w-2xl glass-apple dark:bg-apple-surface-dark rounded-3xl sm:rounded-4xl p-5 sm:p-8 border border-apple-border dark:border-apple-border-dark shadow-2xl relative max-h-[90vh] overflow-y-auto">
         
         {/* Close Button */}
         <button

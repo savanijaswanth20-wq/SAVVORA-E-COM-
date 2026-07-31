@@ -94,14 +94,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onProce
                   <div className="flex items-center gap-1 bg-apple-surface dark:bg-apple-surface-dark rounded-xl p-1 border border-apple-border dark:border-apple-border-dark">
                     <button
                       onClick={() => handleUpdateQuantity(item.id, -1)}
-                      className="w-5 h-5 rounded bg-white dark:bg-black text-apple-dark dark:text-white text-xs font-bold flex items-center justify-center"
+                      aria-label="Decrease quantity"
+                      className="w-7 h-7 rounded bg-white dark:bg-black text-apple-dark dark:text-white text-xs font-bold flex items-center justify-center min-w-[28px] min-h-[28px]"
                     >
                       -
                     </button>
-                    <span className="w-4 text-center text-xs font-bold text-apple-dark dark:text-white">{item.quantity}</span>
+                    <span className="w-5 text-center text-xs font-bold text-apple-dark dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => handleUpdateQuantity(item.id, +1)}
-                      className="w-5 h-5 rounded bg-white dark:bg-black text-apple-dark dark:text-white text-xs font-bold flex items-center justify-center"
+                      aria-label="Increase quantity"
+                      className="w-7 h-7 rounded bg-white dark:bg-black text-apple-dark dark:text-white text-xs font-bold flex items-center justify-center min-w-[28px] min-h-[28px]"
                     >
                       +
                     </button>
@@ -109,9 +111,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose, onProce
 
                   <button
                     onClick={() => KeychainStore.removeFromCart(item.id)}
-                    className="text-apple-gray hover:text-rose-500 p-1"
+                    aria-label="Remove item"
+                    className="text-apple-gray hover:text-rose-500 p-2 min-w-[36px] min-h-[36px] flex items-center justify-center"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               );

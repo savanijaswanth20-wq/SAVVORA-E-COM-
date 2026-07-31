@@ -133,7 +133,7 @@ function AccountContent() {
       <main className="max-w-[1200px] mx-auto px-4 lg:px-8 pt-8 flex flex-col md:flex-row gap-8">
         
         {/* Sidebar Navigation Tabs */}
-        <aside className="w-full md:w-64 space-y-1">
+        <aside className="w-full md:w-64 flex flex-row md:flex-col overflow-x-auto no-scrollbar gap-2 md:space-y-1 pb-2 md:pb-0 flex-shrink-0">
           {[
             { id: 'profile', label: 'My Profile', icon: User },
             { id: 'orders', label: `My Orders (${orders.length})`, icon: Package },
@@ -150,7 +150,7 @@ function AccountContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full px-4 py-3 rounded-2xl text-xs font-extrabold flex items-center gap-3 transition-all ${
+                className={`px-4 py-3 rounded-2xl text-xs font-extrabold flex items-center gap-2.5 transition-all whitespace-nowrap min-h-[44px] ${
                   isActive
                     ? 'bg-[#111827] dark:bg-white text-white dark:text-[#111827] shadow-md'
                     : 'bg-[#F8FAFC] dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-900 border border-[#E5E7EB] dark:border-gray-700'
@@ -165,7 +165,7 @@ function AccountContent() {
           {user && (
             <button
               onClick={handleLogout}
-              className="w-full px-4 py-3 rounded-2xl text-xs font-extrabold flex items-center gap-3 text-rose-600 bg-rose-50 dark:bg-rose-950 border border-rose-200 mt-4"
+              className="hidden md:flex px-4 py-3 rounded-2xl text-xs font-extrabold items-center gap-3 text-rose-600 bg-rose-50 dark:bg-rose-950 border border-rose-200 mt-4"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>

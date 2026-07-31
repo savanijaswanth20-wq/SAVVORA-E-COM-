@@ -19,7 +19,7 @@ export default function ProductsPage() {
   const [quickViewProduct, setQuickViewProduct] = useState<KeychainProduct | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = 12;
 
   const loadData = () => {
     setProducts(KeychainStore.getProducts());
@@ -62,8 +62,8 @@ export default function ProductsPage() {
 
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">All Products Catalog</h1>
-            <p className="text-xs text-apple-gray mt-1 font-medium">Browse our full range of Apple tech and custom handmade keychains.</p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">All Products Catalog</h1>
+            <p className="text-xs text-apple-gray mt-1 font-medium">Browse our full range of tech and luxury items.</p>
           </div>
 
           {/* Search */}
@@ -94,11 +94,12 @@ export default function ProductsPage() {
             >
               <option value="all">All Categories</option>
               <option value="electronics">Electronics</option>
-              <option value="custom-name">Custom Keychains</option>
-              <option value="couple">Couple Sets</option>
-              <option value="audio">Audio & Acoustics</option>
-              <option value="photo">Photo Keepsakes</option>
-              <option value="limited">Limited Edition</option>
+              <option value="baby-kids">Baby & Kids</option>
+              <option value="home-furniture">Home & Furniture</option>
+              <option value="sports-books">Sports, Books & More</option>
+              <option value="tv-appliances">TVs & Appliances</option>
+              <option value="men">Men</option>
+              <option value="women">Women</option>
             </select>
           </div>
 
@@ -123,7 +124,7 @@ export default function ProductsPage() {
             No products match your filter criteria.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {paginatedProducts.map((prod) => (
               <ProductCard
                 key={prod.id}

@@ -283,7 +283,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-apple-dark dark:text-white"
+            aria-label="Toggle mobile menu"
+            className="md:hidden p-2 rounded-xl text-apple-dark dark:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -291,6 +292,101 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         </div>
 
       </div>
+
+      {/* Mobile Search Bar (Visible on mobile viewports below 640px) */}
+      <div className="px-4 pb-3 sm:hidden">
+        <div className="relative w-full">
+          <Search className="w-4 h-4 text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search products, brands..."
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue"
+          />
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-apple-border dark:border-apple-border-dark bg-white/95 dark:bg-[#0a0d16]/95 backdrop-blur-xl px-4 py-5 space-y-4 animate-fade-in shadow-2xl">
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-apple-surface dark:bg-apple-surface-dark">
+            <div className="flex items-center gap-3">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.fullName} className="w-9 h-9 rounded-full object-cover" />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center font-bold">
+                  <User className="w-5 h-5" />
+                </div>
+              )}
+              <div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Account</span>
+                <span className="text-xs font-black text-[#111827] dark:text-white truncate max-w-[160px] block">
+                  {user ? user.fullName : 'Guest User'}
+                </span>
+              </div>
+            </div>
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1.5 rounded-full bg-rose-500/10 text-rose-500 text-xs font-extrabold"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsAuthOpen(true);
+                }}
+                className="px-4 py-1.5 rounded-full bg-[#2563EB] text-white text-xs font-extrabold"
+              >
+                Login / Register
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-1 text-sm font-bold">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark text-[#111827] dark:text-white"
+            >
+              <span>Home Storefront</span>
+            </Link>
+            <Link
+              href="/products"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark text-[#111827] dark:text-white"
+            >
+              <span>All Products Catalogue</span>
+            </Link>
+            <Link
+              href="/account?tab=orders"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark text-[#111827] dark:text-white"
+            >
+              <span>My Orders</span>
+              <ShoppingBag className="w-4 h-4 text-emerald-500" />
+            </Link>
+            <Link
+              href="/account?tab=wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark text-[#111827] dark:text-white"
+            >
+              <span>Wishlist ({wishlistCount})</span>
+              <Heart className="w-4 h-4 text-rose-500" />
+            </Link>
+            <Link
+              href="/admin"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-3 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark text-[#2563EB]"
+            >
+              <span>Admin Dashboard</span>
+            </Link>
+          </div>
+        </div>
+      )}
 
       <AuthModal
         isOpen={isAuthOpen}

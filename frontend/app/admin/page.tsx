@@ -187,7 +187,7 @@ export default function AdminPage() {
       <main className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-8 flex-1 w-full space-y-8">
         
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
           {[
             { id: 'analytics', label: 'Analytics & Revenue' },
             { id: 'inventory', label: `Inventory Stock (${filteredProducts.length})` },
@@ -199,7 +199,7 @@ export default function AdminPage() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id as any)}
-              className={`px-4 py-2 rounded-full text-xs font-extrabold transition-all border ${
+              className={`px-4 py-2.5 rounded-full text-xs font-extrabold transition-all border whitespace-nowrap min-h-[44px] ${
                 activeTab === t.id
                   ? 'bg-apple-blue text-white border-apple-blue shadow-md'
                   : 'bg-apple-surface dark:bg-apple-surface-dark text-apple-gray border-apple-border dark:border-apple-border-dark hover:text-apple-dark'

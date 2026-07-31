@@ -152,7 +152,7 @@ export default function HomePage() {
               <span className="text-xs font-bold text-gray-400">Based on your preferences</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
               {recommendedProducts.map((p) => (
                 <ProductCard
                   key={`rec-${p.id}`}
@@ -167,20 +167,20 @@ export default function HomePage() {
 
         {/* Recently Viewed Products Section */}
         {recentlyViewed.length > 0 && (
-          <section className="space-y-6 my-10 p-6 rounded-[28px] bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700">
+          <section className="space-y-4 sm:space-y-6 my-8 sm:my-10 p-4 sm:p-6 rounded-[20px] sm:rounded-[28px] bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <History className="w-4 h-4" /> Browsing History
+                <span className="text-[10px] sm:text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1 sm:gap-1.5">
+                  <History className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Browsing History
                 </span>
-                <h2 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight">
-                  Recently Viewed Items ({recentlyViewed.length})
+                <h2 className="text-lg sm:text-2xl font-black text-[#111827] dark:text-white tracking-tight">
+                  Recently Viewed ({recentlyViewed.length})
                 </h2>
               </div>
-              <span className="text-xs font-bold text-gray-400">Items you checked recently</span>
+              <span className="hidden sm:inline text-xs font-bold text-gray-400">Items you checked recently</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
               {recentlyViewed.map((p) => (
                 <ProductCard
                   key={`recent-${p.id}`}
@@ -194,24 +194,24 @@ export default function HomePage() {
         )}
 
         {/* Product Cards Grid */}
-        <section id="products" className="space-y-6 my-10">
+        <section id="products" className="space-y-4 sm:space-y-6 my-8 sm:my-10">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
-              <h2 className="text-3xl font-black text-[#111827] dark:text-white tracking-tight">
+              <span className="text-[10px] sm:text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
+              <h2 className="text-xl sm:text-3xl font-black text-[#111827] dark:text-white tracking-tight">
                 Featured Lineup ({filteredProducts.length})
               </h2>
             </div>
 
             <button
               onClick={() => setIsAIOpen(true)}
-              className="px-4 py-2 rounded-full bg-[#2563EB]/10 text-[#2563EB] font-extrabold text-xs flex items-center gap-2 hover:bg-[#2563EB]/20 transition-colors"
+              className="px-3 sm:px-4 py-2 rounded-full bg-[#2563EB]/10 text-[#2563EB] font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5 sm:gap-2 hover:bg-[#2563EB]/20 transition-colors"
             >
-              <Bot className="w-4 h-4" /> Ask AI Stylist
+              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span className="hidden min-[400px]:inline">Ask</span> AI Stylist
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
             {filteredProducts.map((p) => (
               <ProductCard
                 key={p.id}
