@@ -8,7 +8,7 @@ import { SupabaseAuthService } from '../services/supabase/auth';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (user: UserProfile) => void;
+  onSuccess: (user: UserProfile, isNewUser?: boolean) => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
@@ -67,6 +67,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       const data = await SupabaseAuthService.signIn(email, password);
       const user = data.user;
       
+      const existingUser = KeychainStore.getUser();
+      const isCompleted = existingUser?.profileCompleted ?? (user?.user_metadata?.profile_completed || false);
+
       const userProfile: UserProfile = {
         id: user?.id || `usr-${Date.now()}`,
         fullName: user?.user_metadata?.full_name || user?.user_metadata?.name || email.split('@')[0],
@@ -75,11 +78,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         avatar: user?.user_metadata?.avatar_url || undefined,
         loginProvider: 'Email',
         role: 'customer',
-        addresses: []
+        addresses: [],
+        profileCompleted: isCompleted,
       };
 
       KeychainStore.setUser(userProfile);
-      onSuccess(userProfile);
+      onSuccess(userProfile, !isCompleted);
       onClose();
     } catch (err: any) {
       console.warn("Supabase Sign In error:", err);
@@ -134,6 +138,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       const data = await SupabaseAuthService.verifyOtp(phone, otpToken);
       const user = data.user;
 
+      const existingUser = KeychainStore.getUser();
+      const isCompleted = existingUser?.profileCompleted ?? false;
+
       const userProfile: UserProfile = {
         id: user?.id || `usr-${Date.now()}`,
         fullName: user?.user_metadata?.full_name || `User ${phone.slice(-4)}`,
@@ -142,11 +149,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         avatar: user?.user_metadata?.avatar_url || undefined,
         loginProvider: 'Phone',
         role: 'customer',
-        addresses: []
+        addresses: [],
+        profileCompleted: isCompleted,
       };
 
       KeychainStore.setUser(userProfile);
-      onSuccess(userProfile);
+      onSuccess(userProfile, !isCompleted);
       onClose();
     } catch (err: any) {
       console.warn("Supabase Verify OTP error:", err);

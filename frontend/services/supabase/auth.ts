@@ -7,6 +7,8 @@ export interface UserProfileData {
   phone: string | null;
   avatar_url: string | null;
   role: 'customer' | 'staff' | 'admin';
+  profile_completed?: boolean;
+  preferences?: string[];
 }
 
 export const SupabaseAuthService = {

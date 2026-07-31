@@ -21,6 +21,7 @@ import {
 import { KeychainStore, subscribeToStore, KeychainProduct, UserProfile } from '../types/store';
 import { SupabaseAuthService } from '../services/supabase/auth';
 import { AuthModal } from './AuthModal';
+import { CompleteProfileModal } from './CompleteProfileModal';
 
 interface NavbarProps {
   onOpenCartDrawer?: () => void;
@@ -37,6 +38,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
   const [products, setProducts] = useState<KeychainProduct[]>([]);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isCompleteProfileOpen, setIsCompleteProfileOpen] = useState(false);
 
   const updateState = () => {
     setUser(KeychainStore.getUser());
@@ -156,8 +158,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
               ) : (
                 <User className="w-4 h-4 text-[#2563EB]" />
               )}
-              <span className="text-xs font-bold hidden sm:inline max-w-[90px] truncate">
-                {user ? user.fullName.split(' ')[0] : 'Account'}
+              <span className="text-xs font-bold hidden sm:inline max-w-[110px] truncate">
+                {user ? `Hi, ${user.fullName.split(' ')[0]}` : 'Account'}
               </span>
               <ChevronDown className="w-3 h-3 text-gray-400 group-hover:rotate-180 transition-transform" />
             </Link>
@@ -311,7 +313,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onSuccess={(u) => setUser(u)}
+        onSuccess={(u, isNewUser) => {
+          setUser(u);
+          if (isNewUser || !u.profileCompleted) {
+            setIsCompleteProfileOpen(true);
+          }
+        }}
+      />
+
+      <CompleteProfileModal
+        isOpen={isCompleteProfileOpen}
+        user={user}
+        onClose={() => setIsCompleteProfileOpen(false)}
+        onSuccess={(updated) => setUser(updated)}
       />
 
     </header>

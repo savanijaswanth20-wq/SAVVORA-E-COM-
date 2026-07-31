@@ -18,6 +18,8 @@ export interface UserProfile {
   loginProvider: 'Facebook' | 'Google' | 'Phone' | 'Email';
   role?: 'admin' | 'staff' | 'customer';
   addresses: UserAddress[];
+  profileCompleted?: boolean;
+  preferences?: string[];
 }
 
 export interface KeychainProduct {
@@ -352,6 +354,7 @@ const LOCAL_STORAGE_KEYS = {
   PRODUCTS: 'savvora_products',
   THEME: 'savvora_theme',
   USER: 'savvora_user_profile',
+  RECENTLY_VIEWED: 'savvora_recently_viewed',
 };
 
 type Listener = () => void;
@@ -541,5 +544,20 @@ export const KeychainStore = {
     }
     notifyListeners();
     return next;
+  },
+
+  getRecentlyViewed(): KeychainProduct[] {
+    if (typeof window === 'undefined') return [];
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEYS.RECENTLY_VIEWED);
+    if (!stored) return [];
+    try { return JSON.parse(stored); } catch { return []; }
+  },
+
+  addRecentlyViewed(product: KeychainProduct) {
+    if (typeof window === 'undefined') return;
+    const current = this.getRecentlyViewed().filter((p) => p.id !== product.id);
+    const updated = [product, ...current].slice(0, 6);
+    localStorage.setItem(LOCAL_STORAGE_KEYS.RECENTLY_VIEWED, JSON.stringify(updated));
+    notifyListeners();
   }
 };

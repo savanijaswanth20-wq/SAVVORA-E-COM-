@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      // Step 1: Instantly populate user profile from session metadata (0ms delay)
+      const existingLocal = KeychainStore.getUser();
       const instantProfile: UserProfile = {
         id: user.id,
         fullName: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Customer',
@@ -24,7 +24,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         avatar: user.user_metadata?.avatar_url || undefined,
         loginProvider: user.app_metadata?.provider === 'facebook' ? 'Facebook' : user.app_metadata?.provider === 'google' ? 'Google' : user.phone ? 'Phone' : 'Email',
         role: 'customer',
-        addresses: []
+        addresses: existingLocal?.addresses || [],
+        profileCompleted: existingLocal?.profileCompleted ?? user.user_metadata?.profile_completed ?? false,
+        preferences: existingLocal?.preferences || user.user_metadata?.preferences || []
       };
       KeychainStore.setUser(instantProfile);
 
@@ -38,7 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             email: profile.email || instantProfile.email,
             phone: profile.phone || instantProfile.phone,
             avatar: profile.avatar_url || instantProfile.avatar,
-            role: profile.role || instantProfile.role
+            role: profile.role || instantProfile.role,
+            profileCompleted: profile.profile_completed ?? instantProfile.profileCompleted,
+            preferences: profile.preferences || instantProfile.preferences
           });
         }
       } catch (err) {
