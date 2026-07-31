@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from 'react';
-import { X, ArrowRight, ShieldCheck, Mail, Lock, User, AlertCircle, CheckCircle, Smartphone, KeyRound, Loader2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
 import { KeychainStore, UserProfile } from '../types/store';
 import { SupabaseAuthService } from '../services/supabase/auth';
+import { Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,7 +27,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // 3D tilt ref
+  const cardRef = useRef<HTMLDivElement>(null);
+
   if (!isOpen) return null;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const r = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    cardRef.current.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(0)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'rotateY(0deg) rotateX(0deg)';
+  };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -182,375 +198,571 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in">
-      <div className="w-full max-w-md bg-white dark:bg-[#1F2937] rounded-[28px] p-8 border border-[#E5E7EB] dark:border-gray-700 shadow-2xl relative space-y-6">
-        
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 p-2 rounded-full bg-[#F8FAFC] dark:bg-gray-800 text-gray-500 hover:text-black dark:hover:text-white"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-lg animate-fade-in overflow-y-auto">
+      
+      {/* Embedded CSS matching user specifications */}
+      <style jsx>{`
+        .sv-card {
+          --bg-0: #0a0d16;
+          --bg-1: #0f1422;
+          --panel: #131a2b;
+          --panel-2: #161e33;
+          --line: rgba(255,255,255,0.07);
+          --line-soft: rgba(255,255,255,0.04);
+          --text-hi: #f2f4fb;
+          --text-mid: #9aa3bd;
+          --text-low: #5d6584;
+          --blue-1: #3d5bff;
+          --blue-2: #6f8bff;
+          --blue-glow: rgba(61,91,255,0.45);
 
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-xl font-black mx-auto shadow-md shadow-[#2563EB]/20">
-            ◎
-          </div>
-          <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Welcome to</span>
-          <h2 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight uppercase">
-            SAVVORA
-          </h2>
-        </div>
+          position: relative;
+          background: linear-gradient(180deg, var(--panel-2) 0%, var(--panel) 100%);
+          border: 1px solid var(--line);
+          border-radius: 28px;
+          padding: 38px 30px 30px;
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.06) inset,
+            0 40px 80px -30px rgba(0,0,0,0.75),
+            0 20px 40px -20px rgba(61,91,255,0.20);
+          transform-style: preserve-3d;
+          transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+          will-change: transform;
+          color: var(--text-hi);
+          font-family: 'Inter', sans-serif;
+        }
 
-        {/* Auth Mode Tabs */}
-        {tab !== 'forgot' && (
-          <div className="flex bg-[#F8FAFC] dark:bg-gray-800 p-1 rounded-2xl border border-[#E5E7EB] dark:border-gray-700 text-xs font-black">
-            <button
-              onClick={() => { setTab('signin'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`flex-1 py-2 text-center rounded-xl transition-all ${
-                tab === 'signin'
-                  ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => { setTab('signup'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`flex-1 py-2 text-center rounded-xl transition-all ${
-                tab === 'signup'
-                  ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
-              }`}
-            >
-              Register
-            </button>
-            <button
-              onClick={() => { setTab('phone'); setOtpStep('send'); setErrorMessage(''); setSuccessMessage(''); }}
-              className={`flex-1 py-2 text-center rounded-xl transition-all ${
-                tab === 'phone'
-                  ? 'bg-white dark:bg-black text-[#111827] dark:text-white shadow-sm'
-                  : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'
-              }`}
-            >
-              Phone OTP
-            </button>
-          </div>
-        )}
+        .sv-close {
+          position: absolute; top: 20px; right: 22px;
+          width: 28px; height: 28px; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          color: var(--text-low); cursor: pointer;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid var(--line-soft);
+          font-size: 14px;
+          transition: color .2s ease, background .2s ease;
+        }
+        .sv-close:hover { color: var(--text-hi); background: rgba(255,255,255,0.07); }
 
-        {/* Notifications */}
-        {errorMessage && (
-          <div className="p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{errorMessage}</span>
-          </div>
-        )}
+        .sv-logo-wrap {
+          display: flex; flex-direction: column; align-items: center;
+          margin-bottom: 22px;
+          transform: translateZ(40px);
+        }
+        .sv-sphere {
+          width: 72px; height: 72px; border-radius: 50%;
+          background: radial-gradient(circle at 32% 28%, #9db0ff 0%, var(--blue-2) 22%, var(--blue-1) 55%, #1c2e9e 100%);
+          box-shadow:
+            inset -6px -10px 18px rgba(0,0,0,0.35),
+            inset 4px 6px 10px rgba(255,255,255,0.35),
+            0 18px 30px -8px var(--blue-glow);
+          display: flex; align-items: center; justify-content: center;
+          animation: svFloat 5s ease-in-out infinite;
+        }
+        .sv-sphere svg { width: 28px; height: 28px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.4)); }
+        .sv-sphere-shadow {
+          width: 52px; height: 12px; margin-top: 10px; border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(61,91,255,0.35), transparent 75%);
+          filter: blur(2px);
+          animation: svShadowPulse 5s ease-in-out infinite;
+        }
+        @keyframes svFloat {
+          0%,100%{ transform: translateY(0px); }
+          50%{ transform: translateY(-8px); }
+        }
+        @keyframes svShadowPulse {
+          0%,100%{ opacity:1; transform: scaleX(1); }
+          50%{ opacity:0.6; transform: scaleX(0.8); }
+        }
 
-        {successMessage && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-bold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 shrink-0" />
-            <span>{successMessage}</span>
-          </div>
-        )}
+        .sv-eyebrow {
+          text-align: center; font-size: 11px; letter-spacing: 0.18em;
+          color: var(--text-mid); font-weight: 600; margin-bottom: 6px;
+        }
+        .sv-brand {
+          text-align: center; font-family: 'Space Grotesk', sans-serif;
+          font-size: 26px; font-weight: 700; letter-spacing: 0.01em;
+          background: linear-gradient(180deg, #ffffff, #b9c3ea);
+          -webkit-background-clip: text; background-clip: text; color: transparent;
+          margin-bottom: 26px;
+        }
 
-        {/* Sign In Form */}
-        {tab === 'signin' && (
-          <div className="space-y-4">
-            <form onSubmit={handleSignIn} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-gray-500 mb-1">Email Address</label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                  />
-                </div>
-              </div>
+        .sv-tabs {
+          display: flex; gap: 6px; padding: 5px;
+          background: var(--bg-1);
+          border: 1px solid var(--line);
+          border-radius: 16px;
+          box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
+          margin-bottom: 24px;
+        }
+        .sv-tab {
+          flex: 1; text-align: center; padding: 9px 6px;
+          font-size: 12.5px; font-weight: 600; letter-spacing: 0.01em;
+          color: var(--text-mid); border-radius: 11px; cursor: pointer;
+          transition: all .2s ease;
+          border: 1px solid transparent;
+        }
+        .sv-tab.active {
+          color: var(--text-hi);
+          background: linear-gradient(180deg, #232c46, #171e33);
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.08) inset,
+            0 6px 14px -6px rgba(0,0,0,0.6);
+          border-color: var(--line);
+        }
+        .sv-tab:not(.active):hover { color: var(--text-hi); }
 
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold text-gray-500">Password</label>
-                  <button
-                    type="button"
-                    onClick={() => { setTab('forgot'); setErrorMessage(''); setSuccessMessage(''); }}
-                    className="text-[11px] font-bold text-[#2563EB] hover:underline"
-                  >
-                    Forgot Password?
-                  </button>
-                </div>
-                <div className="relative">
-                  <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                  <input
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                  />
-                </div>
-              </div>
+        .sv-field { margin-bottom: 18px; }
+        .sv-field-row {
+          display: flex; justify-content: space-between; align-items: baseline;
+          margin-bottom: 8px;
+        }
+        .sv-label { font-size: 12px; font-weight: 600; color: var(--text-mid); }
+        .sv-link-sm { font-size: 11.5px; color: var(--blue-2); text-decoration: none; cursor: pointer; background: none; border: none; }
+        .sv-link-sm:hover { color: #a9b9ff; }
 
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
-              >
-                <span>{isLoading ? 'Signing In...' : 'Sign In with Email'}</span>
-                <ArrowRight className="w-4 h-4 text-white" />
-              </button>
-            </form>
+        .sv-input-shell {
+          display: flex; align-items: center; gap: 10px;
+          background: var(--bg-1);
+          border: 1px solid var(--line);
+          border-radius: 14px;
+          padding: 13px 15px;
+          box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
+          transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .sv-input-shell:focus-within {
+          border-color: rgba(111,139,255,0.55);
+          box-shadow: inset 0 2px 5px rgba(0,0,0,0.45), 0 0 0 3px rgba(61,91,255,0.15);
+        }
+        .sv-input-shell svg { width: 16px; height: 16px; color: var(--text-low); flex-shrink: 0; }
+        .sv-input-shell input {
+          background: none; border: none; outline: none; width: 100%;
+          color: var(--text-hi); font-size: 13.5px; font-family: 'Inter', sans-serif;
+        }
+        .sv-input-shell input::placeholder { color: var(--text-low); }
 
-            <div className="relative flex items-center justify-center my-3">
-              <div className="border-t border-[#E5E7EB] dark:border-gray-700 w-full" />
-              <span className="bg-white dark:bg-[#1F2937] px-3 text-[10px] font-black uppercase text-gray-400 absolute">
-                OR CONTINUE WITH
-              </span>
+        .sv-btn-primary {
+          width: 100%; margin-top: 6px; padding: 14px;
+          border: none; border-radius: 15px; cursor: pointer;
+          display: flex; align-items: center; justify-center; gap: 8px;
+          font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: #fff;
+          background: linear-gradient(180deg, var(--blue-2) 0%, var(--blue-1) 100%);
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.35) inset,
+            0 14px 26px -10px var(--blue-glow);
+          transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .sv-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 18px 30px -8px var(--blue-glow); }
+        .sv-btn-primary:active { transform: translateY(0px) scale(0.99); }
+        .sv-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sv-btn-primary svg { width: 15px; height: 15px; }
+
+        .sv-divider {
+          display: flex; align-items: center; gap: 12px;
+          margin: 22px 0 16px; color: var(--text-low);
+          font-size: 10.5px; letter-spacing: 0.12em; font-weight: 600;
+        }
+        .sv-divider::before, .sv-divider::after {
+          content: ""; flex: 1; height: 1px; background: var(--line);
+        }
+
+        .sv-btn-social {
+          width: 100%; padding: 12.5px; margin-bottom: 11px;
+          border-radius: 14px; cursor: pointer;
+          display: flex; align-items: center; justify-center; gap: 10px;
+          font-size: 13px; font-weight: 600; color: var(--text-hi);
+          background: linear-gradient(180deg, #1b2338, #131a2b);
+          border: 1px solid var(--line);
+          box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 18px -10px rgba(0,0,0,0.6);
+          transition: transform .15s ease, border-color .2s ease;
+        }
+        .sv-btn-social:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.16); }
+        .sv-btn-social:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .sv-btn-social svg { width: 16px; height: 16px; }
+
+        .sv-footer-note {
+          text-align: center; font-size: 11px; color: var(--text-low);
+          margin-top: 20px; line-height: 1.5;
+        }
+        .sv-footer-note a { color: var(--text-mid); text-decoration: underline; }
+      `}</style>
+
+      <div 
+        className="w-full max-w-[400px] perspective-[1600px]"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="sv-card" id="card" ref={cardRef}>
+          
+          {/* Close Button */}
+          <button onClick={onClose} className="sv-close" title="Close">
+            ✕
+          </button>
+
+          {/* 3D Logo Sphere */}
+          <div className="sv-logo-wrap">
+            <div className="sv-sphere">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="white" strokeWidth="1.6"/>
+                <circle cx="12" cy="12" r="3" fill="white"/>
+              </svg>
             </div>
+            <div className="sv-sphere-shadow"></div>
+          </div>
 
-            <div className="space-y-2.5">
-              {/* 1. Google Login */}
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isLoading}
-                className="w-full py-3 px-4 rounded-2xl bg-white dark:bg-black border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 shadow-sm flex items-center justify-center gap-3 transition-all hover:scale-[1.01] disabled:opacity-50"
+          <div className="sv-eyebrow">WELCOME TO</div>
+          <div className="sv-brand">SAVVORA</div>
+
+          {/* Auth Tabs */}
+          {tab !== 'forgot' && (
+            <div className="sv-tabs">
+              <div 
+                className={`sv-tab ${tab === 'signin' ? 'active' : ''}`}
+                onClick={() => { setTab('signin'); setErrorMessage(''); setSuccessMessage(''); }}
+              >
+                Sign In
+              </div>
+              <div 
+                className={`sv-tab ${tab === 'signup' ? 'active' : ''}`}
+                onClick={() => { setTab('signup'); setErrorMessage(''); setSuccessMessage(''); }}
+              >
+                Register
+              </div>
+              <div 
+                className={`sv-tab ${tab === 'phone' ? 'active' : ''}`}
+                onClick={() => { setTab('phone'); setOtpStep('send'); setErrorMessage(''); setSuccessMessage(''); }}
+              >
+                Phone OTP
+              </div>
+            </div>
+          )}
+
+          {/* Notifications */}
+          {errorMessage && (
+            <div className="p-3 mb-4 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-semibold flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="p-3 mb-4 rounded-xl bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs font-semibold flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+          )}
+
+          {/* 1. SIGN IN FORM */}
+          {tab === 'signin' && (
+            <div>
+              <form onSubmit={handleSignIn}>
+                <div className="sv-field">
+                  <div className="sv-field-row">
+                    <label className="sv-label">Email address</label>
+                  </div>
+                  <div className="sv-input-shell">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/>
+                    </svg>
+                    <input 
+                      type="email" 
+                      required 
+                      placeholder="name@example.com" 
+                      value={email} 
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="sv-field">
+                  <div className="sv-field-row">
+                    <label className="sv-label">Password</label>
+                    <button
+                      type="button"
+                      onClick={() => { setTab('forgot'); setErrorMessage(''); setSuccessMessage(''); }}
+                      className="sv-link-sm"
+                    >
+                      Forgot?
+                    </button>
+                  </div>
+                  <div className="sv-input-shell">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                    </svg>
+                    <input 
+                      type="password" 
+                      required 
+                      placeholder="••••••••" 
+                      value={password} 
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <button type="submit" disabled={isLoading} className="sv-btn-primary">
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Signing in...
+                    </>
+                  ) : (
+                    <>
+                      Sign in with email
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="sv-divider">OR CONTINUE WITH</div>
+
+              <button 
+                type="button" 
+                onClick={handleGoogleLogin} 
+                disabled={isLoading} 
+                className="sv-btn-social"
               >
                 {loadingProvider === 'google' ? (
                   <>
-                    <Loader2 className="w-4 h-4 text-[#4285F4] animate-spin shrink-0" />
-                    <span>Connecting to Google...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Connecting to Google...
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                    </svg>
-                    <span>Continue with Google</span>
+                    <svg viewBox="0 0 24 24"><path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.9 1.5l2.6-2.5C16.9 3.3 14.7 2.3 12 2.3 6.9 2.3 2.7 6.5 2.7 11.6S6.9 21 12 21c6.9 0 8.9-4.9 8.9-7.4 0-.5-.05-.9-.12-1.3H12z"/></svg>
+                    Continue with Google
                   </>
                 )}
               </button>
 
-              {/* 2. Facebook Login */}
-              <button
-                type="button"
-                onClick={handleFacebookLogin}
-                disabled={isLoading}
-                className="w-full py-3 px-4 rounded-2xl bg-[#1877F2] hover:bg-[#166fe5] font-extrabold text-xs text-white shadow-sm flex items-center justify-center gap-3 transition-all hover:scale-[1.01] disabled:opacity-50"
+              <button 
+                type="button" 
+                onClick={handleFacebookLogin} 
+                disabled={isLoading} 
+                className="sv-btn-social"
               >
                 {loadingProvider === 'facebook' ? (
                   <>
-                    <Loader2 className="w-4 h-4 text-white animate-spin shrink-0" />
-                    <span>Connecting to Facebook...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Connecting to Facebook...
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                    </svg>
-                    <span>Continue with Facebook</span>
+                    <svg viewBox="0 0 24 24"><path fill="#1877F2" d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+                    Continue with Facebook
                   </>
                 )}
               </button>
 
-              {/* 3. Phone OTP Login */}
-              <button
-                type="button"
+              <button 
+                type="button" 
                 onClick={() => { setTab('phone'); setOtpStep('send'); setErrorMessage(''); setSuccessMessage(''); }}
                 disabled={isLoading}
-                className="w-full py-3 px-4 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white shadow-sm flex items-center justify-center gap-3 transition-all hover:scale-[1.01] disabled:opacity-50"
+                className="sv-btn-social"
               >
-                <Smartphone className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Continue with Phone OTP</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#34c77a" strokeWidth="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+                Continue with Phone OTP
               </button>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Sign Up Form */}
-        {tab === 'signup' && (
-          <form onSubmit={handleSignUp} className="space-y-3">
-            <div>
-              <label className="block text-xs font-bold text-gray-500 mb-1">Full Name</label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                <input
-                  type="text"
-                  required
-                  placeholder="John Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-500 mb-1">Email Address</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-500 mb-1">Password</label>
-              <div className="relative">
-                <Lock className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                <input
-                  type="password"
-                  required
-                  placeholder="At least 6 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>{isLoading ? 'Registering...' : 'Register Account'}</span>
-            </button>
-          </form>
-        )}
-
-        {/* Phone OTP Form */}
-        {tab === 'phone' && (
-          <div className="space-y-4">
-            {otpStep === 'send' ? (
-              <form onSubmit={handleSendOtp} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">Mobile Phone Number</label>
-                  <div className="relative">
-                    <Smartphone className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                    />
-                  </div>
-                  <p className="text-[11px] text-gray-400 mt-1">We will send a 6-digit verification code via SMS.</p>
+          {/* 2. REGISTER FORM */}
+          {tab === 'signup' && (
+            <form onSubmit={handleSignUp}>
+              <div className="sv-field">
+                <div className="sv-field-row">
+                  <label className="sv-label">Full Name</label>
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
-                >
-                  <Smartphone className="w-4 h-4" />
-                  <span>{isLoading ? 'Sending Code...' : 'Send Verification OTP'}</span>
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerifyOtp} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 mb-1">6-Digit Verification Code</label>
-                  <div className="relative">
-                    <KeyRound className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                    <input
-                      type="text"
-                      required
-                      maxLength={6}
-                      placeholder="123456"
-                      value={otpToken}
-                      onChange={(e) => setOtpToken(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB] tracking-widest text-center"
-                    />
-                  </div>
+                <div className="sv-input-shell">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+                  </svg>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="Jaswanth Savan" 
+                    value={fullName} 
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
-                >
-                  <CheckCircle className="w-4 h-4" />
-                  <span>{isLoading ? 'Verifying...' : 'Verify OTP & Log In'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setOtpStep('send')}
-                  className="w-full text-center text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white"
-                >
-                  Change Phone Number
-                </button>
-              </form>
-            )}
-          </div>
-        )}
-
-        {/* Forgot Password Form */}
-        {tab === 'forgot' && (
-          <form onSubmit={handleForgotPassword} className="space-y-4">
-            <div className="text-center space-y-1">
-              <h3 className="text-sm font-black text-[#111827] dark:text-white">Recover Password</h3>
-              <p className="text-xs text-gray-400">Enter your email address to receive a secure reset link.</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-500 mb-1">Email Address</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 absolute left-3.5 top-3.5 text-gray-400" />
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 font-extrabold text-xs text-[#111827] dark:text-white focus:outline-none focus:border-[#2563EB]"
-                />
               </div>
+
+              <div className="sv-field">
+                <div className="sv-field-row">
+                  <label className="sv-label">Email address</label>
+                </div>
+                <div className="sv-input-shell">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/>
+                  </svg>
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="name@example.com" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="sv-field">
+                <div className="sv-field-row">
+                  <label className="sv-label">Password</label>
+                </div>
+                <div className="sv-input-shell">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                  </svg>
+                  <input 
+                    type="password" 
+                    required 
+                    placeholder="••••••••" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button type="submit" disabled={isLoading} className="sv-btn-primary">
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Registering...
+                  </>
+                ) : (
+                  <>
+                    Register Account
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+
+          {/* 3. PHONE OTP FORM */}
+          {tab === 'phone' && (
+            <div>
+              {otpStep === 'send' ? (
+                <form onSubmit={handleSendOtp}>
+                  <div className="sv-field">
+                    <div className="sv-field-row">
+                      <label className="sv-label">Mobile Phone Number</label>
+                    </div>
+                    <div className="sv-input-shell">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="#34c77a" strokeWidth="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+                      <input 
+                        type="tel" 
+                        required 
+                        placeholder="+91 98765 43210" 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" disabled={isLoading} className="sv-btn-primary">
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Sending OTP...
+                      </>
+                    ) : (
+                      <>
+                        Send Verification OTP
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                      </>
+                    )}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOtp}>
+                  <div className="sv-field">
+                    <div className="sv-field-row">
+                      <label className="sv-label">6-Digit OTP Code</label>
+                    </div>
+                    <div className="sv-input-shell">
+                      <input 
+                        type="text" 
+                        required 
+                        maxLength={6}
+                        placeholder="123456" 
+                        value={otpToken} 
+                        onChange={(e) => setOtpToken(e.target.value)}
+                        className="text-center font-mono tracking-widest"
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" disabled={isLoading} className="sv-btn-primary">
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" /> Verifying...
+                      </>
+                    ) : (
+                      <>
+                        Verify OTP & Log In
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setOtpStep('send')}
+                    className="sv-link-sm w-full text-center mt-3 block"
+                  >
+                    Change Phone Number
+                  </button>
+                </form>
+              )}
             </div>
+          )}
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-md disabled:opacity-40 transition-all flex items-center justify-center gap-2"
-            >
-              <span>{isLoading ? 'Sending Link...' : 'Send Reset Link'}</span>
-            </button>
+          {/* 4. FORGOT PASSWORD FORM */}
+          {tab === 'forgot' && (
+            <form onSubmit={handleForgotPassword}>
+              <div className="sv-field">
+                <div className="sv-field-row">
+                  <label className="sv-label">Email address</label>
+                </div>
+                <div className="sv-input-shell">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                    <path d="M3 6h18v12H3z"/><path d="m3 7 9 6 9-6"/>
+                  </svg>
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="name@example.com" 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => { setTab('signin'); setErrorMessage(''); setSuccessMessage(''); }}
-              className="w-full text-center text-xs font-bold text-gray-500 hover:text-black dark:hover:text-white"
-            >
-              Back to Sign In
-            </button>
-          </form>
-        )}
+              <button type="submit" disabled={isLoading} className="sv-btn-primary">
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Sending Link...
+                  </>
+                ) : (
+                  <>
+                    Send Password Reset Link
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </>
+                )}
+              </button>
 
-        {/* Footer Policy */}
-        <div className="pt-4 border-t border-[#E5E7EB] dark:border-gray-700 text-center text-[10px] text-gray-400">
-          By continuing, you agree to SAVVORA's <a href="#" className="underline font-bold">Terms & Privacy Policy</a>
+              <button
+                type="button"
+                onClick={() => { setTab('signin'); setErrorMessage(''); setSuccessMessage(''); }}
+                className="sv-link-sm w-full text-center mt-3 block"
+              >
+                Back to Sign In
+              </button>
+            </form>
+          )}
+
+          {/* Footer Note */}
+          <div className="sv-footer-note">
+            By continuing, you agree to SAVVORA&apos;s <a href="#">Terms &amp; Privacy Policy</a>
+          </div>
+
         </div>
-
       </div>
     </div>
   );
