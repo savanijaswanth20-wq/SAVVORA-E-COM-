@@ -308,7 +308,67 @@ export const MEGA_MENU_DATA: MegaCategorySection[] = [
   {
     id: 'home-furniture',
     label: 'Home & Furniture',
-    hasDropdown: false
+    hasDropdown: true,
+    columns: [
+      {
+        heading: "Kitchen & Dining",
+        items: [
+          { label: 'Pans, Tawas & Pressure Cookers' },
+          { label: 'Gas Stoves & Kitchen Tools' },
+          { label: 'Dinner Sets & Tableware' },
+          { label: 'Coffee Mugs & Barware' },
+          { label: 'Water Bottles & Lunch Boxes' },
+          { label: 'Flasks, Casseroles & Containers' },
+          { label: 'Cleaning Supplies' }
+        ]
+      },
+      {
+        heading: "Furniture",
+        items: [
+          { label: 'Beds, Mattresses & Wardrobes' },
+          { label: 'Sofas & Sofa Beds', tag: 'TOP OFFERS' },
+          { label: 'TV Units & Coffee Tables' },
+          { label: 'Dining Tables & Chairs' },
+          { label: 'Shoe Racks & Bean Bags' },
+          { label: 'Office & Study Furniture' },
+          { label: 'Kids Room & DIY Furniture' }
+        ]
+      },
+      {
+        heading: "Furnishing & Improvement",
+        items: [
+          { label: 'Bedsheets, Curtains & Pillows' },
+          { label: 'Blankets & Bath Towels' },
+          { label: 'Kitchen Linen & Floor Coverings' },
+          { label: 'Smart Security & Door Locks', tag: 'SMART' },
+          { label: 'Tools & Measuring Equipments' },
+          { label: 'Home Utilities & Organizers' },
+          { label: 'Lawn, Gardening & Bath Fittings' }
+        ]
+      },
+      {
+        heading: "Decor, Lighting & Pets",
+        items: [
+          { label: 'Paintings, Clocks & Wall Shelves' },
+          { label: 'Stickers, Showpieces & Figurines' },
+          { label: 'Bulbs, Wall & Table Lamps' },
+          { label: 'Ceiling & Emergency Lights' },
+          { label: 'Festive Decor & Gifts' },
+          { label: 'Pet Supplies (Dogs, Cats, Fish)' }
+        ]
+      },
+      {
+        heading: "Featured Brands & Stores",
+        items: [
+          { label: 'Milton & Prestige Store', tag: 'POPULAR' },
+          { label: 'Bombay Dyeing & @home' },
+          { label: 'HomeTown & Ajanta Clocks' },
+          { label: 'Spaces by Welspun' },
+          { label: 'Durability Certified Furniture' },
+          { label: 'Gardening & Stainless Steel Store' }
+        ]
+      }
+    ]
   },
   {
     id: 'sports-books',
