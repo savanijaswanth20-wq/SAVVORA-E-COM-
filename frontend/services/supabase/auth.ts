@@ -87,12 +87,20 @@ export const SupabaseAuthService = {
     return publicUrl;
   },
 
+  async getRedirectUrl() {
+    if (typeof window !== 'undefined') {
+      return `${window.location.origin}/auth/callback`;
+    }
+    return 'https://savvora-e-com.onrender.com/auth/callback';
+  },
+
   async signInWithGoogle() {
     const supabase = createClient();
+    const redirectUrl = await this.getRedirectUrl();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
         queryParams: {
           prompt: 'select_account'
         }
@@ -104,10 +112,11 @@ export const SupabaseAuthService = {
 
   async signInWithFacebook() {
     const supabase = createClient();
+    const redirectUrl = await this.getRedirectUrl();
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: redirectUrl,
         scopes: 'email,public_profile'
       }
     });
