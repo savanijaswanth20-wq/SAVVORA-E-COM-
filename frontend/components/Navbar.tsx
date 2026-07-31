@@ -292,24 +292,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
 
       </div>
 
-      {/* Sub-Header Category Bar matching SAVVORA Navigation Wireframe */}
-      <div className="border-t border-apple-border dark:border-apple-border-dark bg-apple-surface/60 dark:bg-apple-surface-dark/60 py-2.5 px-4 lg:px-8 overflow-x-auto no-scrollbar">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between gap-6 text-xs font-bold text-apple-gray dark:text-gray-300 whitespace-nowrap">
-          <Link href="#products" className="hover:text-apple-blue transition-colors text-apple-blue font-extrabold flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5" /> New Arrivals
-          </Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors">Electronics</Link>
-          <Link href="#custom-builder" className="hover:text-apple-blue transition-colors">Custom Accessories</Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors">Home & Office</Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors">Beauty & Care</Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors">Sports & Fitness</Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors">Books & Media</Link>
-          <Link href="#products" className="hover:text-apple-blue transition-colors flex items-center gap-1">
-            <span>More</span> <ChevronDown className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </div>
-
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}

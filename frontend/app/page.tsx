@@ -125,12 +125,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Category Pill Navigation Bar (44px pills) */}
-        <CategoryBar
-          selectedCategory={selectedCategory}
-          onSelectCategory={(catId) => setSelectedCategory(catId)}
-        />
-
         {/* Hero Banner */}
         <HeroBanner />
 
