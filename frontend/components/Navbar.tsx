@@ -91,20 +91,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
       {/* Top Header Bar matching SAVVORA Layout Wireframe */}
       <div className="max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-8 py-3 flex items-center justify-between gap-2 sm:gap-6">
         
-        {/* ◎ SAVVORA Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-apple-blue flex items-center justify-center text-white shadow-md shadow-apple-blue/20 group-hover:scale-105 transition-transform text-base sm:text-lg font-black">
-            ◎
-          </div>
+        {/* SVJ Luxury Brand Logo */}
+        <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+          <img
+            src="/images/svj-logo.png"
+            alt="SVJ Logo"
+            className="w-10 h-10 sm:w-11 sm:h-11 object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_18px_rgba(255,215,0,0.45)]"
+          />
           <div className="flex flex-col">
             <span className="font-extrabold text-base sm:text-xl tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
               SAVVORA
             </span>
-            <span className="text-[8px] sm:text-[9px] font-bold text-apple-gray uppercase tracking-widest mt-0.5">
-              LUXURY STOREFRONT
+            <span className="text-[8px] sm:text-[9px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
+              SVJ LUXURY STOREFRONT
             </span>
           </div>
         </Link>
+
 
         {/* Center Floating Search Bar */}
         <div className="flex-1 max-w-md relative hidden sm:block">
