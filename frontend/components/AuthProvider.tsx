@@ -51,6 +51,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     // Initial session check on page load
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const code = searchParams.get('code');
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+          if (!error && data?.user) {
+            syncSessionUser(data.user);
+          }
+          const cleanUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }).catch(() => {});
+      }
+    }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
         syncSessionUser(user);
