@@ -38,6 +38,25 @@ export const SupabaseOrderService = {
     return data;
   },
 
+  async createOrderCheckoutV2(payload: CheckoutPayload, transactionId?: string, providerResponse?: any, paymentStatus?: string) {
+    const supabase = createClient();
+    const { data, error } = await supabase.rpc('create_order_checkout_v2', {
+      p_shipping_address: payload.shippingAddress,
+      p_payment_method: payload.paymentMethod,
+      p_items: payload.items,
+      p_coupon_code: payload.couponCode || null,
+      p_gift_wrapping: payload.giftWrapping || false,
+      p_gift_message: payload.giftMessage || null,
+      p_notes: payload.notes || null,
+      p_transaction_id: transactionId || null,
+      p_provider_response: providerResponse || null,
+      p_payment_status: paymentStatus || null
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
   async getUserOrders() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
