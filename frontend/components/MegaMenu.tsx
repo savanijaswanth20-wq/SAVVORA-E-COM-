@@ -373,7 +373,66 @@ export const MEGA_MENU_DATA: MegaCategorySection[] = [
   {
     id: 'sports-books',
     label: 'Sports, Books & More',
-    hasDropdown: false
+    hasDropdown: true,
+    columns: [
+      {
+        heading: "Sports & Fitness",
+        items: [
+          { label: 'Cricket, Badminton & Football' },
+          { label: 'Cycling, Skating & Swimming' },
+          { label: 'Camping & Hiking Gear' },
+          { label: 'Cardio Equipment & Home Gyms' },
+          { label: 'Dumbbells & Ab Exercisers' },
+          { label: 'Yoga Mats & Gym Gloves' },
+          { label: 'Shakers, Sippers & Supports' }
+        ]
+      },
+      {
+        heading: "Food & Health",
+        items: [
+          { label: 'Nuts, Dry Fruits & Chocolates' },
+          { label: 'Tea, Coffee & Beverages' },
+          { label: 'Snacks Corner & Gifting Combos' },
+          { label: 'Sweets Store, Jams & Honey' },
+          { label: 'Breakfast Items & Spreads' },
+          { label: 'Protein & Vitamin Supplements', tag: 'HEALTH' },
+          { label: 'Ayurvedic Supplements & Drinks' }
+        ]
+      },
+      {
+        heading: "Books & Stationery",
+        items: [
+          { label: 'Entrance Exams & Academics' },
+          { label: 'Literature, Fiction & Non Fiction' },
+          { label: 'Young Readers & Self-Help' },
+          { label: 'E-Learning & Preorders' },
+          { label: 'Indian Languages Books' },
+          { label: 'Pens, Diaries & Card Holders' },
+          { label: 'Desk Organizers & Calculators' }
+        ]
+      },
+      {
+        heading: "Auto, Tools & Medical",
+        items: [
+          { label: 'Helmets & Riding Gear', tag: 'AUTO' },
+          { label: 'Car Audio, Video & Mobile Holders' },
+          { label: 'Car & Bike Care & Lubricants' },
+          { label: 'Industrial & Scientific Tools' },
+          { label: 'Lab Products & Safety Gear' },
+          { label: 'Medical Supplies & Hot Water Bags' }
+        ]
+      },
+      {
+        heading: "Music, Gaming & Grocery",
+        items: [
+          { label: 'Musical Instruments & Music' },
+          { label: 'Movies & TV Shows' },
+          { label: 'Gaming Consoles & Accessories', tag: 'GAMING' },
+          { label: 'PS4 Games & Smart Glasses (VR)' },
+          { label: 'Grocery (Only in Select Cities)' }
+        ]
+      }
+    ]
   },
   {
     id: 'flights',
