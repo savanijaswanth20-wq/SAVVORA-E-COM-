@@ -89,18 +89,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/75 dark:bg-black/75 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300">
       
       {/* Top Header Bar matching SAVVORA Layout Wireframe */}
-      <div className="max-w-[1200px] mx-auto px-4 lg:px-8 py-3.5 flex items-center justify-between gap-6">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-8 py-3 flex items-center justify-between gap-2 sm:gap-6">
         
         {/* ◎ SAVVORA Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-full bg-apple-blue flex items-center justify-center text-white shadow-md shadow-apple-blue/20 group-hover:scale-105 transition-transform text-lg font-black">
+        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-apple-blue flex items-center justify-center text-white shadow-md shadow-apple-blue/20 group-hover:scale-105 transition-transform text-base sm:text-lg font-black">
             ◎
           </div>
           <div className="flex flex-col">
-            <span className="font-extrabold text-xl tracking-wider text-apple-dark dark:text-white uppercase font-sans">
+            <span className="font-extrabold text-base sm:text-xl tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
               SAVVORA
             </span>
-            <span className="text-[9px] font-bold text-apple-gray uppercase tracking-widest -mt-1">
+            <span className="text-[8px] sm:text-[9px] font-bold text-apple-gray uppercase tracking-widest mt-0.5">
               LUXURY STOREFRONT
             </span>
           </div>
@@ -144,13 +144,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         </div>
 
         {/* Right Actions: 👤 ❤️ 🛒 Menu */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           
           {/* Flipkart-Style User Profile & Account Dropdown 👤 */}
           <div className="relative group">
             <Link
               href="/account"
-              className="p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-2"
+              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5"
               title="My Account"
             >
               {user?.avatar ? (
@@ -161,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
               <span className="text-xs font-bold hidden sm:inline max-w-[110px] truncate">
                 {user ? `Hi, ${user.fullName.split(' ')[0]}` : 'Account'}
               </span>
-              <ChevronDown className="w-3 h-3 text-gray-400 group-hover:rotate-180 transition-transform" />
+              <ChevronDown className="w-3 h-3 text-gray-400 group-hover:rotate-180 transition-transform hidden sm:inline" />
             </Link>
 
             {/* Flipkart-Style Account Dropdown Menu */}

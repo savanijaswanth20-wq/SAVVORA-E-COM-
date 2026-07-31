@@ -457,14 +457,10 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ onSelectCategory }) => {
   const activeSection = MEGA_MENU_DATA.find((sec) => sec.id === activeCategory);
 
   return (
-    <div 
-      className="relative z-30 bg-white dark:bg-[#111827] border-b border-gray-200 dark:border-gray-800 shadow-sm"
-      onMouseLeave={() => setActiveCategory(null)}
-    >
-      <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
+      <div className="max-w-[1280px] mx-auto px-2 sm:px-4 lg:px-8">
         
         {/* Horizontal Navigation Category Bar */}
-        <div className="flex items-center justify-between overflow-x-auto no-scrollbar py-2.5">
+        <div className="flex items-center justify-start gap-1 sm:gap-4 overflow-x-auto no-scrollbar py-2">
           {MEGA_MENU_DATA.map((cat) => {
             const isHovered = activeCategory === cat.id;
 
