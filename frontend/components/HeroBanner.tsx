@@ -6,15 +6,8 @@ import Link from 'next/link';
 
 export const HeroBanner: React.FC = () => {
   return (
-    <section className="relative rounded-[20px] sm:rounded-[28px] overflow-hidden my-4 sm:my-6 bg-gradient-to-br from-blue-50/80 via-sky-50/50 to-slate-50 dark:from-slate-900 dark:via-blue-950/40 dark:to-gray-900 border border-blue-100 dark:border-blue-900/30 p-5 sm:p-10 lg:p-14 text-center shadow-sm">
+    <section className="relative rounded-[20px] sm:rounded-[28px] overflow-hidden my-4 sm:my-6 bg-white dark:bg-[#131a2b] border border-gray-200 dark:border-gray-800 p-5 sm:p-10 lg:p-14 text-center shadow-sm">
       
-      {/* Background Soft Glow Orbs */}
-      <div className="absolute -top-12 -right-12 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-80 h-80 bg-sky-300/25 rounded-full blur-3xl pointer-events-none" />
-      
-      {/* Backdrop Dots Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none" />
-
       <div className="relative max-w-3xl mx-auto space-y-3.5 sm:space-y-5 z-10">
         
         {/* Subtitle Badge */}

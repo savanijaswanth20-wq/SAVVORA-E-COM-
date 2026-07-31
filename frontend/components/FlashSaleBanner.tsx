@@ -31,12 +31,7 @@ export const FlashSaleBanner: React.FC = () => {
   };
 
   return (
-    <section className="my-12 glass-floating rounded-4xl p-8 border border-rose-300 relative overflow-hidden bg-gradient-to-r from-pink-100/80 via-white to-purple-100/80 shadow-xl shadow-pink-500/10">
-      
-      {/* Background Decorative Sparkles */}
-      <div className="absolute top-3 right-6 text-pink-300 opacity-40 font-bold text-6xl select-none">
-        🌸
-      </div>
+    <section className="my-6 sm:my-10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-gray-200 dark:border-gray-800 relative overflow-hidden bg-white dark:bg-[#131a2b] shadow-sm">
 
       <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
         

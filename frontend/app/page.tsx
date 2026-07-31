@@ -81,35 +81,35 @@ export default function HomePage() {
         
         {/* Personalized Greeting Hero Banner for Logged-In User */}
         {user && (
-          <div className="my-6 p-6 md:p-8 rounded-[32px] bg-gradient-to-r from-blue-900 via-[#1E3A8A] to-[#111827] text-white shadow-2xl relative overflow-hidden border border-blue-800/50 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5 z-10">
+          <div className="my-4 sm:my-6 p-5 sm:p-8 rounded-[20px] sm:rounded-[28px] bg-white dark:bg-[#131a2b] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white shadow-sm relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4 sm:gap-5 z-10">
               <div className="relative">
                 {user.avatar ? (
-                  <img src={user.avatar} alt={user.fullName} className="w-16 h-16 rounded-full object-cover ring-4 ring-blue-500/40 shadow-md" />
+                  <img src={user.avatar} alt={user.fullName} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm" />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-black ring-4 ring-blue-500/40 shadow-md">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center text-xl sm:text-2xl font-black border border-[#2563EB]/20 shadow-sm">
                     {firstName.charAt(0).toUpperCase()}
                   </div>
                 )}
                 {user.profileCompleted && (
-                  <CheckCircle2 className="w-6 h-6 text-emerald-400 absolute -bottom-1 -right-1 bg-black rounded-full" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 absolute -bottom-1 -right-1 bg-white dark:bg-black rounded-full" />
                 )}
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-blue-500/30 border border-blue-400/30 text-blue-200">
-                    Amazon / Flipkart-Style Feed
+                  <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB]">
+                    Personalized Feed
                   </span>
                   {!user.profileCompleted && (
-                    <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/30 border border-amber-400/30 text-amber-200">
+                    <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600">
                       Profile Incomplete
                     </span>
                   )}
                 </div>
-                <h1 className="text-2xl md:text-3xl font-black tracking-tight">
+                <h1 className="text-xl sm:text-3xl font-black tracking-tight text-[#111827] dark:text-white">
                   👋 Welcome back, {firstName}!
                 </h1>
-                <p className="text-xs md:text-sm text-blue-200 font-medium">
+                <p className="text-xs sm:text-sm text-gray-500 font-medium">
                   Discover today's best deals and continue shopping.
                 </p>
               </div>
@@ -118,9 +118,9 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 z-10 w-full md:w-auto">
               <a
                 href="#products"
-                className="px-6 py-3.5 rounded-2xl bg-white text-blue-900 font-black text-xs uppercase tracking-wider shadow-lg hover:bg-blue-50 transition-all text-center flex items-center justify-center gap-2"
+                className="px-6 py-3.5 rounded-2xl bg-[#111827] dark:bg-white text-white dark:text-[#111827] font-black text-xs uppercase tracking-wider shadow-sm transition-all text-center flex items-center justify-center gap-2 min-h-[44px]"
               >
-                <ShoppingBag className="w-4 h-4 text-blue-600" /> [ Continue Shopping ]
+                <ShoppingBag className="w-4 h-4 text-[#2563EB]" /> Continue Shopping
               </a>
             </div>
           </div>
