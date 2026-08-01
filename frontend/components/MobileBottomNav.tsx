@@ -1,15 +1,28 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Grid, Sparkles, Heart, User, ShoppingBag } from 'lucide-react';
-import { KeychainStore } from '../types/store';
+import { Home, Grid, Heart, User, ShoppingBag } from 'lucide-react';
+import { KeychainStore, subscribeToStore } from '../types/store';
 
 export const MobileBottomNav: React.FC = () => {
   const pathname = usePathname();
-  const cartCount = KeychainStore.useCartCount();
-  const wishlistCount = KeychainStore.useWishlistCount();
+  const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  useEffect(() => {
+    const updateCounts = () => {
+      const cart = KeychainStore.getCart();
+      setCartCount(cart.reduce((sum, i) => sum + i.quantity, 0));
+      const wishlist = KeychainStore.getWishlist();
+      setWishlistCount(wishlist.length);
+    };
+
+    updateCounts();
+    const unsubscribe = subscribeToStore(updateCounts);
+    return () => unsubscribe();
+  }, []);
 
   const navItems = [
     { label: 'Home', href: '/', icon: Home },
