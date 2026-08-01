@@ -541,9 +541,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 }}>
                   SAVVORA
                 </h1>
-                <p style={{ fontSize: 10, color: 'rgba(99,102,241,0.8)', fontWeight: 500, marginTop: 2, letterSpacing: '0.03em' }}>
-                  Premium Keychain &amp; Accessories
-                </p>
               </div>
 
               {/* ── Tabs (hidden on forgot) ── */}
