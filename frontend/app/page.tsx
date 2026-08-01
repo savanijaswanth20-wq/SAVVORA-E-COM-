@@ -2,17 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
-import { CategoryBar } from '../components/CategoryBar';
+import { MegaMenu } from '../components/MegaMenu';
 import { HeroBanner } from '../components/HeroBanner';
+import { FlashSaleBanner } from '../components/FlashSaleBanner';
 import { ProductCard } from '../components/ProductCard';
 import { QuickViewModal } from '../components/QuickViewModal';
 import { CartDrawer } from '../components/CartDrawer';
 import { AIRecommendationModal } from '../components/AIRecommendationModal';
-import { FlashSaleBanner } from '../components/FlashSaleBanner';
+import { CustomerReviews } from '../components/CustomerReviews';
+import { InstagramGallery } from '../components/InstagramGallery';
 import { KeychainStore, KeychainProduct, subscribeToStore, UserProfile } from '../types/store';
-import { Sparkles, ArrowRight, ShieldCheck, Truck, RefreshCw, Bot, User, CheckCircle2, History, ShoppingBag } from 'lucide-react';
-
-import { MegaMenu } from '../components/MegaMenu';
+import { Sparkles, History, ShoppingBag, CheckCircle2, ShieldCheck, Truck, RotateCcw, Bot, Flame, ArrowRight, Award } from 'lucide-react';
+import Link from 'next/link';
 
 export default function HomePage() {
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -23,6 +24,7 @@ export default function HomePage() {
   const [quickViewProduct, setQuickViewProduct] = useState<KeychainProduct | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'featured' | 'bestseller'>('all');
 
   const loadData = () => {
     setUser(KeychainStore.getUser());
@@ -41,26 +43,31 @@ export default function HomePage() {
     setQuickViewProduct(prod);
   };
 
-  // Filter products for personalized recommendation section
   const recommendedProducts = user?.preferences?.length
     ? products.filter((p) => user.preferences?.includes(p.categoryId) || user.preferences?.includes(p.category.toLowerCase()))
-    : products.slice(0, 3);
+    : products.slice(0, 4);
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.category.toLowerCase().includes(searchQuery.toLowerCase());
-    // Generic category filter — matches categoryId or partial text search from MegaMenu
     if (selectedCategory && selectedCategory !== 'new' && selectedCategory !== 'bestseller') {
       return matchesSearch && p.categoryId === selectedCategory;
     }
-    if (selectedCategory === 'bestseller') return matchesSearch && (p.badge === 'BESTSELLER' || p.rating >= 4.9);
-    // 'new' or no filter — show all
+    if (activeTab === 'bestseller') return matchesSearch && (p.badge === 'BESTSELLER' || p.rating >= 4.9);
+    if (activeTab === 'featured') return matchesSearch && (p.badge === 'FEATURED' || p.badge === 'HOT');
     return matchesSearch;
   });
 
   const firstName = user ? user.fullName.split(' ')[0] : '';
 
+  const categoriesList = [
+    { id: 'custom-keychains', name: 'Custom Keychains', icon: '🔑', count: '12+ Styles', bg: 'from-[#2563EB]/10 to-[#6366F1]/10' },
+    { id: 'audio', name: 'Studio Sound', icon: '🎧', count: '8+ Products', bg: 'from-[#8B5CF6]/10 to-[#EC4899]/10' },
+    { id: 'phone-accessories', name: 'MagSafe Gear', icon: '⚡', count: '15+ Accessories', bg: 'from-amber-500/10 to-rose-500/10' },
+    { id: 'gifts', name: 'Gift Bundles', icon: '🎁', count: 'Personalized Sets', bg: 'from-emerald-500/10 to-teal-500/10' },
+  ];
+
   return (
-    <div className="min-h-screen bg-white dark:bg-[#111827] text-[#111827] dark:text-white font-sans pb-16 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#0a0d16] text-[#111827] dark:text-white font-sans transition-colors duration-300">
       
       <Navbar
         onOpenCartDrawer={() => setIsCartOpen(true)}
@@ -77,17 +84,17 @@ export default function HomePage() {
         }}
       />
 
-      <main className="max-w-[1200px] mx-auto px-4 lg:px-8">
+      <main className="max-w-[1240px] mx-auto px-4 lg:px-8 space-y-12">
         
-        {/* Personalized Greeting Hero Banner for Logged-In User */}
+        {/* Personalized User Welcome Header */}
         {user && (
-          <div className="my-4 sm:my-6 p-5 sm:p-8 rounded-[20px] sm:rounded-[28px] bg-white dark:bg-[#131a2b] border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white shadow-sm relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4 sm:gap-5 z-10">
+          <div className="mt-4 sm:mt-6 p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-purple-950/20 border border-blue-200/60 dark:border-blue-800/40 text-gray-900 dark:text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6 backdrop-blur-md">
+            <div className="flex items-center gap-4 sm:gap-5">
               <div className="relative">
                 {user.avatar ? (
-                  <img src={user.avatar} alt={user.fullName} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border border-gray-200 dark:border-gray-700 shadow-sm" />
+                  <img src={user.avatar} alt={user.fullName} className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-white dark:border-gray-800 shadow-md" />
                 ) : (
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center text-xl sm:text-2xl font-black border border-[#2563EB]/20 shadow-sm">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#6366F1] text-white flex items-center justify-center text-xl sm:text-2xl font-black border-2 border-white shadow-md">
                     {firstName.charAt(0).toUpperCase()}
                   </div>
                 )}
@@ -100,59 +107,89 @@ export default function HomePage() {
                   <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 text-[#2563EB]">
                     Personalized Feed
                   </span>
-                  {!user.profileCompleted && (
-                    <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600">
-                      Profile Incomplete
-                    </span>
-                  )}
                 </div>
-                <h1 className="text-xl sm:text-3xl font-black tracking-tight text-[#111827] dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-[#111827] dark:text-white">
                   👋 Welcome back, {firstName}!
                 </h1>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium">
-                  Discover today's best deals and continue shopping.
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  Explore custom recommendations &amp; track active orders.
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 z-10 w-full md:w-auto">
-              <a
-                href="#products"
-                className="px-6 py-3.5 rounded-2xl bg-[#111827] dark:bg-white text-white dark:text-[#111827] font-black text-xs uppercase tracking-wider shadow-sm transition-all text-center flex items-center justify-center gap-2 min-h-[44px]"
+            <div className="flex items-center gap-3">
+              <Link
+                href="/account?tab=orders"
+                className="px-5 py-2.5 rounded-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-extrabold text-xs border border-gray-200 dark:border-gray-700 shadow-xs hover:bg-gray-50 transition-colors"
               >
-                <ShoppingBag className="w-4 h-4 text-[#2563EB]" /> Continue Shopping
-              </a>
+                Track Orders
+              </Link>
             </div>
           </div>
         )}
 
-        {/* Hero Banner */}
+        {/* Hero Banner Showcase */}
         <HeroBanner />
 
-        {/* Flash Sale Banner (Active deals) */}
-        <FlashSaleBanner />
+        {/* Brand Partner Marquee */}
+        <div className="py-4 border-y border-gray-200/80 dark:border-gray-800/80 flex items-center justify-around flex-wrap gap-6 text-xs font-black tracking-widest text-gray-400 dark:text-gray-500 uppercase">
+          <span>APPLE</span>
+          <span>SAVVORA STUDIO</span>
+          <span>NIKE</span>
+          <span>SONY AUDIO</span>
+          <span>BANG &amp; OLUFSEN</span>
+          <span>KEYCHRON</span>
+        </div>
 
-        {/* Brand Marquee */}
-        <section className="py-6 border-y border-[#E5E7EB] dark:border-gray-800 my-8 flex items-center justify-around flex-wrap gap-6 text-xs font-extrabold tracking-widest text-gray-400 uppercase">
-          <span>Apple</span><span>Stripe</span><span>Nike</span><span>Sony</span><span>Bang & Olufsen</span><span>Leica</span><span>Keychron</span>
+        {/* Category Cards Showcase */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider">Explore Collections</span>
+              <h2 className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                Shop By Category
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {categoriesList.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`p-5 rounded-3xl bg-gradient-to-br ${cat.bg} border border-gray-200/80 dark:border-gray-800 text-left hover:scale-[1.03] active:scale-[0.98] transition-all group relative overflow-hidden`}
+              >
+                <div className="text-3xl mb-3">{cat.icon}</div>
+                <h3 className="font-extrabold text-sm text-gray-900 dark:text-white group-hover:text-[#2563EB] transition-colors">
+                  {cat.name}
+                </h3>
+                <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 block mt-0.5">
+                  {cat.count}
+                </span>
+                <ArrowRight className="w-4 h-4 text-[#2563EB] absolute bottom-5 right-5 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all" />
+              </button>
+            ))}
+          </div>
         </section>
 
-        {/* Recommended For You Section for Authenticated Users */}
+        {/* Flash Sale Banner with Countdown Ticker */}
+        <FlashSaleBanner />
+
+        {/* Recommended For You Section */}
         {user && recommendedProducts.length > 0 && (
-          <section className="space-y-6 my-10 p-6 rounded-[28px] bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
+          <section className="space-y-6 p-6 sm:p-8 rounded-3xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4" /> Personalized Selection
+                  <Sparkles className="w-4 h-4 text-blue-600" /> Tailored For You
                 </span>
-                <h2 className="text-2xl font-black text-[#111827] dark:text-white tracking-tight">
-                  Recommended For {user.fullName.split(' ')[0]} ({recommendedProducts.length})
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                  Recommended For {user.fullName.split(' ')[0]}
                 </h2>
               </div>
-              <span className="text-xs font-bold text-gray-400">Based on your preferences</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {recommendedProducts.map((p) => (
                 <ProductCard
                   key={`rec-${p.id}`}
@@ -165,22 +202,21 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Recently Viewed Products Section */}
+        {/* Browsing History / Recently Viewed */}
         {recentlyViewed.length > 0 && (
-          <section className="space-y-4 sm:space-y-6 my-8 sm:my-10 p-4 sm:p-6 rounded-[20px] sm:rounded-[28px] bg-gray-50 dark:bg-gray-800/40 border border-gray-200 dark:border-gray-700">
+          <section className="space-y-6 p-6 rounded-3xl bg-gray-50 dark:bg-gray-900/40 border border-gray-200/80 dark:border-gray-800">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] sm:text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1 sm:gap-1.5">
-                  <History className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Browsing History
+                <span className="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <History className="w-4 h-4" /> Browsing History
                 </span>
-                <h2 className="text-lg sm:text-2xl font-black text-[#111827] dark:text-white tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
                   Recently Viewed ({recentlyViewed.length})
                 </h2>
               </div>
-              <span className="hidden sm:inline text-xs font-bold text-gray-400">Items you checked recently</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {recentlyViewed.map((p) => (
                 <ProductCard
                   key={`recent-${p.id}`}
@@ -193,25 +229,52 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Product Cards Grid */}
-        <section id="products" className="space-y-4 sm:space-y-6 my-8 sm:my-10">
-          <div className="flex items-center justify-between">
+        {/* Main Storefront & Product Grid */}
+        <section id="products" className="space-y-6 pt-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4">
             <div>
-              <span className="text-[10px] sm:text-xs font-extrabold text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
-              <h2 className="text-xl sm:text-3xl font-black text-[#111827] dark:text-white tracking-tight">
+              <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
+              <h2 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                 Featured Lineup ({filteredProducts.length})
               </h2>
             </div>
 
-            <button
-              onClick={() => setIsAIOpen(true)}
-              className="px-3 sm:px-4 py-2 rounded-full bg-[#2563EB]/10 text-[#2563EB] font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5 sm:gap-2 hover:bg-[#2563EB]/20 transition-colors"
-            >
-              <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span className="hidden min-[400px]:inline">Ask</span> AI Stylist
-            </button>
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-full text-xs font-bold">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`px-4 py-1.5 rounded-full transition-colors ${
+                  activeTab === 'all'
+                    ? 'bg-[#2563EB] text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                All Products
+              </button>
+              <button
+                onClick={() => setActiveTab('featured')}
+                className={`px-4 py-1.5 rounded-full transition-colors ${
+                  activeTab === 'featured'
+                    ? 'bg-[#2563EB] text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                Featured
+              </button>
+              <button
+                onClick={() => setActiveTab('bestseller')}
+                className={`px-4 py-1.5 rounded-full transition-colors ${
+                  activeTab === 'bestseller'
+                    ? 'bg-[#2563EB] text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white'
+                }`}
+              >
+                Best Sellers
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {filteredProducts.map((p) => (
               <ProductCard
                 key={p.id}
@@ -223,50 +286,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Value Proposition Badges */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 my-16">
-          <div className="p-6 rounded-[20px] bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-[#2563EB]/10 text-[#2563EB]">
-              <Truck className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-black text-sm text-[#111827] dark:text-white">Express 24h Delivery</h3>
-              <p className="text-xs text-gray-500 font-medium">Free shipping on all premium orders over ₹999.</p>
-            </div>
-          </div>
+        {/* Customer Testimonials & Reviews */}
+        <CustomerReviews />
 
-          <div className="p-6 rounded-[20px] bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-[#2563EB]/10 text-[#2563EB]">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-black text-sm text-[#111827] dark:text-white">1 Year Official Warranty</h3>
-              <p className="text-xs text-gray-500 font-medium">100% authentic materials and certified hardware.</p>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-[20px] bg-[#F8FAFC] dark:bg-gray-800 border border-[#E5E7EB] dark:border-gray-700 flex items-center gap-4">
-            <div className="p-3 rounded-2xl bg-[#2563EB]/10 text-[#2563EB]">
-              <RefreshCw className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-black text-sm text-[#111827] dark:text-white">Hassle-Free 30-Day Returns</h3>
-              <p className="text-xs text-gray-500 font-medium">Instant refund with zero questions asked.</p>
-            </div>
-          </div>
-        </section>
+        {/* Instagram Gallery & Community */}
+        <InstagramGallery />
 
       </main>
 
-      {/* Floating AI Shopping Assistant Badge Button */}
-      <button
-        onClick={() => setIsAIOpen(true)}
-        className="fixed bottom-6 right-6 z-40 px-5 py-3.5 rounded-full bg-[#111827] text-white shadow-2xl hover:scale-105 transition-all flex items-center gap-2 border border-gray-700"
-      >
-        <Bot className="w-5 h-5 text-[#2563EB]" />
-        <span className="text-xs font-black uppercase tracking-wider">AI Assistant</span>
-      </button>
-
+      {/* Modals & Drawers */}
       <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
@@ -282,10 +310,6 @@ export default function HomePage() {
         isOpen={isAIOpen}
         onClose={() => setIsAIOpen(false)}
       />
-
-      <footer className="mt-20 border-t border-[#E5E7EB] dark:border-gray-800 py-10 text-center text-xs text-gray-500">
-        <p>© 2026 SAVVORA Inc. All rights reserved. Designed in Nike × Stripe × Apple Aesthetic System.</p>
-      </footer>
 
     </div>
   );
