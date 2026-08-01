@@ -65,7 +65,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
     <div className="auth-field-wrap">
       <div
         className="auth-input-shell"
-        style={{ paddingTop: isFloating ? '18px' : '12px', paddingBottom: '8px', position: 'relative' }}
+        style={{ paddingTop: isFloating ? '14px' : '8px', paddingBottom: '5px', position: 'relative' }}
       >
         {/* Icon */}
         <span style={{ color: focused ? 'rgba(139,148,255,0.9)' : 'rgba(93,101,132,0.8)', flexShrink: 0, transition: 'color 0.2s ease', display: 'flex', alignItems: 'center' }}>
@@ -76,7 +76,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
         <label
           htmlFor={id}
           className={`auth-floating-label${isFloating ? ' floating' : ''}`}
-          style={{ left: isFloating ? '12px' : '38px' }}
+          style={{ left: isFloating ? '10px' : '34px' }}
         >
           {label}
         </label>
@@ -473,7 +473,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
 
           {/* ── Card wrapper (3D tilt zone) ── */}
           <motion.div
-            style={{ width: '100%', maxWidth: 420, position: 'relative', zIndex: 10 }}
+            style={{ width: '100%', maxWidth: 360, position: 'relative', zIndex: 10 }}
             variants={cardVariants}
             initial="hidden"
             animate="visible"
@@ -484,15 +484,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               ref={cardRef}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              style={{ padding: '28px 24px 22px' }}
+              style={{ padding: '16px 16px 12px' }}
             >
               {/* ── Close button ── */}
               <button
                 onClick={onClose}
                 aria-label="Close authentication dialog"
                 style={{
-                  position: 'absolute', top: 16, right: 16,
-                  width: 28, height: 28, borderRadius: '50%',
+                  position: 'absolute', top: 12, right: 12,
+                  width: 24, height: 24, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.09)',
@@ -504,45 +504,45 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 onMouseEnter={(e) => { e.currentTarget.style.color = '#f2f4fb'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(93,101,132,0.9)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
               >
-                <X size={14} />
+                <X size={13} />
               </button>
 
               {/* ── Logo & Brand ── */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 18 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 10 }}>
                 {/* 3D sphere */}
                 <div style={{
-                  width: 56, height: 56, borderRadius: '50%',
+                  width: 38, height: 38, borderRadius: '50%',
                   background: 'radial-gradient(circle at 32% 28%, #c4b5fd 0%, #8b5cf6 28%, #6366f1 58%, #3730a3 100%)',
-                  boxShadow: 'inset -4px -8px 14px rgba(0,0,0,0.35), inset 3px 4px 8px rgba(255,255,255,0.3), 0 14px 28px -6px rgba(99,102,241,0.65)',
+                  boxShadow: 'inset -3px -6px 10px rgba(0,0,0,0.35), inset 2px 3px 6px rgba(255,255,255,0.3), 0 10px 20px -4px rgba(99,102,241,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   animation: 'orbFloat 5s ease-in-out infinite',
-                  marginBottom: 6,
+                  marginBottom: 4,
                 }}>
-                  <ShieldCheck size={22} color="rgba(255,255,255,0.92)" strokeWidth={1.7} />
+                  <ShieldCheck size={17} color="rgba(255,255,255,0.92)" strokeWidth={1.7} />
                 </div>
                 {/* Sphere shadow */}
                 <div style={{
-                  width: 38, height: 7, borderRadius: '50%',
+                  width: 26, height: 4, borderRadius: '50%',
                   background: 'radial-gradient(closest-side, rgba(99,102,241,0.4), transparent 80%)',
-                  filter: 'blur(3px)',
-                  marginBottom: 12,
+                  filter: 'blur(2px)',
+                  marginBottom: 6,
                   animation: 'orbPulse 5s ease-in-out infinite',
                 }} />
 
-                <p style={{ fontSize: 10, letterSpacing: '0.2em', color: 'rgba(154,163,189,0.75)', fontWeight: 600, marginBottom: 3 }}>
+                <p style={{ fontSize: 9, letterSpacing: '0.18em', color: 'rgba(154,163,189,0.75)', fontWeight: 600, marginBottom: 2 }}>
                   WELCOME TO
                 </p>
                 <h1 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: 22, fontWeight: 800, letterSpacing: '0.01em',
+                  fontSize: 18, fontWeight: 800, letterSpacing: '0.01em',
                   background: 'linear-gradient(160deg, #ffffff 0%, #c7d2fe 60%, #a5b4fc 100%)',
                   WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
                   margin: 0,
                 }}>
                   SAVVORA
                 </h1>
-                <p style={{ fontSize: 11, color: 'rgba(99,102,241,0.8)', fontWeight: 500, marginTop: 3, letterSpacing: '0.03em' }}>
-                  Premium Keychain & Accessories
+                <p style={{ fontSize: 10, color: 'rgba(99,102,241,0.8)', fontWeight: 500, marginTop: 2, letterSpacing: '0.03em' }}>
+                  Premium Keychain &amp; Accessories
                 </p>
               </div>
 
@@ -619,7 +619,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                           type="button"
                           onClick={() => switchTab('forgot')}
                           className="auth-link-sm"
-                          style={{ position: 'absolute', top: -20, right: 0, fontSize: 11 }}
+                          style={{ position: 'absolute', top: -16, right: 0, fontSize: 10.5 }}
                         >
                           Forgot?
                         </button>
@@ -637,33 +637,34 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     {/* Social divider */}
                     <div className="auth-divider">OR CONTINUE WITH</div>
 
-                    {/* Google */}
-                    <button type="button" onClick={handleGoogleLogin} disabled={isLoading} className="auth-btn-social">
-                      {loadingProvider === 'google' ? (
-                        <><Loader2 size={14} className="animate-spin" /> Connecting to Google…</>
-                      ) : (
-                        <>
-                          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                            <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.9 1.5l2.6-2.5C16.9 3.3 14.7 2.3 12 2.3 6.9 2.3 2.7 6.5 2.7 11.6S6.9 21 12 21c6.9 0 8.9-4.9 8.9-7.4 0-.5-.05-.9-.12-1.3H12z"/>
-                          </svg>
-                          Continue with Google
-                        </>
-                      )}
-                    </button>
+                    {/* Google & Facebook side-by-side grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6, marginBottom: 6 }}>
+                      <button type="button" onClick={handleGoogleLogin} disabled={isLoading} className="auth-btn-social">
+                        {loadingProvider === 'google' ? (
+                          <Loader2 size={13} className="animate-spin" />
+                        ) : (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                              <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.4-1.7 4.1-5.5 4.1-3.3 0-6-2.7-6-6.1s2.7-6.1 6-6.1c1.9 0 3.1.8 3.9 1.5l2.6-2.5C16.9 3.3 14.7 2.3 12 2.3 6.9 2.3 2.7 6.5 2.7 11.6S6.9 21 12 21c6.9 0 8.9-4.9 8.9-7.4 0-.5-.05-.9-.12-1.3H12z"/>
+                            </svg>
+                            <span>Google</span>
+                          </>
+                        )}
+                      </button>
 
-                    {/* Facebook */}
-                    <button type="button" onClick={handleFacebookLogin} disabled={isLoading} className="auth-btn-social">
-                      {loadingProvider === 'facebook' ? (
-                        <><Loader2 size={14} className="animate-spin" /> Connecting to Facebook…</>
-                      ) : (
-                        <>
-                          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                            <path fill="#1877F2" d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/>
-                          </svg>
-                          Continue with Facebook
-                        </>
-                      )}
-                    </button>
+                      <button type="button" onClick={handleFacebookLogin} disabled={isLoading} className="auth-btn-social">
+                        {loadingProvider === 'facebook' ? (
+                          <Loader2 size={13} className="animate-spin" />
+                        ) : (
+                          <>
+                            <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+                              <path fill="#1877F2" d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/>
+                            </svg>
+                            <span>Facebook</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
 
                     {/* Phone OTP */}
                     <button
@@ -671,9 +672,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       onClick={() => switchTab('phone')}
                       disabled={isLoading}
                       className="auth-btn-social"
+                      style={{ marginBottom: 6 }}
                     >
-                      <Smartphone size={15} style={{ color: '#34d399' }} />
-                      Continue with Phone OTP
+                      <Smartphone size={14} style={{ color: '#34d399' }} />
+                      <span>Continue with Phone OTP</span>
                     </button>
 
                     <div className="auth-footer-note">
@@ -898,7 +900,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               </AnimatePresence>
 
               {/* ── Footer ── */}
-              <div className="auth-footer-note" style={{ marginTop: 16 }}>
+              <div className="auth-footer-note" style={{ marginTop: 8 }}>
                 By continuing, you agree to SAVVORA&apos;s{' '}
                 <a href="#" tabIndex={0}>Terms &amp; Privacy Policy</a>
               </div>
@@ -906,7 +908,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               {/* ── Trust badges ── */}
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                gap: 16, marginTop: 12, paddingTop: 12,
+                gap: 10, marginTop: 8, paddingTop: 8,
                 borderTop: '1px solid rgba(255,255,255,0.06)',
               }}>
                 {[
@@ -915,10 +917,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                   { icon: '✨', label: 'Zero-data logging' },
                 ].map((b) => (
                   <div key={b.label} style={{
-                    display: 'flex', alignItems: 'center', gap: 4,
-                    fontSize: 9.5, color: 'rgba(93,101,132,0.8)', fontWeight: 600, letterSpacing: '0.03em',
+                    display: 'flex', alignItems: 'center', gap: 3,
+                    fontSize: 9, color: 'rgba(93,101,132,0.8)', fontWeight: 600, letterSpacing: '0.02em',
                   }}>
-                    <span style={{ fontSize: 11 }}>{b.icon}</span>
+                    <span style={{ fontSize: 10 }}>{b.icon}</span>
                     {b.label}
                   </div>
                 ))}
