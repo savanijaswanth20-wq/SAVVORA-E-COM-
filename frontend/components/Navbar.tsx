@@ -108,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
-      className="sticky top-0 z-40 w-full h-[60px] backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
+      className="sticky top-0 z-40 w-full h-[64px] backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
     >
       
       {/* Top Header Bar matching SAVVORA Layout Wireframe */}
@@ -132,9 +132,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         </Link>
 
 
-        {/* Center Floating Search Bar */}
+        {/* Center Floating Search Bar (48px Height) */}
         <div className="flex-1 max-w-md relative hidden sm:block">
-          <Search className="w-[20px] h-[20px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-[21px] h-[21px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search Products..."
@@ -142,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-            className="w-full h-[44px] pl-10 pr-10 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors"
+            className="w-full h-[48px] pl-11 pr-10 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors"
           />
 
           {/* Autocomplete Dropdown */}
@@ -176,7 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           <div className="relative group">
             <Link
               href="/account"
-              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5 min-w-[40px] min-h-[40px] justify-center"
+              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5 min-w-[44px] min-h-[44px] justify-center"
               title="My Account"
             >
               {user?.avatar ? (

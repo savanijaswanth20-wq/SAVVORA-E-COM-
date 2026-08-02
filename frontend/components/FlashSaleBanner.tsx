@@ -31,57 +31,57 @@ export const FlashSaleBanner: React.FC = () => {
   };
 
   return (
-    <section className="my-6 sm:my-10 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-gray-200 dark:border-gray-800 relative overflow-hidden bg-white dark:bg-[#131a2b] shadow-sm">
+    <section className="my-3 sm:my-5 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 max-h-[200px] border border-gray-200 dark:border-gray-800 relative overflow-hidden bg-white dark:bg-[#131a2b] shadow-xs flex items-center">
 
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-3 w-full relative z-10">
         
         {/* Left Side Details */}
-        <div className="space-y-2 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500 text-white text-xs font-black uppercase tracking-wider shadow-sm">
-            <Zap className="w-4 h-4 fill-white" /> Flash Sale Active
+        <div className="space-y-1 text-center lg:text-left">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+            <Zap className="w-3 h-3 fill-white" /> Flash Sale Active
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-lg sm:text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             Save 20% Off Handmade Keychains
           </h2>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium">
-            Use code <span className="font-mono font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">KAWAII20</span> at checkout. Express crafting included!
+          <p className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 font-medium">
+            Use code <span className="font-mono font-black text-rose-600 bg-rose-50 dark:bg-rose-950/60 px-1.5 py-0.5 rounded border border-rose-200 dark:border-rose-900">KAWAII20</span> at checkout.
           </p>
         </div>
 
         {/* Center Live Countdown Timer */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 glass-apple px-5 py-3 rounded-3xl border border-pink-200 shadow-sm">
-            <Clock className="w-5 h-5 text-rose-500 animate-pulse" />
-            <div className="flex items-center gap-1 font-mono font-black text-lg text-gray-900">
-              <span className="w-8 text-center bg-white px-1.5 py-1 rounded-xl shadow-xs">{String(timeLeft.hours).padStart(2, '0')}</span>:
-              <span className="w-8 text-center bg-white px-1.5 py-1 rounded-xl shadow-xs">{String(timeLeft.minutes).padStart(2, '0')}</span>:
-              <span className="w-8 text-center bg-white px-1.5 py-1 rounded-xl shadow-xs">{String(timeLeft.seconds).padStart(2, '0')}</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 glass-apple px-3.5 py-1.5 rounded-2xl border border-pink-200 shadow-xs">
+            <Clock className="w-4 h-4 text-rose-500 animate-pulse" />
+            <div className="flex items-center gap-1 font-mono font-black text-sm text-gray-900 dark:text-white">
+              <span className="w-6 text-center bg-white dark:bg-gray-800 px-1 py-0.5 rounded-lg shadow-xs">{String(timeLeft.hours).padStart(2, '0')}</span>:
+              <span className="w-6 text-center bg-white dark:bg-gray-800 px-1 py-0.5 rounded-lg shadow-xs">{String(timeLeft.minutes).padStart(2, '0')}</span>:
+              <span className="w-6 text-center bg-white dark:bg-gray-800 px-1 py-0.5 rounded-lg shadow-xs">{String(timeLeft.seconds).padStart(2, '0')}</span>
             </div>
           </div>
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleCopyCode}
-            className="px-5 py-3.5 rounded-2xl glass-apple hover:bg-white text-gray-800 font-bold text-xs uppercase tracking-wider border border-pink-300 flex items-center gap-2 transition-all"
+            className="px-4 py-2 rounded-xl glass-apple hover:bg-white text-gray-800 dark:text-white font-bold text-xs uppercase tracking-wider border border-pink-300 flex items-center gap-1.5 transition-all min-h-[38px]"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-emerald-600" /> Code Copied!
+                <Check className="w-3.5 h-3.5 text-emerald-600" /> Copied!
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4 text-pink-500" /> Copy Coupon
+                <Copy className="w-3.5 h-3.5 text-pink-500" /> Coupon
               </>
             )}
           </button>
 
           <Link
             href="/cart"
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-pink-500/20 hover:scale-105 transition-all"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-md shadow-pink-500/20 hover:scale-105 transition-all min-h-[38px] flex items-center justify-center"
           >
-            Claim Offer
+            Claim
           </Link>
         </div>
 
