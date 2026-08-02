@@ -118,10 +118,9 @@ export const SupabaseAuthService = {
       provider: 'facebook',
       options: {
         redirectTo: redirectUrl,
-        // Request email + profile; Facebook may still omit email if unverified
-        scopes: 'email public_profile',
+        scopes: 'email,public_profile',
         queryParams: {
-          auth_type: 'rerequest', // force re-prompt if permissions were denied before
+          auth_type: 'rerequest',
         }
       }
     });
