@@ -321,7 +321,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
               ) : (
                 <User className="w-[18px] h-[18px] text-gray-700 dark:text-gray-300" />
               )}
-            </Link>
               <span className="text-xs font-bold hidden sm:inline max-w-[110px] truncate">
                 {user ? `Hi, ${user.fullName.split(' ')[0]}` : 'Account'}
               </span>
