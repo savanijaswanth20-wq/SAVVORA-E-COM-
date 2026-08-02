@@ -88,16 +88,11 @@ export const SupabaseAuthService = {
   },
 
   async getRedirectUrl() {
-    // Prefer explicit production URL from env (avoids localhost redirect on deployed builds)
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
-    if (siteUrl) {
-      return `${siteUrl.replace(/\/$/, '')}/auth/callback`;
-    }
-    // Fall back to current origin (works correctly for local dev)
     if (typeof window !== 'undefined' && window.location?.origin) {
       return `${window.location.origin}/auth/callback`;
     }
-    return 'https://savvora-e-com.onrender.com/auth/callback';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://savvora-e-com.onrender.com';
+    return `${siteUrl.replace(/\/$/, '')}/auth/callback`;
   },
 
   async signInWithGoogle() {

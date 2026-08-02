@@ -50,9 +50,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    // Initial session check on page load
+    // Initial session check & error handler on page load
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      
+      const errorDesc = hashParams.get('error_description') || searchParams.get('error_description');
+      if (errorDesc) {
+        const decoded = decodeURIComponent(errorDesc);
+        if (decoded.toLowerCase().includes('email') || decoded.toLowerCase().includes('external provider')) {
+          alert('Facebook Sign-In Failed: Your Facebook account does not have a verified email address. Please log in using Google or Email instead.');
+        } else {
+          alert(`Authentication Error: ${decoded}`);
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       const code = searchParams.get('code');
       if (code) {
         supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
