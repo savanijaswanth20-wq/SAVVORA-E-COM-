@@ -88,11 +88,16 @@ export const SupabaseAuthService = {
   },
 
   async getRedirectUrl() {
+    // Prefer explicit production URL from env (avoids localhost redirect on deployed builds)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
+    if (siteUrl) {
+      return `${siteUrl.replace(/\/$/, '')}/auth/callback`;
+    }
+    // Fall back to current origin (works correctly for local dev)
     if (typeof window !== 'undefined' && window.location?.origin) {
       return `${window.location.origin}/auth/callback`;
     }
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://savvora-e-com.onrender.com';
-    return `${siteUrl.replace(/\/$/, '')}/auth/callback`;
+    return 'https://savvora-e-com.onrender.com/auth/callback';
   },
 
   async signInWithGoogle() {
@@ -118,7 +123,11 @@ export const SupabaseAuthService = {
       provider: 'facebook',
       options: {
         redirectTo: redirectUrl,
-        scopes: 'email,public_profile'
+        // Request email + profile; Facebook may still omit email if unverified
+        scopes: 'email public_profile',
+        queryParams: {
+          auth_type: 'rerequest', // force re-prompt if permissions were denied before
+        }
       }
     });
     if (error) throw error;

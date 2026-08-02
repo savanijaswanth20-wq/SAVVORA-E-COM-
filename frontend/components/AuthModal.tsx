@@ -275,7 +275,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       await SupabaseAuthService.signInWithFacebook();
     } catch (err: any) {
       console.warn("Supabase Facebook OAuth error:", err);
-      setErrorMessage(err.message || 'Failed to initiate Facebook Sign-In.');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('email') || msg.toLowerCase().includes('external provider')) {
+        setErrorMessage(
+          'Facebook could not share your email address. Please ensure your Facebook account has a verified email, or use Google / Email sign-in instead.'
+        );
+      } else {
+        setErrorMessage(msg || 'Failed to initiate Facebook Sign-In. Please try Google or Email login.');
+      }
       setIsLoading(false);
       setLoadingProvider(null);
     }
