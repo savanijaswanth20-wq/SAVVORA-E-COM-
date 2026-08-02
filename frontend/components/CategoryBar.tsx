@@ -8,11 +8,12 @@ import {
   Shirt, 
   Home, 
   Heart, 
-  Dumbbell, 
-  BookOpen, 
-  ShoppingBag, 
-  Tag, 
-  Award 
+  Headphones, 
+  Laptop, 
+  Gamepad2, 
+  KeyRound, 
+  Watch, 
+  Grid 
 } from 'lucide-react';
 
 interface CategoryBarProps {
@@ -21,17 +22,17 @@ interface CategoryBarProps {
 }
 
 const NAV_PILLS = [
-  { id: 'new', label: 'New Arrivals', icon: Sparkles },
-  { id: 'bestseller', label: 'Best Sellers', icon: Flame },
+  { id: 'all', label: 'All', icon: Sparkles },
   { id: 'electronics', label: 'Electronics', icon: Smartphone },
+  { id: 'mobiles', label: 'Mobiles', icon: Smartphone },
   { id: 'fashion', label: 'Fashion', icon: Shirt },
-  { id: 'home', label: 'Home & Kitchen', icon: Home },
-  { id: 'beauty', label: 'Beauty', icon: Heart },
-  { id: 'sports', label: 'Sports', icon: Dumbbell },
-  { id: 'books', label: 'Books', icon: BookOpen },
-  { id: 'grocery', label: 'Grocery', icon: ShoppingBag },
-  { id: 'deals', label: 'Deals', icon: Tag },
-  { id: 'brands', label: 'Brands', icon: Award },
+  { id: 'keychains', label: 'Keychains', icon: KeyRound },
+  { id: 'accessories', label: 'Accessories', icon: Watch },
+  { id: 'audio', label: 'Audio', icon: Headphones },
+  { id: 'laptop', label: 'Laptop', icon: Laptop },
+  { id: 'gaming', label: 'Gaming', icon: Gamepad2 },
+  { id: 'home', label: 'Home', icon: Home },
+  { id: 'more', label: 'More', icon: Grid },
 ];
 
 export const CategoryBar: React.FC<CategoryBarProps> = ({

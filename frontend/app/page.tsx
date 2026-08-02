@@ -6,6 +6,8 @@ import { MegaMenu } from '../components/MegaMenu';
 import { HeroBanner } from '../components/HeroBanner';
 import { FlashSaleBanner } from '../components/FlashSaleBanner';
 import { ProductCard } from '../components/ProductCard';
+import { CategoryBar } from '../components/CategoryBar';
+import { SkeletonCard, SkeletonHero } from '../components/SkeletonCard';
 import { QuickViewModal } from '../components/QuickViewModal';
 import { CartDrawer } from '../components/CartDrawer';
 import { AIRecommendationModal } from '../components/AIRecommendationModal';
@@ -128,7 +130,13 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Hero Banner Showcase (Max Height 320px) */}
+        {/* Category Navigation Bar (Horizontal Scroll Chips) */}
+        <CategoryBar
+          selectedCategory={selectedCategory}
+          onSelectCategory={(catId) => setSelectedCategory(catId)}
+        />
+
+        {/* Hero Banner Showcase (Max Height 220px) */}
         <HeroBanner />
 
         {/* Main Storefront & Featured Product Grid (Immediately after Hero) */}
@@ -176,7 +184,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5">
             {filteredProducts.map((p) => (
               <ProductCard
                 key={p.id}
@@ -190,37 +198,6 @@ export default function HomePage() {
 
         {/* Flash Sale Banner (Max Height 200px) */}
         <FlashSaleBanner />
-
-        {/* Category Cards Showcase */}
-        <section className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider">Explore Collections</span>
-              <h2 className="text-lg sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                Shop By Category
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5">
-            {categoriesList.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`p-4 rounded-2xl bg-gradient-to-br ${cat.bg} border border-gray-200/80 dark:border-gray-800 text-left hover:scale-[1.02] active:scale-[0.98] transition-all group relative overflow-hidden`}
-              >
-                <div className="text-2xl mb-2">{cat.icon}</div>
-                <h3 className="font-extrabold text-xs sm:text-sm text-gray-900 dark:text-white group-hover:text-[#2563EB] transition-colors">
-                  {cat.name}
-                </h3>
-                <span className="text-[10px] font-semibold text-gray-500 dark:text-gray-400 block mt-0.5">
-                  {cat.count}
-                </span>
-                <ArrowRight className="w-3.5 h-3.5 text-[#2563EB] absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all" />
-              </button>
-            ))}
-          </div>
-        </section>
 
         {/* Recommended For You Section */}
         {user && recommendedProducts.length > 0 && (
@@ -236,7 +213,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5">
               {recommendedProducts.map((p) => (
                 <ProductCard
                   key={`rec-${p.id}`}
@@ -263,7 +240,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5">
               {recentlyViewed.map((p) => (
                 <ProductCard
                   key={`recent-${p.id}`}
@@ -278,6 +255,27 @@ export default function HomePage() {
 
         {/* Customer Testimonials & Reviews */}
         <CustomerReviews />
+
+        {/* Payment Architecture Support Badges UI */}
+        <section className="my-6 py-4 px-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-800">
+          <p className="text-center text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+            Supported 100% Secure Checkout Methods
+          </p>
+          <div className="flex items-center justify-center flex-wrap gap-4 text-xs font-extrabold text-gray-700 dark:text-gray-300">
+            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-xs">
+              ⚡ Instant UPI (GPay/PhonePe/Paytm)
+            </span>
+            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-xs">
+              💳 Razorpay Secured
+            </span>
+            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-xs">
+              🚚 Cash on Delivery Available
+            </span>
+            <span className="px-3 py-1.5 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center gap-1.5 shadow-xs">
+              🔒 Stripe Global Payment Gateway
+            </span>
+          </div>
+        </section>
 
         {/* Instagram Gallery & Community */}
         <InstagramGallery />

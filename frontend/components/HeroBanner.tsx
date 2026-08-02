@@ -67,7 +67,7 @@ export const HeroBanner: React.FC = () => {
   const TagIcon = slide.tagIcon;
 
   return (
-    <section className="relative rounded-2xl sm:rounded-3xl overflow-hidden max-h-[320px] my-2 sm:my-3 bg-gray-950 text-white border border-gray-800/80 shadow-2xl p-4 sm:p-6 min-h-[190px] sm:min-h-[280px] flex items-center justify-center">
+    <section className="relative rounded-2xl sm:rounded-3xl overflow-hidden h-[220px] max-h-[220px] my-2 sm:my-3 bg-gray-950 text-white border border-gray-800/80 shadow-xl p-3.5 sm:p-5 flex items-center justify-center">
       
       {/* Background Animated Aurora Mesh */}
       <div className="aurora-mesh-ambient" />
@@ -75,28 +75,28 @@ export const HeroBanner: React.FC = () => {
       {/* Floating Particles Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+      <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
         
         {/* Left Column: Text & CTA */}
-        <div className="lg:col-span-7 space-y-2 sm:space-y-3 text-center lg:text-left">
+        <div className="lg:col-span-7 space-y-1.5 text-center lg:text-left">
           
           <AnimatePresence mode="wait">
             <motion.div
               key={currentSlide}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="space-y-2"
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="space-y-1.5"
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm">
-                <TagIcon className="w-3 h-3 text-amber-400" />
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-xs">
+                <TagIcon className="w-2.5 h-2.5 text-amber-400" />
                 <span>{slide.badge}</span>
               </div>
 
               {/* Headline */}
-              <h1 className="text-lg sm:text-2xl lg:text-4xl font-black tracking-tight leading-snug">
+              <h1 className="text-base sm:text-2xl font-black tracking-tight leading-tight">
                 {slide.titlePrefix}
                 <span className={`bg-gradient-to-r ${slide.accentColor} bg-clip-text text-transparent`}>
                   {slide.highlight}
@@ -105,37 +105,25 @@ export const HeroBanner: React.FC = () => {
               </h1>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-gray-300 font-medium max-w-xl leading-snug line-clamp-2 mx-auto lg:mx-0">
+              <p className="text-[11px] sm:text-xs text-gray-300 font-medium max-w-xl leading-snug line-clamp-1 mx-auto lg:mx-0">
                 {slide.desc}
               </p>
 
               {/* CTA Buttons */}
-              <div className="pt-0.5 flex items-center justify-center lg:justify-start gap-2 sm:gap-3 flex-wrap">
+              <div className="pt-0.5 flex items-center justify-center lg:justify-start gap-2 flex-wrap">
                 <Link
                   href={slide.primaryBtnHref}
-                  className="inline-flex items-center justify-center gap-1.5 px-5 sm:px-7 py-2 sm:py-3 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all min-h-[40px]"
+                  className="inline-flex items-center justify-center gap-1 px-4 py-1.5 sm:py-2 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-[11px] uppercase tracking-wider shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all min-h-[34px]"
                 >
                   <span>{slide.primaryBtnText}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-white" />
+                  <ArrowRight className="w-3 h-3 text-white" />
                 </Link>
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md transition-all min-h-[40px]"
+                  className="inline-flex items-center justify-center gap-1 px-3 py-1.5 sm:py-2 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-extrabold text-[11px] uppercase tracking-wider backdrop-blur-md transition-all min-h-[34px]"
                 >
                   Explore All
                 </Link>
-              </div>
-
-              {/* Trust Features */}
-              <div className="pt-4 flex items-center justify-center lg:justify-start gap-6 text-[11px] font-bold text-gray-400">
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>100% Genuine</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-indigo-400" />
-                  <span>Express Dispatch</span>
-                </div>
               </div>
 
             </motion.div>

@@ -102,88 +102,226 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
       )
     : [];
 
+  const [isListening, setIsListening] = useState(false);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('savvora_recent_searches');
+      if (saved) setRecentSearches(JSON.parse(saved));
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const handleVoiceSearch = () => {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert("Voice search is not supported on this browser.");
+      return;
+    }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      handleSearch(transcript);
+      saveRecentSearch(transcript);
+    };
+
+    recognition.start();
+  };
+
+  const saveRecentSearch = (term: string) => {
+    if (!term.trim()) return;
+    const updated = [term, ...recentSearches.filter(s => s.toLowerCase() !== term.toLowerCase())].slice(0, 5);
+    setRecentSearches(updated);
+    try {
+      localStorage.setItem('savvora_recent_searches', JSON.stringify(updated));
+    } catch (e) {}
+  };
+
   return (
     <header
       style={{
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
-      className="sticky top-0 z-40 w-full h-[64px] backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
+      className="sticky top-0 z-40 w-full h-[54px] backdrop-blur-xl bg-white/85 dark:bg-[#0a0d16]/85 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
     >
       
-      {/* Top Header Bar matching SAVVORA Layout Wireframe */}
-      <div className="max-w-[1200px] w-full mx-auto px-3 sm:px-4 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4">
+      {/* Top Header Bar */}
+      <div className="max-w-[1240px] w-full mx-auto px-3 sm:px-4 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4">
         
         {/* SVJ Luxury Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+        <Link href="/" className="flex items-center gap-1.5 group flex-shrink-0">
           <img
             src="/images/svj-logo.png"
             alt="SVJ Logo"
-            className="w-[40px] h-[40px] object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_18px_rgba(255,215,0,0.45)]"
+            width="34"
+            height="34"
+            className="w-[34px] h-[34px] object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_12px_rgba(255,215,0,0.4)]"
           />
           <div className="flex flex-col">
-            <span className="font-extrabold text-sm sm:text-base tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
+            <span className="font-extrabold text-xs sm:text-sm tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
               SAVVORA
             </span>
-            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
-              SVJ LUXURY STORE
+            <span className="text-[7px] sm:text-[8px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
+              SVJ STORE
             </span>
           </div>
         </Link>
 
 
-        {/* Center Floating Search Bar (48px Height) */}
+        {/* Center Floating Search Bar with AI & Voice Search */}
         <div className="flex-1 max-w-md relative hidden sm:block">
-          <Search className="w-[21px] h-[21px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-[18px] h-[18px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search Products..."
+            placeholder="Search products, brands & categories..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-            className="w-full h-[48px] pl-11 pr-10 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors"
+            className="w-full h-[40px] pl-10 pr-20 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-[#2563EB] transition-colors"
           />
 
-          {/* Autocomplete Dropdown */}
-          {isSearchFocused && suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-2 glass-apple rounded-2xl p-3 shadow-2xl z-50">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-apple-blue px-2 block mb-2">Instant Search</span>
-              <div className="space-y-1 max-h-56 overflow-y-auto">
-                {suggestions.map((p) => (
-                  <Link
-                    key={p.id}
-                    href="#products"
-                    onClick={() => setIsSearchFocused(false)}
-                    className="flex items-center justify-between p-2 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark transition-colors"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <img src={p.image} alt={p.name} className="w-8 h-8 rounded-lg object-cover" />
-                      <span className="text-xs font-bold text-apple-dark dark:text-white truncate">{p.name}</span>
+          {/* Voice Search Mic Button */}
+          <button
+            onClick={handleVoiceSearch}
+            title="Voice Search"
+            className={`absolute right-9 top-1/2 -translate-y-1/2 p-1 rounded-full text-gray-400 hover:text-[#2563EB] transition-colors ${
+              isListening ? 'animate-pulse text-rose-500 bg-rose-50' : ''
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+          </button>
+
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-blue-600 dark:text-blue-400">
+            <Sparkles className="w-3.5 h-3.5" />
+          </span>
+
+          {/* Search Dropdown with Recent, Trending & Instant Results */}
+          {isSearchFocused && (
+            <div className="absolute top-full left-0 right-0 mt-2 glass-apple rounded-2xl p-3 shadow-2xl z-50 bg-white/95 dark:bg-[#111827]/95 border border-gray-200 dark:border-gray-800">
+              
+              {/* Recent & Trending Searches when query is empty */}
+              {!searchQuery.trim() ? (
+                <div className="space-y-3">
+                  {recentSearches.length > 0 && (
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 px-2 block mb-1">
+                        Recent Searches
+                      </span>
+                      <div className="flex flex-wrap gap-1.5 px-1">
+                        {recentSearches.map((s, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => { handleSearch(s); saveRecentSearch(s); }}
+                            className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-[11px] font-bold text-gray-700 dark:text-gray-300 hover:bg-[#2563EB] hover:text-white transition-colors"
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <span className="text-xs font-black text-apple-blue">₹{p.price.toLocaleString("en-IN")}</span>
-                  </Link>
-                ))}
-              </div>
+                  )}
+
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#2563EB] px-2 block mb-1">
+                      🔥 Trending Searches
+                    </span>
+                    <div className="flex flex-wrap gap-1.5 px-1">
+                      {['iPhone 15 Pro', 'M3 MacBook', 'Handmade Keychain', 'AirPods Max', 'Keychron Q1'].map((t, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => { handleSearch(t); saveRecentSearch(t); }}
+                          className="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#2563EB] text-[11px] font-extrabold hover:bg-[#2563EB] hover:text-white transition-colors"
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] px-2 block mb-2">Instant Search Results</span>
+                  <div className="space-y-1 max-h-56 overflow-y-auto">
+                    {suggestions.length > 0 ? (
+                      suggestions.map((p) => (
+                        <Link
+                          key={p.id}
+                          href="#products"
+                          onClick={() => { setIsSearchFocused(false); saveRecentSearch(p.name); }}
+                          className="flex items-center justify-between p-2 rounded-xl hover:bg-apple-surface dark:hover:bg-apple-surface-dark transition-colors"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <img src={p.image} alt={p.name} className="w-7 h-7 rounded-lg object-cover" />
+                            <span className="text-xs font-bold text-apple-dark dark:text-white truncate">{p.name}</span>
+                          </div>
+                          <span className="text-xs font-black text-[#2563EB]">₹{p.price.toLocaleString("en-IN")}</span>
+                        </Link>
+                      ))
+                    ) : (
+                      <div className="p-3 text-center text-xs text-gray-500 font-medium">No matching products found</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* Right Actions: 👤 ❤️ 🛒 Menu */}
+        {/* Right Actions: Notifications, Wishlist, Cart & Profile Avatar */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           
-          {/* Flipkart-Style User Profile & Account Dropdown 👤 */}
+          {/* Wishlist Badge */}
+          <Link
+            href="/account?tab=wishlist"
+            className="relative p-2 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center justify-center min-w-[38px] min-h-[38px]"
+            title="Wishlist"
+          >
+            <Heart className="w-[18px] h-[18px] text-rose-500" />
+            {wishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Cart Badge */}
+          <button
+            onClick={onOpenCartDrawer}
+            className="relative p-2 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center justify-center min-w-[38px] min-h-[38px]"
+            title="Cart"
+          >
+            <ShoppingBag className="w-[18px] h-[18px] text-[#2563EB]" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-[#2563EB] text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
+          {/* User Profile Avatar */}
           <div className="relative group">
             <Link
               href="/account"
-              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5 min-w-[44px] min-h-[44px] justify-center"
-              title="My Account"
+              className="p-1.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5 min-w-[38px] min-h-[38px] justify-center"
+              title="Account"
             >
               {user?.avatar ? (
-                <img src={user.avatar} alt={user.fullName} className="w-[21px] h-[21px] rounded-full object-cover" />
+                <img src={user.avatar} alt={user.fullName} className="w-[24px] h-[24px] rounded-full object-cover" />
               ) : (
-                <User className="w-[21px] h-[21px] text-[#2563EB]" />
+                <User className="w-[18px] h-[18px] text-gray-700 dark:text-gray-300" />
               )}
+            </Link>
               <span className="text-xs font-bold hidden sm:inline max-w-[110px] truncate">
                 {user ? `Hi, ${user.fullName.split(' ')[0]}` : 'Account'}
               </span>

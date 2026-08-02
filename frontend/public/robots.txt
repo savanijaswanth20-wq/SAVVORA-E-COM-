@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /checkout
+Disallow: /admin
+
+Sitemap: https://savvora-e-com.onrender.com/sitemap.xml
