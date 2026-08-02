@@ -278,37 +278,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           )}
         </div>
 
-        {/* Right Actions: Notifications, Wishlist, Cart & Profile Avatar */}
+        {/* Right Actions: Profile Avatar */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           
-          {/* Wishlist Badge */}
-          <Link
-            href="/account?tab=wishlist"
-            className="relative p-2 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center justify-center min-w-[38px] min-h-[38px]"
-            title="Wishlist"
-          >
-            <Heart className="w-[18px] h-[18px] text-rose-500" />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
-                {wishlistCount}
-              </span>
-            )}
-          </Link>
-
-          {/* Cart Badge */}
-          <button
-            onClick={onOpenCartDrawer}
-            className="relative p-2 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center justify-center min-w-[38px] min-h-[38px]"
-            title="Cart"
-          >
-            <ShoppingBag className="w-[18px] h-[18px] text-[#2563EB]" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 rounded-full bg-[#2563EB] text-white text-[9px] font-black flex items-center justify-center shadow-xs">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
           {/* User Profile Avatar */}
           <div className="relative group">
             <Link
@@ -405,43 +377,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
               </div>
             </div>
           </div>
-
-          {/* Wishlist ❤️ */}
-          <Link
-            href="/account?tab=wishlist"
-            className="relative p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center"
-            title="Wishlist"
-          >
-            <Heart className="w-[21px] h-[21px]" />
-            {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
-                {wishlistCount}
-              </span>
-            )}
-          </Link>
-
-          {/* Shopping Cart Bag 🛒 */}
-          <button
-            onClick={onOpenCartDrawer}
-            className="relative p-2 sm:p-2.5 rounded-full bg-apple-blue text-white shadow-md shadow-apple-blue/20 hover:bg-apple-blue-hover hover:scale-105 transition-all flex items-center justify-center min-w-[40px] min-h-[40px]"
-            title="Shopping Cart"
-          >
-            <ShoppingBag className="w-[21px] h-[21px]" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-white text-apple-blue text-[10px] font-black flex items-center justify-center shadow-md">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          {/* Light / Dark Mode Toggle */}
-          <button
-            onClick={handleToggleTheme}
-            className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center"
-            title="Toggle Light / Dark Theme"
-          >
-            {theme === 'dark' ? <Sun className="w-[21px] h-[21px] text-amber-400" /> : <Moon className="w-[21px] h-[21px] text-apple-dark" />}
-          </button>
 
           {/* Mobile Menu Toggle */}
           <button
