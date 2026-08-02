@@ -152,7 +152,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
-      className="sticky top-0 z-40 w-full h-[54px] backdrop-blur-xl bg-white/85 dark:bg-[#0a0d16]/85 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
+      className="sticky top-0 z-40 w-full h-[60px] backdrop-blur-xl bg-white/90 dark:bg-[#0a0d16]/90 border-b border-gray-200/70 dark:border-gray-800/70 transition-colors duration-300 flex items-center justify-center"
     >
       
       {/* Top Header Bar */}
@@ -163,15 +163,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           <img
             src="/images/svj-logo.png"
             alt="SVJ Logo"
-            width="34"
-            height="34"
-            className="w-[34px] h-[34px] object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_12px_rgba(255,215,0,0.4)]"
+            width="30"
+            height="30"
+            className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] object-contain transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.35)]"
           />
           <div className="flex flex-col">
-            <span className="font-extrabold text-xs sm:text-sm tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
+            <span className="font-extrabold text-[11px] sm:text-sm tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
               SAVVORA
             </span>
-            <span className="text-[7px] sm:text-[8px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
+            <span className="text-[6.5px] sm:text-[8px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
               SVJ STORE
             </span>
           </div>
@@ -188,7 +188,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-            className="w-full h-[40px] pl-10 pr-20 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-[#2563EB] transition-colors"
+            className="w-full h-[38px] pl-10 pr-20 rounded-full bg-gray-50 dark:bg-gray-900 text-xs font-medium border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#2563EB] transition-colors"
           />
 
           {/* Voice Search Mic Button */}

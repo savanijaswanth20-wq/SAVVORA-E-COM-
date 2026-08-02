@@ -86,11 +86,11 @@ export default function HomePage() {
         }}
       />
 
-      <main className="max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-8 space-y-6">
+      <main className="max-w-[1240px] mx-auto px-3 sm:px-4 lg:px-8 space-y-3 sm:space-y-6">
         
         {/* Personalized User Welcome Header */}
         {user && (
-          <div className="mt-2 sm:mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-purple-950/20 border border-blue-200/60 dark:border-blue-800/40 text-gray-900 dark:text-white shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 backdrop-blur-md">
+          <div className="mt-2 p-3 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-50/80 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/30 dark:via-indigo-950/20 dark:to-purple-950/20 border border-blue-200/60 dark:border-blue-800/40 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 backdrop-blur-md">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="relative">
                 {user.avatar ? (
@@ -140,12 +140,12 @@ export default function HomePage() {
         <HeroBanner />
 
         {/* Main Storefront & Featured Product Grid (Immediately after Hero) */}
-        <section id="products" className="space-y-4 pt-1">
+        <section id="products" className="space-y-3">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-800 pb-3">
             <div>
-              <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
-              <h2 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-                Featured Lineup ({filteredProducts.length})
+              <span className="text-[10px] sm:text-xs font-black text-[#2563EB] uppercase tracking-wider">Curated Storefront</span>
+              <h2 className="text-base sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
+                Products ({filteredProducts.length})
               </h2>
             </div>
 
@@ -184,7 +184,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5">
+          {/* Product Grid — 2 cols on mobile always */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-5">
             {filteredProducts.map((p) => (
               <ProductCard
                 key={p.id}
@@ -201,19 +202,19 @@ export default function HomePage() {
 
         {/* Recommended For You Section */}
         {user && recommendedProducts.length > 0 && (
-          <section className="space-y-4 p-4 sm:p-6 rounded-2xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
+          <section className="space-y-3 p-3 sm:p-6 rounded-2xl bg-blue-50/40 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-black text-[#2563EB] uppercase tracking-wider flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Tailored For You
+                <span className="text-[10px] sm:text-xs font-black text-[#2563EB] uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-blue-600" /> For You
                 </span>
-                <h2 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white tracking-tight">
+                <h2 className="text-base sm:text-xl font-black text-gray-900 dark:text-white tracking-tight">
                   Recommended For {user.fullName.split(' ')[0]}
                 </h2>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-5">
               {recommendedProducts.map((p) => (
                 <ProductCard
                   key={`rec-${p.id}`}
