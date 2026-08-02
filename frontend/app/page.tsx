@@ -6,7 +6,7 @@ import { MegaMenu } from '../components/MegaMenu';
 import { HeroBanner } from '../components/HeroBanner';
 import { FlashSaleBanner } from '../components/FlashSaleBanner';
 import { ProductCard } from '../components/ProductCard';
-import { CategoryBar } from '../components/CategoryBar';
+
 import { SkeletonCard, SkeletonHero } from '../components/SkeletonCard';
 import { QuickViewModal } from '../components/QuickViewModal';
 import { CartDrawer } from '../components/CartDrawer';
@@ -129,12 +129,6 @@ export default function HomePage() {
             </div>
           </div>
         )}
-
-        {/* Category Navigation Bar (Horizontal Scroll Chips) */}
-        <CategoryBar
-          selectedCategory={selectedCategory}
-          onSelectCategory={(catId) => setSelectedCategory(catId)}
-        />
 
         {/* Hero Banner Showcase (Max Height 220px) */}
         <HeroBanner />
