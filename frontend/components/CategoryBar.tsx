@@ -39,8 +39,8 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
   onSelectCategory
 }) => {
   return (
-    <div id="categories" className="my-6 scroll-mt-24">
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+    <div id="categories" className="my-2.5 scroll-mt-20">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none whitespace-nowrap -mx-3 px-3 sm:mx-0">
         {NAV_PILLS.map((pill) => {
           const Icon = pill.icon;
           const isActive = selectedCategory === pill.id;
@@ -49,10 +49,10 @@ export const CategoryBar: React.FC<CategoryBarProps> = ({
             <button
               key={pill.id}
               onClick={() => onSelectCategory(pill.id)}
-              className={`h-[44px] px-5 rounded-full text-xs font-extrabold whitespace-nowrap transition-all duration-300 flex items-center gap-2 border ${
+              className={`h-[38px] min-h-[38px] px-3.5 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 flex items-center gap-1.5 border shrink-0 ${
                 isActive
-                  ? 'bg-[#111827] text-white border-[#111827] shadow-md scale-105'
-                  : 'bg-[#F8FAFC] dark:bg-gray-800 text-[#111827] dark:text-white border-[#E5E7EB] dark:border-gray-700 hover:bg-white hover:shadow-md'
+                  ? 'bg-[#111827] text-white border-[#111827] shadow-sm scale-105'
+                  : 'bg-[#F8FAFC] dark:bg-gray-800 text-[#111827] dark:text-white border-[#E5E7EB] dark:border-gray-700 hover:bg-white hover:shadow-xs'
               }`}
             >
               <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-[#2563EB]'}`} />

@@ -88,10 +88,11 @@ export const SupabaseAuthService = {
   },
 
   async getRedirectUrl() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && window.location?.origin) {
       return `${window.location.origin}/auth/callback`;
     }
-    return 'https://savvora-e-com.onrender.com/auth/callback';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://savvora-e-com.onrender.com';
+    return `${siteUrl.replace(/\/$/, '')}/auth/callback`;
   },
 
   async signInWithGoogle() {

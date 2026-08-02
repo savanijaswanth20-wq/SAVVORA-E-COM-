@@ -67,7 +67,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0a0d16] text-[#111827] dark:text-white font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#0a0d16] text-[#111827] dark:text-white font-sans transition-colors duration-300 pb-20 lg:pb-0">
       
       <Navbar
         onOpenCartDrawer={() => setIsCartOpen(true)}

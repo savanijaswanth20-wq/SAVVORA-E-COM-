@@ -67,7 +67,7 @@ export const HeroBanner: React.FC = () => {
   const TagIcon = slide.tagIcon;
 
   return (
-    <section className="relative rounded-3xl sm:rounded-[32px] overflow-hidden my-4 sm:my-6 bg-gray-950 text-white border border-gray-800/80 shadow-2xl p-6 sm:p-10 lg:p-12 min-h-[460px] flex items-center justify-center">
+    <section className="relative rounded-2xl sm:rounded-[32px] overflow-hidden my-2.5 sm:my-4 bg-gray-950 text-white border border-gray-800/80 shadow-2xl p-4 sm:p-8 lg:p-12 min-h-[240px] sm:min-h-[440px] flex items-center justify-center">
       
       {/* Background Animated Aurora Mesh */}
       <div className="aurora-mesh-ambient" />
@@ -75,10 +75,10 @@ export const HeroBanner: React.FC = () => {
       {/* Floating Particles Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-15 pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
         
         {/* Left Column: Text & CTA */}
-        <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-center lg:text-left">
+        <div className="lg:col-span-7 space-y-3 sm:space-y-5 text-center lg:text-left">
           
           <AnimatePresence mode="wait">
             <motion.div
@@ -87,16 +87,16 @@ export const HeroBanner: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="space-y-4"
+              className="space-y-3"
             >
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-[11px] font-black uppercase tracking-wider shadow-sm">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm">
                 <TagIcon className="w-3.5 h-3.5 text-amber-400" />
                 <span>{slide.badge}</span>
               </div>
 
               {/* Headline */}
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.15]">
+              <h1 className="text-xl sm:text-3xl lg:text-5xl font-black tracking-tight leading-[1.15]">
                 {slide.titlePrefix}
                 <span className={`bg-gradient-to-r ${slide.accentColor} bg-clip-text text-transparent`}>
                   {slide.highlight}
@@ -110,17 +110,17 @@ export const HeroBanner: React.FC = () => {
               </p>
 
               {/* CTA Buttons */}
-              <div className="pt-2 flex items-center justify-center lg:justify-start gap-3 sm:gap-4 flex-wrap">
+              <div className="pt-1 flex items-center justify-center lg:justify-start gap-2.5 sm:gap-4 flex-wrap">
                 <Link
                   href={slide.primaryBtnHref}
-                  className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-[#2563EB] hover:bg-blue-600 text-white font-extrabold text-xs uppercase tracking-wider shadow-xl shadow-blue-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all min-h-[44px]"
                 >
                   <span>{slide.primaryBtnText}</span>
                   <ArrowRight className="w-4 h-4 text-white" />
                 </Link>
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-3 sm:py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-extrabold text-xs uppercase tracking-wider backdrop-blur-md transition-all min-h-[44px]"
                 >
                   Explore All
                 </Link>

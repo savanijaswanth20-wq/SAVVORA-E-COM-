@@ -108,25 +108,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         transform: isVisible ? 'translateY(0)' : 'translateY(-100%)',
         transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
-      className="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300"
+      className="sticky top-0 z-40 w-full h-[60px] backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-apple-border dark:border-apple-border-dark transition-colors duration-300 flex items-center justify-center"
     >
       
       {/* Top Header Bar matching SAVVORA Layout Wireframe */}
-      <div className="max-w-[1200px] mx-auto px-3 sm:px-4 lg:px-8 py-3 flex items-center justify-between gap-2 sm:gap-6">
+      <div className="max-w-[1200px] w-full mx-auto px-3 sm:px-4 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4">
         
         {/* SVJ Luxury Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
           <img
             src="/images/svj-logo.png"
             alt="SVJ Logo"
-            className="w-10 h-10 sm:w-11 sm:h-11 object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_18px_rgba(255,215,0,0.45)]"
+            className="w-[40px] h-[40px] object-contain transition-all duration-400 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_18px_rgba(255,215,0,0.45)]"
           />
           <div className="flex flex-col">
-            <span className="font-extrabold text-base sm:text-xl tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
+            <span className="font-extrabold text-sm sm:text-base tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
               SAVVORA
             </span>
-            <span className="text-[8px] sm:text-[9px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
-              SVJ LUXURY STOREFRONT
+            <span className="text-[7.5px] sm:text-[8.5px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
+              SVJ LUXURY STORE
             </span>
           </div>
         </Link>
@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
 
         {/* Center Floating Search Bar */}
         <div className="flex-1 max-w-md relative hidden sm:block">
-          <Search className="w-4 h-4 text-apple-gray absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-[20px] h-[20px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search Products..."
@@ -142,7 +142,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
             onChange={(e) => handleSearch(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-            className="w-full pl-11 pr-10 py-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors"
+            className="w-full h-[44px] pl-10 pr-10 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue transition-colors"
           />
 
           {/* Autocomplete Dropdown */}
@@ -170,19 +170,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
         </div>
 
         {/* Right Actions: 👤 ❤️ 🛒 Menu */}
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           
           {/* Flipkart-Style User Profile & Account Dropdown 👤 */}
           <div className="relative group">
             <Link
               href="/account"
-              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5"
+              className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all flex items-center gap-1.5 min-w-[40px] min-h-[40px] justify-center"
               title="My Account"
             >
               {user?.avatar ? (
-                <img src={user.avatar} alt={user.fullName} className="w-4 h-4 rounded-full object-cover" />
+                <img src={user.avatar} alt={user.fullName} className="w-[21px] h-[21px] rounded-full object-cover" />
               ) : (
-                <User className="w-4 h-4 text-[#2563EB]" />
+                <User className="w-[21px] h-[21px] text-[#2563EB]" />
               )}
               <span className="text-xs font-bold hidden sm:inline max-w-[110px] truncate">
                 {user ? `Hi, ${user.fullName.split(' ')[0]}` : 'Account'}
@@ -272,10 +272,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           {/* Wishlist ❤️ */}
           <Link
             href="/account?tab=wishlist"
-            className="relative p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all"
+            className="relative p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center"
             title="Wishlist"
           >
-            <Heart className="w-4 h-4" />
+            <Heart className="w-[21px] h-[21px]" />
             {wishlistCount > 0 && (
               <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
                 {wishlistCount}
@@ -286,10 +286,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           {/* Shopping Cart Bag 🛒 */}
           <button
             onClick={onOpenCartDrawer}
-            className="relative p-2.5 rounded-full bg-apple-blue text-white shadow-md shadow-apple-blue/20 hover:bg-apple-blue-hover hover:scale-105 transition-all flex items-center justify-center"
+            className="relative p-2 sm:p-2.5 rounded-full bg-apple-blue text-white shadow-md shadow-apple-blue/20 hover:bg-apple-blue-hover hover:scale-105 transition-all flex items-center justify-center min-w-[40px] min-h-[40px]"
             title="Shopping Cart"
           >
-            <ShoppingBag className="w-4 h-4" />
+            <ShoppingBag className="w-[21px] h-[21px]" />
             {cartCount > 0 && (
               <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-white text-apple-blue text-[10px] font-black flex items-center justify-center shadow-md">
                 {cartCount}
@@ -300,17 +300,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
           {/* Light / Dark Mode Toggle */}
           <button
             onClick={handleToggleTheme}
-            className="p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all"
+            className="p-2 sm:p-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-apple-dark dark:text-white border border-apple-border dark:border-apple-border-dark hover:scale-105 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center"
             title="Toggle Light / Dark Theme"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-apple-dark" />}
+            {theme === 'dark' ? <Sun className="w-[21px] h-[21px] text-amber-400" /> : <Moon className="w-[21px] h-[21px] text-apple-dark" />}
           </button>
 
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle mobile menu"
-            className="md:hidden p-2 rounded-xl text-apple-dark dark:text-white min-w-[44px] min-h-[44px] flex items-center justify-center"
+            className="md:hidden p-2 rounded-xl text-apple-dark dark:text-white min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -320,15 +320,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
       </div>
 
       {/* Mobile Search Bar (Visible on mobile viewports below 640px) */}
-      <div className="px-4 pb-3 sm:hidden">
+      <div className="px-3 pb-2 sm:hidden hidden">
         <div className="relative w-full">
-          <Search className="w-4 h-4 text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-[21px] h-[21px] text-apple-gray absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Search products, brands..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue"
+            className="w-full h-[44px] pl-10 pr-4 rounded-full bg-apple-surface dark:bg-apple-surface-dark text-xs font-medium border border-apple-border dark:border-apple-border-dark text-apple-dark dark:text-white focus:outline-none focus:border-apple-blue"
           />
         </div>
       </div>
