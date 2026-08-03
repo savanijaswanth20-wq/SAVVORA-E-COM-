@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '../components/Navbar';
 import { MegaMenu } from '../components/MegaMenu';
 import { HeroBanner } from '../components/HeroBanner';
+import { PromoVideoShowcase } from '../components/PromoVideoShowcase';
 import { FlashSaleBanner } from '../components/FlashSaleBanner';
 import { ProductCard } from '../components/ProductCard';
 
@@ -130,8 +131,11 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Hero Banner Showcase (Max Height 220px) */}
+        {/* Hero Banner Showcase */}
         <HeroBanner />
+
+        {/* Cinematic Promo Video Showcase */}
+        <PromoVideoShowcase />
 
         {/* Main Storefront & Featured Product Grid (Immediately after Hero) */}
         <section id="products" className="space-y-3">
