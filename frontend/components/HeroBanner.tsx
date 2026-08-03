@@ -69,6 +69,19 @@ export const HeroBanner: React.FC = () => {
   return (
     <section className="relative rounded-2xl sm:rounded-3xl overflow-hidden my-2 sm:my-4 bg-[#0a0f1d] text-white border border-gray-800 shadow-2xl p-4 sm:p-6 lg:p-8 min-h-[260px] sm:min-h-[300px]">
       
+      {/* Background Cinematic Video Loop */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-35 pointer-events-none filter brightness-90 contrast-110 scale-105 transition-opacity duration-700"
+        src="/savvora_promo.mp4"
+      />
+      
+      {/* Dark Overlay Gradient for Optimal Text Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1d]/95 via-[#0a0f1d]/85 to-[#0a0f1d]/60 pointer-events-none" />
+
       {/* Glow Ambient Lights */}
       <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
