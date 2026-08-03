@@ -16,6 +16,7 @@ from app.analytics import analytics_router
 from app.notifications import notification_router
 from app.admin import admin_router
 from app.ai import ai_router
+from routes.location_routes import router as location_router
 
 from middleware.audit_middleware import AuditLoggingMiddleware
 from middleware.rate_limit import RateLimitingMiddleware
@@ -58,6 +59,7 @@ app.include_router(analytics_router.router)
 app.include_router(notification_router.router)
 app.include_router(admin_router.router)
 app.include_router(ai_router.router)
+app.include_router(location_router, prefix="/api/v1")
 
 # Save OpenAPI Schema to docs/
 try:

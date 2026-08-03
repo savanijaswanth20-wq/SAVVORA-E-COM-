@@ -1,6 +1,9 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import { AuthProvider } from '@/components/AuthProvider';
+import { LocationProvider } from '@/context/LocationContext';
+import { LocationPickerModal } from '@/components/location/LocationPickerModal';
+import { AddressFormModal } from '@/components/location/AddressFormModal';
 import { CursorSpotlight } from '@/components/CursorSpotlight';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { FloatingAIChat } from '@/components/FloatingAIChat';
@@ -65,11 +68,15 @@ export default function RootLayout({
       </head>
       <body className="bg-white dark:bg-[#0a0d16] text-gray-900 dark:text-gray-100 antialiased min-h-screen selection:bg-blue-600 selection:text-white overflow-x-hidden">
         <AuthProvider>
-          <CursorSpotlight />
-          {children}
-          <FloatingAIChat />
-          <MobileBottomNav />
-          <Footer />
+          <LocationProvider>
+            <CursorSpotlight />
+            {children}
+            <FloatingAIChat />
+            <MobileBottomNav />
+            <Footer />
+            <LocationPickerModal />
+            <AddressFormModal />
+          </LocationProvider>
         </AuthProvider>
       </body>
     </html>

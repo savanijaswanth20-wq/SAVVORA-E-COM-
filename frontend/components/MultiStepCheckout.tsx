@@ -6,6 +6,9 @@ import { KeychainStore, Order } from '../types/store';
 import { ConfettiEffect } from './ConfettiEffect';
 import { SupabasePaymentService } from '../services/supabase/payments';
 import { InvoiceViewer, InvoiceData } from './InvoiceViewer';
+import { useLocation } from '@/context/LocationContext';
+import { AddressCard } from './location/AddressCard';
+import { MapPin, Plus } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -19,6 +22,15 @@ interface MultiStepCheckoutProps {
 }
 
 export const MultiStepCheckout: React.FC<MultiStepCheckoutProps> = ({ isOpen, onClose }) => {
+  const {
+    savedAddresses,
+    selectedAddress,
+    selectSavedAddress,
+    deliveryValidation,
+    openLocationPicker,
+    openAddressForm,
+  } = useLocation();
+
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [address, setAddress] = useState({
     fullName: 'Aarav Sharma',
@@ -28,6 +40,19 @@ export const MultiStepCheckout: React.FC<MultiStepCheckoutProps> = ({ isOpen, on
     zip: '560038',
     phone: '+91 98765 43210'
   });
+
+  useEffect(() => {
+    if (selectedAddress) {
+      setAddress({
+        fullName: selectedAddress.full_name,
+        street: `${selectedAddress.house}${selectedAddress.apartment ? ', ' + selectedAddress.apartment : ''}, ${selectedAddress.area}`,
+        city: selectedAddress.city,
+        state: selectedAddress.state,
+        zip: selectedAddress.postal_code,
+        phone: selectedAddress.phone,
+      });
+    }
+  }, [selectedAddress]);
   const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
   const [razorpaySubOption, setRazorpaySubOption] = useState<'upi' | 'card' | 'netbanking'>('upi');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -274,8 +299,60 @@ export const MultiStepCheckout: React.FC<MultiStepCheckoutProps> = ({ isOpen, on
         {/* STEP 1: Address */}
         {step === 1 && (
           <div className="space-y-3">
-            <h3 className="font-extrabold text-sm sm:text-base text-gray-900 dark:text-white">1. Shipping Address Details</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div className="flex items-center justify-between">
+              <h3 className="font-extrabold text-sm sm:text-base text-gray-900 dark:text-white">
+                1. Select Delivery Address
+              </h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => openLocationPicker()}
+                  className="px-2.5 py-1 rounded-full bg-blue-600/10 border border-blue-500/30 text-blue-500 text-[10px] font-extrabold flex items-center gap-1 hover:bg-blue-600/20"
+                >
+                  <MapPin className="w-3 h-3" /> Map Pick
+                </button>
+                <button
+                  onClick={() => openAddressForm()}
+                  className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-[10px] font-extrabold flex items-center gap-1 hover:bg-emerald-500/20"
+                >
+                  <Plus className="w-3 h-3" /> Add New
+                </button>
+              </div>
+            </div>
+
+            {/* Delivery Validation Alert */}
+            {deliveryValidation && (
+              <div
+                className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-between ${
+                  deliveryValidation.is_available
+                    ? 'bg-emerald-950/30 border-emerald-800/40 text-emerald-400'
+                    : 'bg-rose-950/30 border-rose-800/40 text-rose-400'
+                }`}
+              >
+                <span>{deliveryValidation.message}</span>
+                {deliveryValidation.estimated_delivery && (
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-[10px] font-black uppercase">
+                    {deliveryValidation.estimated_delivery}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Saved Address Cards */}
+            {savedAddresses.length > 0 ? (
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                {savedAddresses.map((addr) => (
+                  <AddressCard
+                    key={addr.id}
+                    address={addr}
+                    isSelected={selectedAddress?.id === addr.id}
+                    onSelect={() => selectSavedAddress(addr)}
+                  />
+                ))}
+              </div>
+            ) : null}
+
+            {/* Fallback Input Form Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs pt-1">
               <div>
                 <label className="block font-bold text-gray-500 dark:text-gray-400 mb-0.5 text-[11px]">Full Name</label>
                 <input
@@ -325,7 +402,8 @@ export const MultiStepCheckout: React.FC<MultiStepCheckoutProps> = ({ isOpen, on
 
             <button
               onClick={() => setStep(2)}
-              className="w-full h-[40px] rounded-full bg-[#2563EB] hover:bg-blue-600 active:scale-95 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 mt-3 transition-all shadow-md shadow-blue-500/20"
+              disabled={deliveryValidation?.is_available === false}
+              className="w-full h-[40px] rounded-full bg-[#2563EB] hover:bg-blue-600 active:scale-95 text-white font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 mt-3 transition-all shadow-md shadow-blue-500/20 disabled:opacity-50"
             >
               <span>Continue to Shipping</span> <ArrowRight className="w-3.5 h-3.5" />
             </button>

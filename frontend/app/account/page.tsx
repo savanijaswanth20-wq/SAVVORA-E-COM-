@@ -58,6 +58,8 @@ import { KeychainStore, UserProfile, Order, KeychainProduct, subscribeToStore } 
 import { SupabaseAuthService } from '../../services/supabase/auth';
 import { AuthModal } from '../../components/AuthModal';
 import { InvoiceViewer, InvoiceData } from '../../components/InvoiceViewer';
+import { useLocation } from '@/context/LocationContext';
+import { AddressCard } from '@/components/location/AddressCard';
 
 type SettingsSection = 
   | 'account' 
@@ -75,6 +77,14 @@ type SettingsSection =
 function AccountSettingsContent() {
   const searchParams = useSearchParams();
   const initialTab = (searchParams.get('tab') as SettingsSection) || 'account';
+
+  const {
+    savedAddresses,
+    selectedAddress,
+    selectSavedAddress,
+    openLocationPicker,
+    openAddressForm,
+  } = useLocation();
 
   const [activeSection, setActiveSection] = useState<SettingsSection>(initialTab);
   const [searchQuery, setSearchQuery] = useState('');
@@ -729,97 +739,58 @@ function AccountSettingsContent() {
 
           {/* SECTION 4: ADDRESSES (Manage, Add New, Set Default) */}
           {activeSection === 'addresses' && (
-            <div className="p-4 sm:p-6 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-200/80 dark:border-gray-800 space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-blue-600" /> Saved Delivery Locations ({addresses.length})
-                </h2>
-                <button
-                  onClick={() => setShowAddAddressModal(!showAddAddressModal)}
-                  className="px-3 py-1.5 rounded-full bg-[#2563EB] text-white text-xs font-bold flex items-center gap-1 hover:bg-blue-600 transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5" /> Add New Address
-                </button>
+            <div className="p-4 sm:p-6 rounded-2xl bg-gray-50/70 dark:bg-gray-900/50 border border-gray-200/80 dark:border-gray-800 space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-blue-600" /> My Saved Delivery Addresses ({savedAddresses.length})
+                  </h2>
+                  <p className="text-xs text-gray-400">Manage home, office, and default shipping locations</p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openLocationPicker()}
+                    className="px-3.5 py-1.5 rounded-full bg-blue-600/10 border border-blue-500/30 text-blue-500 text-xs font-extrabold flex items-center gap-1.5 hover:bg-blue-600/20 transition-colors"
+                  >
+                    <MapPin className="w-3.5 h-3.5" /> Interactive Map Pick
+                  </button>
+                  <button
+                    onClick={() => openAddressForm()}
+                    className="px-3.5 py-1.5 rounded-full bg-[#2563EB] text-white text-xs font-extrabold flex items-center gap-1.5 hover:bg-blue-600 transition-colors shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add New Address
+                  </button>
+                </div>
               </div>
 
-              {/* Add Address Form Modal */}
-              {showAddAddressModal && (
-                <form onSubmit={handleAddAddress} className="p-3.5 rounded-xl bg-white dark:bg-black border border-blue-500/40 space-y-2.5 text-xs">
-                  <h4 className="font-bold text-gray-900 dark:text-white">Add Delivery Address</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      placeholder="Full Name"
-                      value={newAddr.name}
-                      onChange={(e) => setNewAddr({ ...newAddr, name: e.target.value })}
-                      className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none text-xs"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="Phone Number"
-                      value={newAddr.phone}
-                      onChange={(e) => setNewAddr({ ...newAddr, phone: e.target.value })}
-                      className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none text-xs"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="Street Address"
-                      value={newAddr.street}
-                      onChange={(e) => setNewAddr({ ...newAddr, street: e.target.value })}
-                      className="sm:col-span-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none text-xs"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="City"
-                      value={newAddr.city}
-                      onChange={(e) => setNewAddr({ ...newAddr, city: e.target.value })}
-                      className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none text-xs"
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="ZIP / PIN Code"
-                      value={newAddr.zip}
-                      onChange={(e) => setNewAddr({ ...newAddr, zip: e.target.value })}
-                      className="px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none text-xs"
-                      required
-                    />
+              {/* Saved Address Cards Grid */}
+              {savedAddresses.length === 0 ? (
+                <div className="text-center py-12 space-y-3 bg-white dark:bg-black rounded-2xl border border-gray-200/80 dark:border-gray-800 p-6">
+                  <MapPin className="w-10 h-10 mx-auto text-blue-500/50 animate-bounce" />
+                  <div>
+                    <h3 className="font-extrabold text-sm text-gray-900 dark:text-white">No Saved Addresses Found</h3>
+                    <p className="text-xs text-gray-400">Add an address using Google Maps or manual input for faster checkout.</p>
                   </div>
-                  <div className="flex gap-2 pt-1">
-                    <button type="submit" className="px-4 py-1.5 rounded-full bg-[#2563EB] text-white font-bold text-xs">Save Address</button>
-                    <button type="button" onClick={() => setShowAddAddressModal(false)} className="px-4 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-xs font-bold">Cancel</button>
-                  </div>
-                </form>
+                  <button
+                    onClick={() => openLocationPicker()}
+                    className="px-5 py-2 rounded-full bg-blue-600 text-white font-extrabold text-xs shadow-md hover:bg-blue-500 transition-colors"
+                  >
+                    Select Location on Google Map
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {savedAddresses.map((addr) => (
+                    <AddressCard
+                      key={addr.id}
+                      address={addr}
+                      isSelected={selectedAddress?.id === addr.id}
+                      onSelect={() => selectSavedAddress(addr)}
+                    />
+                  ))}
+                </div>
               )}
-
-              {/* Address Cards */}
-              <div className="space-y-2.5">
-                {addresses.map((a) => (
-                  <div key={a.id} className="p-3.5 rounded-xl bg-white dark:bg-black border border-gray-200/80 dark:border-gray-800 flex items-start justify-between gap-3 text-xs">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-gray-900 dark:text-white">{a.name}</span>
-                        <span className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 text-[9px] font-black uppercase">
-                          {a.type}
-                        </span>
-                        {a.isDefault ? (
-                          <span className="text-[9px] font-black text-blue-600 uppercase">Default</span>
-                        ) : (
-                          <button onClick={() => handleSetDefaultAddress(a.id)} className="text-[9px] font-bold text-gray-400 hover:text-blue-600 underline">Set Default</button>
-                        )}
-                      </div>
-                      <p className="text-gray-500 dark:text-gray-400">{a.street}, {a.city}, {a.state} - {a.zip}</p>
-                      <p className="text-gray-400 text-[11px]">Phone: {a.phone}</p>
-                    </div>
-                    <button onClick={() => handleDeleteAddress(a.id)} className="p-1.5 text-gray-400 hover:text-rose-500 transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 

@@ -22,6 +22,7 @@ import { KeychainStore, subscribeToStore, KeychainProduct, UserProfile } from '.
 import { SupabaseAuthService } from '../services/supabase/auth';
 import { AuthModal } from './AuthModal';
 import { CompleteProfileModal } from './CompleteProfileModal';
+import { HeaderLocationPill } from './location/HeaderLocationPill';
 
 interface NavbarProps {
   onOpenCartDrawer?: () => void;
@@ -158,24 +159,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenCartDrawer, onSearchChange
       {/* Top Header Bar */}
       <div className="max-w-[1240px] w-full mx-auto px-3 sm:px-4 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4">
         
-        {/* SVJ Luxury Brand Logo */}
-        <Link href="/" className="flex items-center gap-1.5 group flex-shrink-0">
-          <img
-            src="/images/svj-logo.png"
-            alt="SVJ Logo"
-            width="30"
-            height="30"
-            className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] object-contain transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.35)]"
-          />
-          <div className="flex flex-col">
-            <span className="font-extrabold text-[11px] sm:text-sm tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
-              SAVVORA
-            </span>
-            <span className="text-[6.5px] sm:text-[8px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
-              SVJ STORE
-            </span>
-          </div>
-        </Link>
+        {/* SVJ Luxury Brand Logo & Delivery Location Pill */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-1.5 group flex-shrink-0">
+            <img
+              src="/images/svj-logo.png"
+              alt="SVJ Logo"
+              width="30"
+              height="30"
+              className="w-[30px] h-[30px] sm:w-[34px] sm:h-[34px] object-contain transition-all duration-300 group-hover:scale-105 group-hover:-rotate-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.35)]"
+            />
+            <div className="flex flex-col">
+              <span className="font-extrabold text-[11px] sm:text-sm tracking-wider text-apple-dark dark:text-white uppercase font-sans leading-none">
+                SAVVORA
+              </span>
+              <span className="text-[6.5px] sm:text-[8px] font-bold text-amber-500 dark:text-amber-400 uppercase tracking-widest mt-0.5">
+                SVJ STORE
+              </span>
+            </div>
+          </Link>
+
+          <HeaderLocationPill />
+        </div>
 
 
         {/* Center Floating Search Bar with AI & Voice Search */}
