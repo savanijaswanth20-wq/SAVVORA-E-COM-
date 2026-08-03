@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=Outfit:wght@400;600;800;900&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0B0B10;
+  color: #FFFFFF;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+.gradient-text-gold {
+  background: linear-gradient(135deg, #F5B301 0%, #FFD700 50%, #FF8C00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-blue {
+  background: linear-gradient(135deg, #60A5FA 0%, #2563EB 50%, #1D4ED8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-hero {
+  background: linear-gradient(135deg, #FFB800 0%, #FF4500 50%, #E6007A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-panel {
+  background: rgba(15, 17, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.glass-badge {
+  background: rgba(37, 99, 235, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.gold-glow {
+  box-shadow: 0 0 50px rgba(245, 179, 1, 0.35);
+}
+
+.blue-glow {
+  box-shadow: 0 0 60px rgba(37, 99, 235, 0.4);
+}
