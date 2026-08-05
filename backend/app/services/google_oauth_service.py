@@ -155,3 +155,12 @@ def ListMessages(service: Any, user: str = 'me', query: str = '') -> List[Dict[s
     except Exception as error:
         logging.error('An error occurred while listing messages: %s', error)
         return []
+
+class GoogleOAuthService:
+    get_authorization_url = staticmethod(get_authorization_url)
+    exchange_code = staticmethod(exchange_code)
+    get_user_info = staticmethod(get_user_info)
+    build_service = staticmethod(build_service)
+    ListMessages = staticmethod(ListMessages)
+
+google_oauth_service = GoogleOAuthService()
