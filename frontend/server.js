@@ -278,33 +278,33 @@ const HTML_CONTENT = `<!DOCTYPE html>
   </main>
 
   <!-- AUTHENTICATION MODAL -->
-  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-    <div class="w-full max-w-md bg-white dark:bg-[#1F2937] rounded-[28px] p-8 border border-savBorder relative space-y-6">
-      <button onclick="toggleAuthModal()" class="absolute top-6 right-6 p-2 rounded-full bg-savGray text-gray-500">
+  <div id="authModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+    <div class="w-full max-w-md bg-white rounded-[28px] p-8 border border-gray-200 relative space-y-6 shadow-2xl">
+      <button onclick="toggleAuthModal()" class="absolute top-6 right-6 p-2 rounded-full bg-gray-100 text-gray-500 hover:text-slate-900 hover:bg-gray-200">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
 
       <div class="text-center space-y-1">
         <span class="text-xs font-bold text-gray-400 uppercase">Welcome to</span>
-        <h2 class="text-2xl font-black text-savBlack dark:text-white uppercase">SAVVORA</h2>
+        <h2 class="text-2xl font-black text-slate-900 uppercase">SAVVORA</h2>
       </div>
 
-      <button onclick="simulateGoogleLogin()" class="w-full py-3.5 px-4 rounded-full bg-white border border-savBorder font-extrabold text-xs text-savBlack hover:bg-gray-50 flex items-center justify-center gap-3 shadow-sm">
+      <button onclick="simulateGoogleLogin()" class="w-full py-3.5 px-4 rounded-full bg-white border border-gray-200 font-extrabold text-xs text-slate-900 hover:bg-gray-50 flex items-center justify-center gap-3 shadow-sm">
         <span>Continue with Google</span>
       </button>
 
       <div class="relative flex items-center justify-center my-2">
-        <div class="border-t border-savBorder w-full"></div>
-        <span class="bg-white dark:bg-[#1F2937] px-3 text-[10px] font-black uppercase text-gray-400 absolute">OR</span>
+        <div class="border-t border-gray-200 w-full"></div>
+        <span class="bg-white px-3 text-[10px] font-black uppercase text-gray-400 absolute">OR</span>
       </div>
 
       <div class="space-y-3">
         <label class="block text-xs font-bold text-gray-500">Phone Number</label>
         <div class="flex gap-2">
-          <span class="px-3.5 py-3 rounded-2xl bg-savGray font-extrabold text-xs">+91</span>
-          <input type="tel" placeholder="98765 43210" class="flex-1 px-4 py-3 rounded-2xl bg-savGray border text-xs font-bold text-savBlack" />
+          <span class="px-3.5 py-3 rounded-2xl bg-gray-100 font-extrabold text-xs text-slate-700">+91</span>
+          <input type="tel" placeholder="98765 43210" class="flex-1 px-4 py-3 rounded-2xl bg-gray-100 border border-gray-200 text-xs font-bold text-slate-900" />
         </div>
-        <button onclick="simulatePhoneLogin()" class="w-full py-3.5 rounded-full bg-savBlack text-white font-extrabold text-xs uppercase tracking-wider">
+        <button onclick="simulatePhoneLogin()" class="w-full py-3.5 rounded-full bg-slate-900 text-white font-extrabold text-xs uppercase tracking-wider hover:bg-slate-800">
           Send OTP
         </button>
       </div>

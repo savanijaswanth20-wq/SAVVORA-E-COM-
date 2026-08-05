@@ -68,7 +68,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
         style={{ paddingTop: isFloating ? '14px' : '8px', paddingBottom: '5px', position: 'relative' }}
       >
         {/* Icon */}
-        <span style={{ color: focused ? 'rgba(139,148,255,0.9)' : 'rgba(93,101,132,0.8)', flexShrink: 0, transition: 'color 0.2s ease', display: 'flex', alignItems: 'center' }}>
+        <span style={{ color: focused ? '#0f172a' : '#94a3b8', flexShrink: 0, transition: 'color 0.2s ease', display: 'flex', alignItems: 'center' }}>
           {icon}
         </span>
 
@@ -136,12 +136,12 @@ const PasswordInput: React.FC<{
           aria-label={show ? 'Hide password' : 'Show password'}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            color: 'rgba(93,101,132,0.8)', padding: '2px',
+            color: '#94a3b8', padding: '2px',
             display: 'flex', alignItems: 'center',
             transition: 'color 0.2s',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(139,148,255,0.9)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(93,101,132,0.8)')}
+          onMouseEnter={(e) => (e.currentTarget.style.color = '#0f172a')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
         >
           {show ? <EyeOff size={14} /> : <Eye size={14} />}
         </button>
@@ -499,51 +499,42 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 aria-label="Close authentication dialog"
                 style={{
                   position: 'absolute', top: 12, right: 12,
-                  width: 24, height: 24, borderRadius: '50%',
+                  width: 26, height: 26, borderRadius: '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.09)',
-                  color: 'rgba(93,101,132,0.9)',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  color: '#64748b',
                   cursor: 'pointer',
                   transition: 'color 0.2s, background 0.2s',
                   zIndex: 10,
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.color = '#f2f4fb'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(93,101,132,0.9)'; e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = '#0f172a'; e.currentTarget.style.background = '#f1f5f9'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = '#f8fafc'; }}
               >
                 <X size={13} />
               </button>
 
               {/* ── Logo & Brand ── */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 10 }}>
-                {/* 3D sphere */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 12 }}>
+                {/* Minimal Shield Badge */}
                 <div style={{
-                  width: 38, height: 38, borderRadius: '50%',
-                  background: 'radial-gradient(circle at 32% 28%, #c4b5fd 0%, #8b5cf6 28%, #6366f1 58%, #3730a3 100%)',
-                  boxShadow: 'inset -3px -6px 10px rgba(0,0,0,0.35), inset 2px 3px 6px rgba(255,255,255,0.3), 0 10px 20px -4px rgba(99,102,241,0.65)',
+                  width: 42, height: 42, borderRadius: '50%',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  animation: 'orbFloat 5s ease-in-out infinite',
-                  marginBottom: 4,
-                }}>
-                  <ShieldCheck size={17} color="rgba(255,255,255,0.92)" strokeWidth={1.7} />
-                </div>
-                {/* Sphere shadow */}
-                <div style={{
-                  width: 26, height: 4, borderRadius: '50%',
-                  background: 'radial-gradient(closest-side, rgba(99,102,241,0.4), transparent 80%)',
-                  filter: 'blur(2px)',
                   marginBottom: 6,
-                  animation: 'orbPulse 5s ease-in-out infinite',
-                }} />
+                }}>
+                  <ShieldCheck size={18} color="#0f172a" strokeWidth={1.8} />
+                </div>
 
-                <p style={{ fontSize: 9, letterSpacing: '0.18em', color: 'rgba(154,163,189,0.75)', fontWeight: 600, marginBottom: 2 }}>
+                <p style={{ fontSize: 9, letterSpacing: '0.18em', color: '#64748b', fontWeight: 700, marginBottom: 2 }}>
                   WELCOME TO
                 </p>
                 <h1 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: 18, fontWeight: 800, letterSpacing: '0.01em',
-                  background: 'linear-gradient(160deg, #ffffff 0%, #c7d2fe 60%, #a5b4fc 100%)',
-                  WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
+                  fontSize: 19, fontWeight: 800, letterSpacing: '0.01em',
+                  color: '#0f172a',
                   margin: 0,
                 }}>
                   SAVVORA
@@ -678,7 +669,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                       className="auth-btn-social"
                       style={{ marginBottom: 6 }}
                     >
-                      <Smartphone size={14} style={{ color: '#34d399' }} />
+                      <Smartphone size={14} style={{ color: '#0f172a' }} />
                       <span>Continue with Phone OTP</span>
                     </button>
 
@@ -773,7 +764,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                             label="Mobile Phone Number"
                             value={phone}
                             onChange={setPhone}
-                            icon={<Smartphone size={15} style={{ color: '#34d399' }} />}
+                            icon={<Smartphone size={15} style={{ color: '#0f172a' }} />}
                             required
                             placeholder="+91 98765 43210"
                             inputMode="tel"
@@ -799,8 +790,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                           {/* OTP sent hint */}
                           <div style={{
                             padding: '8px 12px', marginBottom: 14, borderRadius: 10,
-                            background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)',
-                            fontSize: 11.5, color: 'rgba(165,180,252,0.9)', fontWeight: 500,
+                            background: '#f0f9ff', border: '1px solid #bae6fd',
+                            fontSize: 11.5, color: '#0369a1', fontWeight: 500,
                           }}>
                             📱 OTP sent to <strong>{phone}</strong>
                           </div>
@@ -812,7 +803,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                             label="6-Digit OTP Code"
                             value={otpToken}
                             onChange={setOtpToken}
-                            icon={<ShieldCheck size={15} style={{ color: '#34d399' }} />}
+                            icon={<ShieldCheck size={15} style={{ color: '#0f172a' }} />}
                             required
                             maxLength={6}
                             placeholder="123456"
@@ -854,17 +845,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                     <div style={{ textAlign: 'center', marginBottom: 18 }}>
                       <div style={{
                         width: 44, height: 44, borderRadius: '50%',
-                        background: 'rgba(99,102,241,0.12)',
-                        border: '1px solid rgba(99,102,241,0.25)',
+                        background: '#f8fafc',
+                        border: '1px solid #e2e8f0',
                         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                         marginBottom: 8,
                       }}>
-                        <Mail size={18} style={{ color: 'rgba(139,148,255,0.9)' }} />
+                        <Mail size={18} style={{ color: '#0f172a' }} />
                       </div>
-                      <p style={{ fontSize: 15, fontWeight: 700, color: '#f2f4fb', margin: '0 0 4px' }}>
+                      <p style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: '0 0 4px' }}>
                         Reset Password
                       </p>
-                      <p style={{ fontSize: 11.5, color: 'rgba(154,163,189,0.75)', margin: 0 }}>
+                      <p style={{ fontSize: 11.5, color: '#64748b', margin: 0 }}>
                         Enter your email to receive a reset link.
                       </p>
                     </div>
@@ -913,7 +904,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 gap: 10, marginTop: 8, paddingTop: 8,
-                borderTop: '1px solid rgba(255,255,255,0.06)',
+                borderTop: '1px solid #f1f5f9',
               }}>
                 {[
                   { icon: '🔒', label: '256-bit SSL' },
@@ -922,7 +913,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
                 ].map((b) => (
                   <div key={b.label} style={{
                     display: 'flex', alignItems: 'center', gap: 3,
-                    fontSize: 9, color: 'rgba(93,101,132,0.8)', fontWeight: 600, letterSpacing: '0.02em',
+                    fontSize: 9, color: '#64748b', fontWeight: 600, letterSpacing: '0.02em',
                   }}>
                     <span style={{ fontSize: 10 }}>{b.icon}</span>
                     {b.label}
